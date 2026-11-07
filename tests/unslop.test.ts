@@ -487,8 +487,13 @@ describe("CLI", () => {
     const directory = await temporaryDirectory();
     const result = await invoke(["init", "--preset", "neo-brutalist", "--json"], directory);
     expect(result.code).toBe(0);
-    expect(JSON.parse(result.stdout).files).toHaveLength(6);
+    expect(JSON.parse(result.stdout).files).toHaveLength(7);
     expect(await readFile(join(directory, "AGENTS.md"), "utf8")).toContain("hard offset shadows");
+    const mcp = JSON.parse(await readFile(join(directory, ".mcp.json"), "utf8"));
+    expect(mcp.mcpServers.unslop).toEqual({
+      command: "npx",
+      args: ["-y", "unslop@1.1.0", "mcp"],
+    });
   });
 
   it("returns useful audit exit codes and valid JSON", async () => {

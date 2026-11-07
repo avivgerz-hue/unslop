@@ -1,7 +1,7 @@
 {
   "name": "unslop",
-  "version": "1.0.0",
-  "description": "Studio-grade UI design systems and a deterministic anti-slop engine for coding agents.",
+  "version": "1.1.0",
+  "description": "Studio-grade design systems, native MCP tools, Tailwind v4 tokens, and deterministic anti-slop/WCAG audits for coding agents.",
   "type": "module",
   "bin": {
     "unslop": "./dist/bin/unslop.js"
@@ -15,6 +15,10 @@
       "types": "./dist/src/extractor/extract-dna.d.ts",
       "default": "./dist/src/extractor/extract-dna.js"
     },
+    "./mcp": {
+      "types": "./dist/src/mcp/server.d.ts",
+      "default": "./dist/src/mcp/server.js"
+    },
     "./presets": {
       "types": "./dist/src/presets/index.d.ts",
       "default": "./dist/src/presets/index.js"
@@ -22,6 +26,14 @@
     "./sync": {
       "types": "./dist/src/sync/rule-writer.d.ts",
       "default": "./dist/src/sync/rule-writer.js"
+    },
+    "./tokens": {
+      "types": "./dist/src/sync/token-exporter.d.ts",
+      "default": "./dist/src/sync/token-exporter.js"
+    },
+    "./wcag": {
+      "types": "./dist/src/analyzer/wcag.d.ts",
+      "default": "./dist/src/analyzer/wcag.js"
     }
   },
   "files": [
@@ -44,6 +56,10 @@
     "frontend",
     "css",
     "design-tokens",
+    "mcp",
+    "model-context-protocol",
+    "tailwindcss",
+    "wcag",
     "cli"
   ],
   "author": "VibeFoundry",

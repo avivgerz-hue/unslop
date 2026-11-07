@@ -1,6 +1,7 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { loadPreset, type DesignPreset } from "../presets/index.js";
+import { UNSLOP_VERSION } from "../version.js";
 
 export const MANAGED_START = "<!-- unslop:start -->";
 export const MANAGED_END = "<!-- unslop:end -->";
@@ -135,6 +136,7 @@ export function renderRuleDocument(preset: DesignPreset): string {
     `- Page color scheme: **${tokens.colorScheme}**.`,
     "- Never invent raw hex, RGB, HSL, or opacity values when a semantic token exists.",
     "- Use text-muted only for secondary copy that still meets contrast requirements.",
+    "- Verify WCAG 2.1 contrast with real sRGB luminance after alpha compositing: normal text requires 4.5:1; large text (24px, or 18.66px at 700+) requires 3:1. Resolve every slop/low-contrast finding.",
     "- No purple/indigo gradient clichés, neon cyber-glows, rainbow accent palettes, or color-only status communication.",
     "",
     "## 3. Typography contract",
@@ -196,7 +198,7 @@ export function renderRuleDocument(preset: DesignPreset): string {
     "",
     "## 8. CSS token source of truth",
     "",
-    "Use these variables directly or map them once into Tailwind, CSS Modules, styled-components, or the host design system. Do not create a second competing token scale.",
+    `Use these variables directly or map them once into Tailwind, CSS Modules, styled-components, or the host design system. Do not create a second competing token scale. For Tailwind v4 @theme plus :root and .dark variables, run \`npx unslop export-tokens --preset ${preset.name} --out tokens.css\`.`,
     "",
     "```css",
     renderTokenCSS(preset),
@@ -312,6 +314,73 @@ export async function syncRuleFiles(options: RuleSyncOptions): Promise<RuleSyncR
 }
 
 export const writeAgentRules = syncRuleFiles;
+
+export interface MCPSyncOptions {
+  cwd?: string;
+  /** Package specifier used by npx. Defaults to the current release. */
+  packageSpec?: string;
+}
+
+function isJSONObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Merge unslop into a project's .mcp.json without disturbing other servers. */
+export async function syncMcpConfig(options: MCPSyncOptions = {}): Promise<SyncedRuleFile> {
+  const cwd = resolve(options.cwd ?? process.cwd());
+  const path = join(cwd, ".mcp.json");
+  let existing: string | undefined;
+  try {
+    existing = await readFile(path, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+  }
+
+  let config: Record<string, unknown> = {};
+  if (existing !== undefined && existing.trim()) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(existing);
+    } catch (error) {
+      throw new Error(
+        `Cannot update .mcp.json because it is not valid JSON: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+    if (!isJSONObject(parsed)) throw new Error("Cannot update .mcp.json: its root must be a JSON object.");
+    config = parsed;
+  }
+  if (config.mcpServers !== undefined && !isJSONObject(config.mcpServers)) {
+    throw new Error("Cannot update .mcp.json: mcpServers must be a JSON object.");
+  }
+  const servers = isJSONObject(config.mcpServers) ? config.mcpServers : {};
+  const currentUnslop = isJSONObject(servers.unslop) ? servers.unslop : {};
+  const packageSpec = options.packageSpec?.trim() || `unslop@${UNSLOP_VERSION}`;
+  const content = `${JSON.stringify(
+    {
+      ...config,
+      mcpServers: {
+        ...servers,
+        unslop: {
+          ...currentUnslop,
+          command: "npx",
+          args: ["-y", packageSpec, "mcp"],
+        },
+      },
+    },
+    null,
+    2,
+  )}\n`;
+  if (existing === content) return { path: ".mcp.json", status: "unchanged" };
+  await atomicWrite(path, content);
+  return { path: ".mcp.json", status: existing === undefined ? "created" : "updated" };
+}
+
+/** Install agent rules and the native MCP configuration as one CLI operation. */
+export async function installUnslop(options: RuleSyncOptions & MCPSyncOptions): Promise<RuleSyncResult> {
+  const result = await syncRuleFiles(options);
+  const mcp = await syncMcpConfig(options);
+  return { ...result, files: [...result.files, mcp] };
+}
 
 export function portableRulePath(path: string): string {
   return path.split(sep).join("/");

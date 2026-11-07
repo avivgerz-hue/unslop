@@ -8,9 +8,12 @@ import { parseArgs } from "node:util";
 import { auditTarget, formatAuditReport } from "../src/analyzer/slop-detector.js";
 import { createPresetFromDNA, extractDesignDNA } from "../src/extractor/extract-dna.js";
 import { listPresets, listPresetSummaries, loadPreset } from "../src/presets/index.js";
-import { renderAgentSkill, syncRuleFiles } from "../src/sync/rule-writer.js";
+import { startMcpServer } from "../src/mcp/server.js";
+import { installUnslop, renderAgentSkill } from "../src/sync/rule-writer.js";
+import { renderTokenStylesheet } from "../src/sync/token-exporter.js";
+import { UNSLOP_VERSION } from "../src/version.js";
 
-export const CLI_VERSION = "1.0.0";
+export const CLI_VERSION = UNSLOP_VERSION;
 
 export interface CLIContext {
   cwd?: string;
@@ -26,9 +29,11 @@ USAGE
   npx unslop <command> [options]
 
 COMMANDS
-  init [--preset <name>]       Install agent rules in the current project
+  init [--preset <name>]       Install agent rules and .mcp.json in this project
+  mcp                          Run the native MCP server over stdio
   audit [dir]                  Detect AI slop and generate a refactoring brief
   extract <url-or-css-path>    Compile design DNA into an Agent Skill
+  export-tokens                Export Tailwind v4 @theme and CSS variables
   presets [name]               List presets or inspect one token contract
   help                         Show this reference
 
@@ -52,6 +57,18 @@ EXTRACT OPTIONS
       --json                   Emit both raw DNA and the compiled preset as JSON
       --timeout <ms>           Per-request timeout (default: 10000)
       --max-stylesheets <n>    External stylesheet limit (default: 12)
+
+EXPORT-TOKENS OPTIONS
+  -p, --preset <name>          Built-in preset (default: linear-dark)
+  -o, --out <file>             Write CSS to a file instead of stdout
+  -s, --source <url-or-css>    Compile extracted DNA instead of a built-in preset
+      --name <preset-name>     Name extracted DNA (default: extracted-dna)
+      --timeout <ms>           Per-request timeout for --source URLs
+      --max-stylesheets <n>    External stylesheet limit for --source URLs
+
+MCP OPTIONS
+  The mcp command uses only stdio for JSON-RPC messages. Run it from the project
+  root, or let the generated .mcp.json launch it through npx.
 
 EXIT STATUS
   0  Command succeeded; audit found no violations
@@ -165,7 +182,7 @@ export async function runCli(argv: string[] = process.argv.slice(2), context: CL
         json: { type: "boolean" },
       });
       assertNoPositionals("init", positionals);
-      const result = await syncRuleFiles({
+      const result = await installUnslop({
         cwd: resolve(cwd, values.dir ?? "."),
         preset: values.preset ?? "linear-dark",
         force: values.force ?? false,
@@ -179,6 +196,56 @@ export async function runCli(argv: string[] = process.argv.slice(2), context: CL
           "",
           "Next: run npx unslop audit . before your agent writes more UI.",
         ].join("\n"));
+      }
+      return 0;
+    }
+
+    if (command === "mcp") {
+      const { positionals } = parse("mcp", args, {});
+      assertNoPositionals("mcp", positionals);
+      await startMcpServer({ cwd });
+      return 0;
+    }
+
+    if (command === "export-tokens") {
+      const { values, positionals } = parse("export-tokens", args, {
+        preset: { type: "string", short: "p" },
+        out: { type: "string", short: "o" },
+        source: { type: "string", short: "s" },
+        name: { type: "string" },
+        timeout: { type: "string" },
+        "max-stylesheets": { type: "string" },
+      });
+      assertNoPositionals("export-tokens", positionals);
+      if (values.preset && values.source) {
+        throw new UsageError("--preset and --source cannot be used together.");
+      }
+      let preset: ReturnType<typeof loadPreset>;
+      if (values.source) {
+        const input = /^https?:\/\//i.test(values.source)
+          ? values.source
+          : resolve(cwd, values.source);
+        const dna = await extractDesignDNA(input, {
+          timeoutMs: positiveNumber(values.timeout, 10_000, "--timeout"),
+          maxStylesheets: nonNegativeInteger(values["max-stylesheets"], 12, "--max-stylesheets"),
+        });
+        for (const warning of dna.warnings) stderr(`Warning: ${warning}`);
+        preset = createPresetFromDNA(dna, values.name ?? "extracted-dna");
+      } else {
+        if (values.name) throw new UsageError("--name requires --source.");
+        if (values.timeout || values["max-stylesheets"]) {
+          throw new UsageError("--timeout and --max-stylesheets require --source.");
+        }
+        preset = loadPreset(values.preset ?? "linear-dark");
+      }
+      const stylesheet = renderTokenStylesheet(preset);
+      if (values.out) {
+        const outputPath = resolve(cwd, values.out);
+        await mkdir(dirname(outputPath), { recursive: true });
+        await writeFile(outputPath, stylesheet, "utf8");
+        stdout(`Wrote ${values.out} using ${preset.name} (Tailwind v4 @theme, :root, and .dark).`);
+      } else {
+        stdout(stylesheet.trimEnd());
       }
       return 0;
     }

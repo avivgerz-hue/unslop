@@ -37,7 +37,7 @@ The CLI has no runtime dependencies. Build artifacts in `dist/` and installed de
 
 ## Analyzer rules
 
-Analyzer code lives in `src/analyzer/slop-detector.ts`.
+Analyzer code lives in `src/analyzer/slop-detector.ts`; WCAG color parsing, alpha compositing, and luminance math live in `src/analyzer/wcag.ts`.
 
 - Prefer several strong signals over a vague pattern. For example, the feature-grid rule requires a three-column grid, centered content, and an emoji in the same source region.
 - Report the exact file, 1-based line and column, evidence, rationale, and actionable fix.
@@ -46,7 +46,15 @@ Analyzer code lives in `src/analyzer/slop-detector.ts`.
 - Add both positive and negative fixtures. Demonstrate what the rule catches and what intentional pattern it must not flag.
 - Document scoring consequences. Current penalties are 12 for errors, 7 for warnings, and 3 for informational findings.
 
-The analyzer is intentionally static. Do not claim to prove contrast, visual quality, or runtime behavior from source text alone.
+The analyzer is intentionally static. Do not claim to prove visual quality or runtime behavior from source text alone. WCAG findings must use the official sRGB linearization and contrast formulas, composite alpha before comparison, distinguish normal and large text, and skip unresolved colors rather than guessing.
+
+## Native MCP server
+
+MCP code lives in `src/mcp/server.ts`. Keep the runtime dependency-free and use newline-delimited JSON-RPC 2.0 over stdio. Never write logs or banners to stdout. Cover lifecycle negotiation, tool schemas, structured results, operational errors, malformed JSON, and real stream framing in tests. `.mcp.json` updates must preserve unrelated servers and reject malformed JSON rather than overwriting it.
+
+## Token export
+
+The Tailwind v4 and semantic CSS exporter lives in `src/sync/token-exporter.ts`. Output must be deterministic across runs, include `@theme`, `:root`, and `.dark`, support both built-in and extracted presets, and avoid timestamps or environment-specific values.
 
 ## Design DNA extraction
 

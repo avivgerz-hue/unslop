@@ -1,5 +1,14 @@
 import { readFile, readdir, stat } from "node:fs/promises";
 import { extname, relative, resolve, sep } from "node:path";
+import {
+  contrastRatio,
+  parseColor,
+  requiredContrastRatio,
+  type RGBAColor,
+} from "./wcag.js";
+
+export { contrastRatio, parseColor, relativeLuminance, requiredContrastRatio } from "./wcag.js";
+export type { ColorInput, RGBAColor } from "./wcag.js";
 
 export const SUPPORTED_EXTENSIONS = [
   ".tsx",
@@ -151,6 +160,159 @@ function classAttribute(attributes: string): string {
 function styleAttribute(attributes: string): string {
   const match = attributes.match(/\bstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/);
   return match?.[1] ?? match?.[2] ?? "";
+}
+
+const TAILWIND_COLORS: Readonly<Record<string, string>> = {
+  "slate-50": "#f8fafc", "slate-100": "#f1f5f9", "slate-200": "#e2e8f0", "slate-300": "#cbd5e1",
+  "slate-400": "#94a3b8", "slate-500": "#64748b", "slate-600": "#475569", "slate-700": "#334155",
+  "slate-800": "#1e293b", "slate-900": "#0f172a", "slate-950": "#020617",
+  "gray-50": "#f9fafb", "gray-100": "#f3f4f6", "gray-200": "#e5e7eb", "gray-300": "#d1d5db",
+  "gray-400": "#9ca3af", "gray-500": "#6b7280", "gray-600": "#4b5563", "gray-700": "#374151",
+  "gray-800": "#1f2937", "gray-900": "#111827", "gray-950": "#030712",
+  "zinc-50": "#fafafa", "zinc-100": "#f4f4f5", "zinc-200": "#e4e4e7", "zinc-300": "#d4d4d8",
+  "zinc-400": "#a1a1aa", "zinc-500": "#71717a", "zinc-600": "#52525b", "zinc-700": "#3f3f46",
+  "zinc-800": "#27272a", "zinc-900": "#18181b", "zinc-950": "#09090b",
+  "neutral-50": "#fafafa", "neutral-100": "#f5f5f5", "neutral-200": "#e5e5e5", "neutral-300": "#d4d4d4",
+  "neutral-400": "#a3a3a3", "neutral-500": "#737373", "neutral-600": "#525252", "neutral-700": "#404040",
+  "neutral-800": "#262626", "neutral-900": "#171717", "neutral-950": "#0a0a0a",
+  "stone-50": "#fafaf9", "stone-100": "#f5f5f4", "stone-200": "#e7e5e4", "stone-300": "#d6d3d1",
+  "stone-400": "#a8a29e", "stone-500": "#78716c", "stone-600": "#57534e", "stone-700": "#44403c",
+  "stone-800": "#292524", "stone-900": "#1c1917", "stone-950": "#0c0a09",
+  "red-400": "#f87171", "red-500": "#ef4444", "red-600": "#dc2626", "red-700": "#b91c1c",
+  "orange-400": "#fb923c", "orange-500": "#f97316", "orange-600": "#ea580c",
+  "yellow-400": "#facc15", "yellow-500": "#eab308", "yellow-600": "#ca8a04",
+  "green-400": "#4ade80", "green-500": "#22c55e", "green-600": "#16a34a", "green-700": "#15803d",
+  "cyan-400": "#22d3ee", "cyan-500": "#06b6d4", "cyan-600": "#0891b2",
+  "blue-400": "#60a5fa", "blue-500": "#3b82f6", "blue-600": "#2563eb", "blue-700": "#1d4ed8",
+  "indigo-400": "#818cf8", "indigo-500": "#6366f1", "indigo-600": "#4f46e5", "indigo-700": "#4338ca",
+  "purple-400": "#c084fc", "purple-500": "#a855f7", "purple-600": "#9333ea", "purple-700": "#7e22ce",
+  "violet-400": "#a78bfa", "violet-500": "#8b5cf6", "violet-600": "#7c3aed",
+  "fuchsia-400": "#e879f9", "fuchsia-500": "#d946ef", "fuchsia-600": "#c026d3",
+};
+
+const TEXT_SIZE_PIXELS: Readonly<Record<string, number>> = {
+  xs: 12, sm: 14, base: 16, lg: 18, xl: 20, "2xl": 24, "3xl": 30,
+  "4xl": 36, "5xl": 48, "6xl": 60, "7xl": 72, "8xl": 96, "9xl": 128,
+};
+
+function styleDeclarations(input: string): Map<string, string> {
+  const result = new Map<string, string>();
+  for (const declaration of splitOutsideParentheses(input, ";")) {
+    const colon = declaration.indexOf(":");
+    if (colon < 0) continue;
+    const property = declaration.slice(0, colon).trim().toLowerCase();
+    const value = declaration.slice(colon + 1).trim();
+    if (property && value) result.set(property, value);
+  }
+  return result;
+}
+
+function cssVariables(source: string): Record<string, string> {
+  const variables: Record<string, string> = {};
+  for (const match of source.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+)/g)) {
+    if (match[1] && match[2]) variables[match[1]] = match[2].trim();
+  }
+  return variables;
+}
+
+function resolveVariable(
+  value: string,
+  variables: Readonly<Record<string, string>>,
+  seen = new Set<string>(),
+): string {
+  const match = value.trim().match(/^var\(\s*(--[\w-]+)\s*(?:,\s*([^()]+))?\)$/);
+  if (!match) return value.trim();
+  const name = match[1] ?? "";
+  if (seen.has(name)) return match[2]?.trim() ?? value;
+  seen.add(name);
+  const replacement = variables[name] ?? match[2];
+  return replacement ? resolveVariable(replacement, variables, seen) : value;
+}
+
+function declarationColor(
+  value: string | undefined,
+  variables: Readonly<Record<string, string>>,
+): RGBAColor | undefined {
+  if (!value || /gradient\s*\(/i.test(value)) return undefined;
+  const resolved = resolveVariable(value, variables);
+  const direct = parseColor(resolved);
+  if (direct) return direct;
+  const candidate = resolved.match(
+    /#[\da-f]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)|\b(?:black|white|red|green|blue|gray|grey|transparent)\b/i,
+  )?.[0];
+  return candidate ? parseColor(candidate) : undefined;
+}
+
+function utilityColor(
+  classes: string,
+  prefix: "text" | "bg",
+  variables: Readonly<Record<string, string>>,
+): RGBAColor | undefined {
+  for (const utility of classes.split(/\s+/)) {
+    if (utility.includes(":") || !utility.startsWith(`${prefix}-`)) continue;
+    const token = utility.slice(prefix.length + 1);
+    const arbitrary = token.match(/^\[([^\]]+)\]$/)?.[1];
+    if (arbitrary) {
+      const color = declarationColor(arbitrary.replace(/^color:/, ""), variables);
+      if (color) return color;
+      continue;
+    }
+    const [colorName, opacity] = token.split("/");
+    const raw = TAILWIND_COLORS[colorName ?? ""] ?? colorName;
+    const color = declarationColor(raw, variables);
+    if (!color) continue;
+    if (opacity !== undefined) {
+      const alpha = Number.parseFloat(opacity);
+      if (Number.isFinite(alpha)) color.a *= Math.min(1, Math.max(0, alpha / 100));
+    }
+    return color;
+  }
+  return undefined;
+}
+
+function cssPixels(value: string | undefined): number | undefined {
+  if (!value) return undefined;
+  const match = value.trim().match(/^(\d+\.?\d*|\.\d+)(px|rem|em)$/i);
+  if (!match) return undefined;
+  const numeric = Number.parseFloat(match[1] ?? "");
+  return match[2]?.toLowerCase() === "px" ? numeric : numeric * 16;
+}
+
+function typographyContext(
+  classes: string,
+  declarations: Map<string, string>,
+): { fontSize: number; fontWeight: number } {
+  let fontSize = cssPixels(declarations.get("font-size")) ?? 16;
+  const declaredWeight = declarations.get("font-weight")?.trim().toLowerCase() ?? "normal";
+  let fontWeight = Number.parseInt(declaredWeight, 10) || Number(FONT_WEIGHTS[declaredWeight]) || 400;
+  for (const utility of classes.split(/\s+/)) {
+    if (utility.includes(":")) continue;
+    const size = utility.match(/^text-(.+)$/);
+    if (size) {
+      const arbitrary = size[1]?.match(/^\[([^\]]+)\]$/)?.[1];
+      fontSize = TEXT_SIZE_PIXELS[size[1] ?? ""] ?? cssPixels(arbitrary) ?? fontSize;
+    }
+    const weight = utility.match(/^font-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)$/);
+    if (weight?.[1]) fontWeight = Number(FONT_WEIGHTS[weight[1]]);
+  }
+  return { fontSize, fontWeight };
+}
+
+function inheritedCanvas(
+  source: string,
+  variables: Readonly<Record<string, string>>,
+): RGBAColor | undefined {
+  for (const block of source.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const selector = block[1] ?? "";
+    if (!/(?:^|,)\s*(?::root|html|body)\s*(?:,|$)/i.test(selector.trim())) continue;
+    const declarations = styleDeclarations(block[2] ?? "");
+    const color = declarationColor(
+      declarations.get("background-color") ?? declarations.get("background"),
+      variables,
+    );
+    if (color) return color;
+  }
+  return undefined;
 }
 
 function hasSubtleBorder(classes: string, inlineStyle = ""): boolean {
@@ -306,6 +468,32 @@ export function analyzeSource(source: string, filePath = "component.tsx"): SlopV
   const add = (violation: MutableViolation): void => {
     pending.push(violation);
   };
+  const cssWithoutComments = source.replace(/\/\*[\s\S]*?\*\//g, (comment) =>
+    comment.replace(/[^\n]/g, " "),
+  );
+  const variables = cssVariables(cssWithoutComments);
+  const canvas = inheritedCanvas(cssWithoutComments, variables);
+  const verifyContrast = (
+    foreground: RGBAColor,
+    background: RGBAColor,
+    fontSize: number,
+    fontWeight: number,
+    offset: number,
+    evidence: string,
+  ): void => {
+    const ratio = contrastRatio(foreground, background);
+    const required = requiredContrastRatio(fontSize, fontWeight);
+    if (ratio >= required) return;
+    add({
+      ruleId: "slop/low-contrast",
+      category: "color",
+      severity: "error",
+      offset,
+      message: `Text contrast is ${ratio.toFixed(2)}:1; WCAG 2.1 AA requires ${required}:1 for ${required === 3 ? "large" : "normal"} text.`,
+      evidence,
+      recommendation: `Increase foreground/background contrast to at least ${required}:1 using semantic text and surface tokens; verify the composited colors rather than opacity values in isolation.`,
+    });
+  };
 
   const gradientClass = /\b(?:from|via|to)-(?:purple|indigo|violet|fuchsia)-(?:\d{2,3}|\[[^\]]+\])/g;
   for (const match of source.matchAll(gradientClass)) {
@@ -360,6 +548,29 @@ export function analyzeSource(source: string, filePath = "component.tsx"): SlopV
     const inlineStyle = styleAttribute(attributes);
     if (!classes && !inlineStyle) {
       continue;
+    }
+
+    const inlineDeclarations = styleDeclarations(inlineStyle);
+    const foreground =
+      declarationColor(inlineDeclarations.get("color"), variables) ??
+      utilityColor(classes, "text", variables);
+    const background =
+      declarationColor(
+        inlineDeclarations.get("background-color") ?? inlineDeclarations.get("background"),
+        variables,
+      ) ??
+      utilityColor(classes, "bg", variables) ??
+      canvas;
+    if (foreground && background) {
+      const { fontSize, fontWeight } = typographyContext(classes, inlineDeclarations);
+      verifyContrast(
+        foreground,
+        background,
+        fontSize,
+        fontWeight,
+        match.index,
+        compactEvidence(`${inlineStyle || classes} (computed ${fontSize}px/${fontWeight})`),
+      );
     }
 
     if (/(?:^|\s)(?:[\w-]+:)*shadow-(?:xl|2xl)(?:\s|$)/.test(classes)) {
@@ -544,14 +755,29 @@ export function analyzeSource(source: string, filePath = "component.tsx"): SlopV
     }
   }
 
-  const cssWithoutComments = source.replace(/\/\*[\s\S]*?\*\//g, (comment) =>
-    comment.replace(/[^\n]/g, " "),
-  );
   const cssBlock = /([^{}]+)\{([^{}]*)\}/g;
   for (const match of cssWithoutComments.matchAll(cssBlock)) {
     const selector = (match[1] ?? "").trim();
     const declarations = match[2] ?? "";
     const blockOffset = match.index + match[0].indexOf("{") + 1;
+    const declarationMap = styleDeclarations(declarations);
+    const foreground = declarationColor(declarationMap.get("color"), variables);
+    const background =
+      declarationColor(
+        declarationMap.get("background-color") ?? declarationMap.get("background"),
+        variables,
+      ) ?? canvas;
+    if (foreground && background) {
+      const { fontSize, fontWeight } = typographyContext("", declarationMap);
+      verifyContrast(
+        foreground,
+        background,
+        fontSize,
+        fontWeight,
+        blockOffset,
+        compactEvidence(`${selector} { color: ${declarationMap.get("color")}; background: ${declarationMap.get("background-color") ?? declarationMap.get("background") ?? "inherited canvas"}; }`),
+      );
+    }
 
     const glow = declarations.match(
       /(?:^|;)\s*(box-shadow|text-shadow|filter)\s*:\s*([^;]+)/i,

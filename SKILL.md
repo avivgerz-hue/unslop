@@ -30,6 +30,7 @@ You are not asked to make an interface merely “modern.” You are asked to mak
 - Reserve the accent for actions, focus, selection, or meaningful data. Do not wash the entire page in the accent.
 - Do not introduce purple/indigo gradient clichés, cyan or magenta glows, arbitrary neon shadows, or decorative rainbow palettes.
 - Verify text and control contrast after compositing, especially on translucent surfaces. Never communicate state by color alone.
+- Apply WCAG 2.1 relative luminance exactly: linearize sRGB channels, composite alpha, and calculate `(L1 + 0.05) / (L2 + 0.05)`. Normal text needs 4.5:1; large text (24px, or 18.66px at 700+) needs 3:1. Resolve `slop/low-contrast` findings with semantic tokens rather than arbitrary nearby colors.
 
 ### Typography
 
@@ -72,9 +73,26 @@ You are not asked to make an interface merely “modern.” You are asked to mak
 5. **Audit:** run `npx unslop audit .` and resolve all findings at their exact locations.
 6. **Verify:** inspect the rendered result at narrow and wide viewports; test long content, large numbers, zoom, contrast, focus, and reduced motion.
 
+## Native MCP and token workflows
+
+When the unslop MCP server is connected, prefer its deterministic tools over reimplementing analysis:
+
+- `unslop_audit`: pass an optional `path` and `ignore`; use the returned score, exact violations, and refactoring prompt.
+- `unslop_extract_dna`: pass a CSS `source` path or HTTP(S) URL and optional preset `name`; apply the returned compiled design system.
+- `unslop_apply_preset`: pass one of `linear-dark`, `swiss-grid`, `stripe-minimal`, `apple-glass`, or `neo-brutalist`, plus an optional `projectDir`. The tool updates agent rules and merges `.mcp.json` without replacing other servers.
+
+For component implementation, generate a framework-compatible token contract instead of inventing values:
+
+```bash
+npx unslop export-tokens --preset linear-dark --out tokens.css
+npx unslop export-tokens --source ./tokens.css --name extracted --out tokens.css
+```
+
+The output includes Tailwind v4 `@theme`, standard `:root` variables, and `.dark` overrides. Map Tailwind utilities to the generated `@theme` tokens. In other frameworks, consume semantic variables such as `--surface-0`, `--text-primary`, `--border-subtle`, `--font-display`, and `--shadow-md` directly. Preserve the generated token names rather than creating a competing scale.
+
 ## Audit interpretation
 
-The Design Integrity Score starts at 100. Each error deducts 12 points, each warning deducts 7, and each informational finding deducts 3, clamped to 0–100. A high score means the source avoids known anti-patterns; it does not prove visual quality or accessibility.
+The Design Integrity Score starts at 100. Each error deducts 12 points, each warning deducts 7, and each informational finding deducts 3, clamped to 0–100. WCAG contrast failures are errors. A high score means the source avoids known anti-patterns; it does not prove visual quality or accessibility. Static analysis skips indeterminate colors instead of guessing, so rendered contrast verification remains mandatory.
 
 Use the generated refactoring brief as an engineering checklist. Preserve behavior and content. Never replace flagged arbitrary values with a new set of arbitrary values, and never claim visual excellence from static analysis alone.
 
@@ -82,8 +100,10 @@ Use the generated refactoring brief as an engineering checklist. Preserve behavi
 
 ```bash
 npx unslop init --preset linear-dark
+npx unslop mcp
 npx unslop audit .
 npx unslop audit src --json
 npx unslop extract https://example.com --name example -o .claude/skills/unslop/SKILL.md
+npx unslop export-tokens --preset linear-dark --out tokens.css
 npx unslop presets
 ```

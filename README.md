@@ -7,6 +7,8 @@
 [![Node.js 20.19+](https://img.shields.io/badge/node-%3E%3D20.19-3c873a)](https://nodejs.org/)
 [![MIT license](https://img.shields.io/badge/license-MIT-111111)](LICENSE)
 
+![Before and after unslop: a generic purple-gradient AI landing page transformed into a precise, token-driven Linear Dark dashboard](https://raw.githubusercontent.com/avivgerz-hue/unslop/main/docs/assets/before-after-unslop.png)
+
 `unslop` is a zero-runtime-dependency CLI, native MCP server, and installable Agent Skill that gives coding agents a real design system, audits frontend source for generic AI patterns and WCAG contrast failures, exports Tailwind v4 tokens, and turns live interfaces into enforceable Design DNA.
 
 Works with **Claude Code, OpenAI Codex, Cursor, Windsurf, Cline**, and any agent that reads project instructions.

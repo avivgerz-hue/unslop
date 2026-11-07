@@ -1,0 +1,115 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "name": "unslop",
+  "displayName": "unslop — Anti-Slop Design Engine",
+  "description": "Design-system audits, Design DNA extraction, and preset enforcement for coding agents.",
+  "version": "1.2.0",
+  "type": "mcp_server",
+  "status": "stable",
+  "maintainers": [
+    "avivgerz-hue"
+  ],
+  "license": "MIT",
+  "repository": "https://github.com/avivgerz-hue/unslop",
+  "homepage": "https://github.com/avivgerz-hue/unslop#readme",
+  "runtime": "node",
+  "transport": [
+    "stdio"
+  ],
+  "command": "node",
+  "args": [
+    "dist/bin/unslop.js",
+    "mcp"
+  ],
+  "install": "npx github:avivgerz-hue/unslop mcp",
+  "tools": [
+    {
+      "name": "unslop_audit",
+      "description": "Audit a frontend file or directory for AI slop. Returns the Design Integrity Score, exact diagnostics, and refactoring instructions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "File or directory to scan, relative to the server project root."
+          },
+          "ignore": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Additional directory base names to skip."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "unslop_extract_dna",
+      "description": "Extract Design DNA from a CSS file or HTTP(S) URL and compile it into a complete design preset and Agent Skill.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "CSS path or HTTP(S) URL."
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for the compiled preset."
+          },
+          "timeoutMs": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Per-request timeout in milliseconds."
+          },
+          "maxStylesheets": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum external stylesheets to fetch."
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "unslop_apply_preset",
+      "description": "Apply a built-in studio preset to project agent rules and merge unslop into .mcp.json without replacing other MCP servers.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "preset": {
+            "type": "string",
+            "enum": [
+              "linear-dark",
+              "swiss-grid",
+              "stripe-minimal",
+              "apple-glass",
+              "neo-brutalist"
+            ]
+          },
+          "projectDir": {
+            "type": "string",
+            "description": "Project directory, relative to the server project root."
+          }
+        },
+        "required": [
+          "preset"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "keywords": [
+    "mcp",
+    "design-system",
+    "design-audit",
+    "design-tokens",
+    "tailwindcss",
+    "wcag",
+    "anti-slop"
+  ]
+}

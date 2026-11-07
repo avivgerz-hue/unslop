@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "name": "apple-glass",
+  "title": "Apple Glass",
+  "description": "Optical hierarchy with translucent material layers, accessible contrast, continuous corners, and physically grounded spring motion.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#f5f5f7",
+      "surface": "rgba(255, 255, 255, 0.72)",
+      "surfaceElevated": "rgba(255, 255, 255, 0.88)",
+      "text": "#1d1d1f",
+      "textMuted": "#6e6e73",
+      "border": "rgba(0, 0, 0, 0.08)",
+      "accent": "#0071e3",
+      "accentText": "#ffffff"
+    },
+    "typography": {
+      "fontFamily": "-apple-system, BlinkMacSystemFont, SF Pro Display, SF Pro Text, Helvetica Neue, sans-serif",
+      "monospaceFamily": "SFMono-Regular, ui-monospace, Menlo, Consolas, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.8125rem",
+        "base": "1rem",
+        "lg": "1.1875rem",
+        "xl": "1.5rem",
+        "2xl": "2rem",
+        "3xl": "3rem",
+        "4xl": "4.5rem"
+      },
+      "displayTracking": "-0.045em",
+      "bodyTracking": "-0.012em",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    },
+    "radii": {
+      "sm": "8px",
+      "md": "12px",
+      "lg": "18px",
+      "xl": "28px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04)",
+      "md": "0 0 0 1px rgba(0, 0, 0, 0.03), 0 12px 32px rgba(0, 0, 0, 0.10)",
+      "lg": "0 0 0 1px rgba(0, 0, 0, 0.04), 0 24px 80px rgba(0, 0, 0, 0.14)"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96]
+    },
+    "motion": {
+      "duration": "240ms",
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "spring": {
+        "mass": 1,
+        "stiffness": 260,
+        "damping": 26
+      }
+    },
+    "layout": {
+      "maxWidth": "1280px",
+      "columns": 12,
+      "borderWidth": "1px",
+      "gridGap": "24px",
+      "contentInset": "32px"
+    },
+    "effects": {
+      "backdropBlur": "24px",
+      "backdropSaturation": "180%"
+    }
+  },
+  "rules": [
+    "Use translucency only over meaningful content and always supply an opaque fallback surface.",
+    "Maintain at least 4.5:1 text contrast after backdrop compositing; never put low-contrast gray text on glass.",
+    "Use continuous-looking nested radii: an outer radius equals inner radius plus the intervening padding.",
+    "Keep material layers sparse—one navigation layer and one foreground layer per region.",
+    "Use 1px low-alpha borders and layered soft shadows to separate glass from its backdrop.",
+    "Set display headings with negative tracking and generous line height; avoid all-caps display copy.",
+    "Use blue for actions and system selection only; do not substitute purple or cyan glows.",
+    "Prefer spring motion for direct manipulation and opacity-only motion for ambient changes.",
+    "Respect reduced motion by replacing spatial animation with an immediate state change or short fade.",
+    "Use tabular numerals in clocks, metrics, prices, and dynamically updating labels."
+  ]
+}

@@ -172,7 +172,7 @@ npx unslop export-tokens --source ./tokens.css --name acme
 Start the zero-dependency Model Context Protocol server over stdio:
 
 ```bash
-npx unslop@1.1.0 mcp
+npx unslop@1.2.0 mcp
 ```
 
 `init` creates or updates this project configuration automatically:
@@ -182,7 +182,7 @@ npx unslop@1.1.0 mcp
   "mcpServers": {
     "unslop": {
       "command": "npx",
-      "args": ["-y", "unslop@1.1.0", "mcp"]
+      "args": ["-y", "unslop@1.2.0", "mcp"]
     }
   }
 }
@@ -191,7 +191,7 @@ npx unslop@1.1.0 mcp
 The merge preserves unrelated entries in `mcpServers`, other top-level settings, and custom fields on the unslop entry. Invalid JSON is rejected rather than overwritten. Claude Code can also register the server explicitly:
 
 ```bash
-claude mcp add --scope project unslop -- npx -y unslop@1.1.0 mcp
+claude mcp add --scope project unslop -- npx -y unslop@1.2.0 mcp
 ```
 
 For Claude Desktop, add the same `mcpServers.unslop` entry to the application's MCP configuration. Cursor reads project `.mcp.json`; Codex and other MCP-compatible clients can launch the same stdio command.
@@ -203,6 +203,29 @@ For Claude Desktop, add the same `mcpServers.unslop` entry to the application's 
 | `unslop_apply_preset` | `preset`; optional `projectDir` | Six synchronized agent-rule files plus merge-safe `.mcp.json` |
 
 The transport supports `initialize`, `ping`, `tools/list`, `tools/call`, JSON-RPC errors, notifications, and newline-delimited stdio framing. Protocol messages are the only stdout output. Tool execution failures return MCP `isError` results without terminating the server.
+
+### Zero-build GitHub execution
+
+Run the committed distribution directly from GitHub without installing TypeScript or any other development dependency:
+
+```bash
+npx -y github:avivgerz-hue/unslop --version
+npx -y github:avivgerz-hue/unslop init
+npx -y github:avivgerz-hue/unslop mcp
+```
+
+The repository includes `dist/`. During a GitHub install, `prepare` uses the local TypeScript compiler for development when it is available and otherwise validates and reuses the committed runtime and all five preset JSON files. A cold `npx` invocation still needs to download the package; no local compilation step is required.
+
+### Registry and citation metadata
+
+Machine-readable discovery documents live at the repository root:
+
+- [`server.json`](server.json) follows the official MCP Registry schema, declares the npm stdio package and fixed `mcp` argument, and carries the three tool summaries in the registry-approved publisher metadata extension. `package.json` includes the matching `mcpName` ownership declaration.
+- [`smithery.yaml`](smithery.yaml) starts `node dist/bin/unslop.js mcp` over stdio without requiring configuration.
+- [`glama.json`](glama.json) uses Glama's schema and mirrors the exact runtime tool names, descriptions, and input schemas.
+- [`CITATION.cff`](CITATION.cff) provides CFF 1.2.0 software citation metadata for VibeFoundry and powers GitHub's citation widget.
+
+These files describe the project for registry indexing; their presence does not claim that a registry listing or npm publication has occurred.
 
 ## Preset gallery
 

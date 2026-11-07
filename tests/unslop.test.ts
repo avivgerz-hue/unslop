@@ -29,6 +29,7 @@ import {
   syncRuleFiles,
 } from "../src/sync/rule-writer.js";
 import { CLI_VERSION, runCli } from "../bin/unslop.js";
+import { UNSLOP_VERSION } from "../src/version.js";
 
 const temporaryDirectories: string[] = [];
 
@@ -492,7 +493,7 @@ describe("CLI", () => {
     const mcp = JSON.parse(await readFile(join(directory, ".mcp.json"), "utf8"));
     expect(mcp.mcpServers.unslop).toEqual({
       command: "npx",
-      args: ["-y", "unslop@1.1.0", "mcp"],
+      args: ["-y", `unslop@${UNSLOP_VERSION}`, "mcp"],
     });
   });
 

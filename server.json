@@ -1,0 +1,54 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.avivgerz-hue/unslop",
+  "title": "unslop — Anti-Slop Design Engine",
+  "description": "Design-system audits, Design DNA extraction, and preset enforcement for coding agents.",
+  "version": "1.2.0",
+  "websiteUrl": "https://github.com/avivgerz-hue/unslop",
+  "repository": {
+    "url": "https://github.com/avivgerz-hue/unslop",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "unslop",
+      "version": "1.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "runtimeHint": "npx",
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "com.vibefoundry": {
+        "license": "MIT",
+        "maintainers": [
+          "avivgerz-hue"
+        ],
+        "tools": [
+          {
+            "name": "unslop_audit",
+            "description": "Audit a frontend file or directory for AI slop. Returns the Design Integrity Score, exact diagnostics, and refactoring instructions."
+          },
+          {
+            "name": "unslop_extract_dna",
+            "description": "Extract Design DNA from a CSS file or HTTP(S) URL and compile it into a complete design preset and Agent Skill."
+          },
+          {
+            "name": "unslop_apply_preset",
+            "description": "Apply a built-in studio preset to project agent rules and merge unslop into .mcp.json without replacing other MCP servers."
+          }
+        ]
+      }
+    }
+  }
+}

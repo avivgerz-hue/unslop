@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using these metadata.
+title: "unslop: Studio-grade design systems and anti-slop MCP tools"
+type: software
+authors:
+  - name: VibeFoundry
+    website: https://github.com/avivgerz-hue
+version: 1.2.0
+date-released: "2026-11-07"
+license: MIT
+repository-code: https://github.com/avivgerz-hue/unslop
+url: https://github.com/avivgerz-hue/unslop
+abstract: >-
+  unslop is a zero-runtime-dependency MCP server and CLI for auditing AI-generated
+  interfaces, extracting versioned Design DNA, and applying complete design-system
+  presets with real Tailwind CSS v4 tokens and WCAG contrast checks.
+keywords:
+  - model-context-protocol
+  - mcp-server
+  - design-system
+  - design-tokens
+  - accessibility
+  - tailwindcss
+  - anti-slop

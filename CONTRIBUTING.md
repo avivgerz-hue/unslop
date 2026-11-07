@@ -24,7 +24,7 @@ node dist/bin/unslop.js presets
 node dist/bin/unslop.js audit src
 ```
 
-The CLI has no runtime dependencies. Build artifacts in `dist/` and installed dependencies are intentionally ignored by Git.
+The CLI has no runtime dependencies. Compiled `dist/` artifacts are committed so direct GitHub installs work with devDependencies omitted; installed dependencies remain ignored by Git. Run `npm run build` after changing TypeScript or preset JSON, and commit the resulting `dist/` changes with the source.
 
 ## Change workflow
 
@@ -89,6 +89,6 @@ Test new behavior against existing unmanaged files, existing managed blocks, mal
 - Use clear commits; Conventional Commits such as `feat:`, `fix:`, `test:`, and `docs:` are encouraged.
 - Keep pull requests focused and avoid unrelated formatting churn.
 - No placeholder implementations, commented-out tests, or ignored TypeScript errors.
-- Do not commit generated `dist/`, coverage output, secrets, or large scraped datasets.
+- Keep committed `dist/` synchronized with source by running `npm run build`; do not hand-edit compiled files. Do not commit coverage output, secrets, or large scraped datasets.
 
 By contributing, you agree that your contributions are licensed under the repository’s MIT License.

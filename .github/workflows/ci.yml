@@ -22,4 +22,26 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Verify committed distribution is current
+        run: git diff --exit-code -- dist/
       - run: npm test
+
+  github-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install production files without lifecycle scripts
+        run: npm ci --omit=dev --ignore-scripts
+      - name: Reuse committed distribution without TypeScript
+        run: |
+          test ! -e node_modules/typescript
+          npm run prepare
+          test "$(node dist/bin/unslop.js --version)" = "1.2.0"
+      - name: Smoke-test native MCP stdio
+        run: |
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | node dist/bin/unslop.js mcp > /tmp/unslop-mcp.ndjson
+          node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-mcp.ndjson', 'utf8').trim().split('\n').map(JSON.parse); if (messages.length !== 2 || messages[0].result.serverInfo.version !== '1.2.0' || messages[1].result.tools.length !== 3) process.exit(1);"

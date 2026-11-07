@@ -282,7 +282,7 @@ describe("native MCP server", () => {
     expect(messages[0]).toMatchObject({ jsonrpc: "2.0", id: null, error: { code: -32700 } });
     expect(messages[1]).toMatchObject({ id: 1, result: { serverInfo: { name: "unslop" } } });
     expect(messages[2].result.tools).toHaveLength(3);
-    expect(serialized).not.toContain("unslop 1.1.0");
+    expect(serialized).not.toContain(`unslop ${UNSLOP_VERSION}`);
   });
 
   it("returns operational tool failures as MCP isError results", async () => {

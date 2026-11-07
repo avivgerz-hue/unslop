@@ -1,0 +1,10 @@
+# Smithery configuration for unslop's native JSON-RPC 2.0 stdio server.
+version: 1
+startCommand:
+  type: stdio
+  configSchema: {}
+  commandFunction: |-
+    () => ({
+      command: 'node',
+      args: ['dist/bin/unslop.js', 'mcp']
+    })

@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "name": "stripe-minimal",
+  "title": "Stripe Minimal",
+  "description": "Crisp product surfaces with cool atmospheric layers, precise borders, readable type, and a focused blue action color.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#f6f9fc",
+      "surface": "#ffffff",
+      "surfaceElevated": "#ffffff",
+      "text": "#0a2540",
+      "textMuted": "#425466",
+      "border": "rgba(10, 37, 64, 0.12)",
+      "accent": "#635bff",
+      "accentText": "#ffffff"
+    },
+    "typography": {
+      "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+      "monospaceFamily": "SFMono-Regular, Consolas, Liberation Mono, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.8125rem",
+        "base": "0.9375rem",
+        "lg": "1.0625rem",
+        "xl": "1.25rem",
+        "2xl": "1.75rem",
+        "3xl": "2.5rem",
+        "4xl": "3.5rem"
+      },
+      "displayTracking": "-0.04em",
+      "bodyTracking": "-0.014em",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    },
+    "radii": {
+      "sm": "4px",
+      "md": "6px",
+      "lg": "8px",
+      "xl": "12px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 1px 1px rgba(10, 37, 64, 0.04), 0 2px 5px rgba(10, 37, 64, 0.06)",
+      "md": "0 0 0 1px rgba(10, 37, 64, 0.04), 0 6px 12px rgba(10, 37, 64, 0.08), 0 16px 32px rgba(10, 37, 64, 0.06)",
+      "lg": "0 0 0 1px rgba(10, 37, 64, 0.04), 0 12px 24px rgba(10, 37, 64, 0.08), 0 32px 64px rgba(10, 37, 64, 0.08)"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80]
+    },
+    "motion": {
+      "duration": "180ms",
+      "easing": "cubic-bezier(0.215, 0.61, 0.355, 1)"
+    },
+    "layout": {
+      "maxWidth": "1160px",
+      "columns": 12,
+      "borderWidth": "1px",
+      "gridGap": "24px",
+      "contentInset": "24px"
+    }
+  },
+  "rules": [
+    "Layer the cool page background beneath white surfaces; never place gray cards on a gray card.",
+    "Pair elevated surfaces with a 1px low-alpha navy border and at least two restrained shadow layers.",
+    "Use the blue-violet accent for actions and focus, never as a full-page gradient wash.",
+    "Keep display copy left aligned, tightly tracked, and limited to a 24-character ideal measure.",
+    "Use a 15px base font with 1.55 line height for dense product content.",
+    "Use 6px control radii and 8–12px surface radii; full radii belong to compact status pills only.",
+    "Right-align financial values and apply tabular numerals to every changing number.",
+    "Keep controls at 36px or 40px and align their baselines with adjacent labels.",
+    "Build section separation with 48–80px whitespace before adding dividers.",
+    "Use 180ms transitions for hover and disclosure; never animate page geometry decoratively."
+  ]
+}

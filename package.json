@@ -1,0 +1,68 @@
+{
+  "name": "unslop",
+  "version": "1.0.0",
+  "description": "Studio-grade UI design systems and a deterministic anti-slop engine for coding agents.",
+  "type": "module",
+  "bin": {
+    "unslop": "./dist/bin/unslop.js"
+  },
+  "exports": {
+    "./analyzer": {
+      "types": "./dist/src/analyzer/slop-detector.d.ts",
+      "default": "./dist/src/analyzer/slop-detector.js"
+    },
+    "./extractor": {
+      "types": "./dist/src/extractor/extract-dna.d.ts",
+      "default": "./dist/src/extractor/extract-dna.js"
+    },
+    "./presets": {
+      "types": "./dist/src/presets/index.d.ts",
+      "default": "./dist/src/presets/index.js"
+    },
+    "./sync": {
+      "types": "./dist/src/sync/rule-writer.d.ts",
+      "default": "./dist/src/sync/rule-writer.js"
+    }
+  },
+  "files": [
+    "dist",
+    "SKILL.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node --input-type=commonjs -e \"const fs=require('node:fs');fs.cpSync('src/presets','dist/src/presets',{recursive:true});fs.chmodSync('dist/bin/unslop.js',0o755)\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "design-system",
+    "ai-agents",
+    "claude-code",
+    "cursor",
+    "frontend",
+    "css",
+    "design-tokens",
+    "cli"
+  ],
+  "author": "VibeFoundry",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avivgerz-hue/unslop.git"
+  },
+  "homepage": "https://github.com/avivgerz-hue/unslop#readme",
+  "bugs": {
+    "url": "https://github.com/avivgerz-hue/unslop/issues"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.6",
+    "vitest": "^4.1.12"
+  }
+}

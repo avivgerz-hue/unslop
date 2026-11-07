@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "name": "swiss-grid",
+  "title": "Swiss Grid",
+  "description": "High-contrast typographic brutalism governed by a visible grid, asymmetric composition, and one signal-red accent.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#f4f4f0",
+      "surface": "#ffffff",
+      "surfaceElevated": "#ffffff",
+      "text": "#111111",
+      "textMuted": "#5c5c56",
+      "border": "#111111",
+      "accent": "#e30613",
+      "accentText": "#ffffff"
+    },
+    "typography": {
+      "fontFamily": "Helvetica Neue, Helvetica, Arial, ui-sans-serif, sans-serif",
+      "monospaceFamily": "SFMono-Regular, Consolas, Liberation Mono, monospace",
+      "scale": {
+        "xs": "0.6875rem",
+        "sm": "0.75rem",
+        "base": "1rem",
+        "lg": "1.25rem",
+        "xl": "1.75rem",
+        "2xl": "2.5rem",
+        "3xl": "4rem",
+        "4xl": "6rem"
+      },
+      "displayTracking": "-0.06em",
+      "bodyTracking": "-0.01em",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "bold": 700
+      }
+    },
+    "radii": {
+      "sm": "0px",
+      "md": "0px",
+      "lg": "0px",
+      "xl": "0px",
+      "full": "0px"
+    },
+    "shadows": {
+      "sm": "none",
+      "md": "none",
+      "lg": "none"
+    },
+    "spacing": {
+      "base": 8,
+      "scale": [0, 8, 16, 24, 32, 48, 64, 96, 128]
+    },
+    "motion": {
+      "duration": "120ms",
+      "easing": "cubic-bezier(0.2, 0, 0, 1)"
+    },
+    "layout": {
+      "maxWidth": "1440px",
+      "columns": 12,
+      "borderWidth": "1px",
+      "gridGap": "24px",
+      "contentInset": "32px"
+    }
+  },
+  "rules": [
+    "Compose every page on a 12-column grid; intentional asymmetry is preferred to centered feature rows.",
+    "Use black rules and whitespace as the only elevation mechanisms; shadows and gradients are forbidden.",
+    "Set display type flush left with tight tracking and a maximum measure of twelve words per line.",
+    "Use red only for one dominant action or navigational marker per viewport.",
+    "Keep corners square, including badges, inputs, images, and overlays.",
+    "Use only regular and bold weights; create intermediate hierarchy through size and spacing.",
+    "Expose rules and dividers at 1px; use a 2px rule only for the primary axis of a layout.",
+    "Keep all spacing on the 8px grid and preserve empty grid cells as active composition.",
+    "Use tabular numerals and right-align numeric columns.",
+    "Limit transitions to 120ms state feedback; avoid parallax, floating cards, and ornamental animation."
+  ]
+}

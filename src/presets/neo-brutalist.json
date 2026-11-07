@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "name": "neo-brutalist",
+  "title": "Neo Brutalist",
+  "description": "Stark ink borders, unblurred offset shadows, compact type, and deliberate high-saturation accents without decorative effects.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#fff8e7",
+      "surface": "#ffffff",
+      "surfaceElevated": "#ffffff",
+      "text": "#111111",
+      "textMuted": "#4b4b45",
+      "border": "#111111",
+      "accent": "#ff5c35",
+      "accentText": "#111111"
+    },
+    "typography": {
+      "fontFamily": "Arial, Helvetica, ui-sans-serif, sans-serif",
+      "monospaceFamily": "Courier New, Courier, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "1rem",
+        "lg": "1.25rem",
+        "xl": "1.75rem",
+        "2xl": "2.25rem",
+        "3xl": "3.25rem",
+        "4xl": "4.75rem"
+      },
+      "displayTracking": "-0.055em",
+      "bodyTracking": "0em",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "bold": 700,
+        "black": 900
+      }
+    },
+    "radii": {
+      "sm": "0px",
+      "md": "0px",
+      "lg": "0px",
+      "xl": "0px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "2px 2px 0 #111111",
+      "md": "4px 4px 0 #111111",
+      "lg": "8px 8px 0 #111111"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [0, 4, 8, 12, 16, 24, 32, 48, 64, 80]
+    },
+    "motion": {
+      "duration": "100ms",
+      "easing": "steps(2, end)"
+    },
+    "layout": {
+      "maxWidth": "1200px",
+      "columns": 12,
+      "borderWidth": "2px",
+      "gridGap": "24px",
+      "contentInset": "24px"
+    }
+  },
+  "rules": [
+    "Use solid 2px ink borders and hard offset shadows; blur, glow, and soft ambient elevation are forbidden.",
+    "Reserve the orange accent for one dominant action per region and pair it with dark text.",
+    "Keep surfaces opaque and rectangular; rounding is allowed only for compact pill labels.",
+    "Translate pressed controls by the shadow offset while reducing the shadow to zero.",
+    "Set display copy flush left in bold or black weight with tight tracking.",
+    "Use no more than regular, bold, and black weights in a component tree.",
+    "Maintain the 4px spacing scale and include the border and shadow thickness in alignment calculations.",
+    "Never combine multiple saturated accent colors in the same component tree.",
+    "Apply tabular numerals to counters and right-align numeric data.",
+    "Use immediate or 100ms stepped transitions; avoid spring, floating, pulsing, and ambient animation."
+  ]
+}

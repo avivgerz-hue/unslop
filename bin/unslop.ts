@@ -40,7 +40,7 @@ USAGE
   npx -y unslop-mcp <command> [options]
 
 COMMANDS
-  init [--preset <name>]       Install agent rules and .mcp.json in this project
+  init [--preset <name>]       Install agent Skills, rules, and native MCP configurations
   mcp, --mcp                   Run the native MCP server over stdio
   audit [dir]                  Score 72 rules across all 7 design craft pillars
   refactor-plan <target>       Write a Design Transformation Blueprint

@@ -86,7 +86,7 @@ export const MCP_TOOL_DEFINITIONS: readonly MCPToolDefinition[] = [
   {
     name: "unslop_apply_preset",
     description:
-      "Apply a built-in studio preset to project agent rules and merge unslop into .mcp.json without replacing other MCP servers.",
+      "Apply a built-in studio preset across eight coding-agent ecosystems with Skills, rules, native MCP configurations, and Claude plugin metadata.",
     inputSchema: {
       type: "object",
       properties: {

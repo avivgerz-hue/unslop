@@ -176,7 +176,7 @@ describe("merge-safe MCP project configuration", () => {
     };
     await writeFile(join(directory, ".mcp.json"), JSON.stringify(existing, null, 2));
     const result = await installUnslop({ cwd: directory, preset: "linear-dark" });
-    expect(result.files).toHaveLength(7);
+    expect(result.files).toHaveLength(15);
     const config = JSON.parse(await readFile(join(directory, ".mcp.json"), "utf8"));
     expect(config.inputs).toEqual(existing.inputs);
     expect(config.mcpServers.other).toEqual(existing.mcpServers.other);
@@ -257,7 +257,7 @@ describe("native MCP server", () => {
       params: { name: "unslop_apply_preset", arguments: { preset: "swiss-grid" } },
     });
     const application = applied?.result as { structuredContent: { files: unknown[] } };
-    expect(application.structuredContent.files).toHaveLength(7);
+    expect(application.structuredContent.files).toHaveLength(15);
     expect(await readFile(join(directory, "AGENTS.md"), "utf8")).toContain("Swiss Grid");
     expect(JSON.parse(await readFile(join(directory, ".mcp.json"), "utf8")).mcpServers.unslop).toEqual({
       command: "npx",

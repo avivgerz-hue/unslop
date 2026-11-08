@@ -1,0 +1,63 @@
+name: "Unslop — 7-Pillar Design Craft Audit"
+description: "Audit JSX, HTML, Vue, Svelte, CSS, and Tailwind with 72 design-craft rules, seven pillar scores, and optional transformation blueprints."
+author: "VibeFoundry"
+
+branding:
+  icon: "layout"
+  color: "orange"
+
+inputs:
+  target:
+    description: "File or directory to audit."
+    required: false
+    default: "."
+  strict:
+    description: "Fail on findings or when the Design Craft Score is below 95. When false, report findings without failing the step."
+    required: false
+    default: "false"
+  preset:
+    description: "Optional studio archetype used for exact before/after translations in the transformation blueprint."
+    required: false
+    default: ""
+  report:
+    description: "Optional Markdown blueprint path. Setting preset or report generates a blueprint; the default path is UNSLOP-REPORT.md."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate optional design transformation blueprint
+      if: ${{ inputs.preset != '' || inputs.report != '' }}
+      shell: bash
+      env:
+        UNSLOP_TARGET: ${{ inputs.target }}
+        UNSLOP_PRESET: ${{ inputs.preset }}
+        UNSLOP_REPORT: ${{ inputs.report }}
+      run: |
+        set -euo pipefail
+        args=("${UNSLOP_TARGET}")
+        if [[ -n "${UNSLOP_PRESET}" ]]; then
+          args+=(--preset "${UNSLOP_PRESET}")
+        fi
+        args+=(--report "${UNSLOP_REPORT:-UNSLOP-REPORT.md}")
+        npx -y unslop-mcp@2.0.0 refactor-plan "${args[@]}"
+
+    - name: Audit design craft
+      shell: bash
+      env:
+        UNSLOP_TARGET: ${{ inputs.target }}
+        UNSLOP_STRICT: ${{ inputs.strict }}
+      run: |
+        set -euo pipefail
+        if [[ "${UNSLOP_STRICT}" != "true" && "${UNSLOP_STRICT}" != "false" ]]; then
+          echo "unslop: strict must be true or false" >&2
+          exit 2
+        fi
+        args=("${UNSLOP_TARGET}")
+        if [[ "${UNSLOP_STRICT}" == "true" ]]; then
+          args+=(--fail-under 95)
+        else
+          args+=(--no-fail)
+        fi
+        npx -y unslop-mcp@2.0.0 audit "${args[@]}"

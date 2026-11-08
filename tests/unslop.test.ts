@@ -410,7 +410,7 @@ describe("agent rule writer", () => {
     const directory = await temporaryDirectory();
     await writeFile(join(directory, "CLAUDE.md"), "My project instructions.\n", "utf8");
     const result = await syncRuleFiles({ cwd: directory, preset: "swiss-grid" });
-    expect(result.files).toHaveLength(6);
+    expect(result.files).toHaveLength(9);
     expect(result.files.every((file) => file.status === "created" || file.status === "updated")).toBe(true);
     const skill = await readFile(join(directory, ".claude/skills/unslop/SKILL.md"), "utf8");
     const claude = await readFile(join(directory, "CLAUDE.md"), "utf8");
@@ -492,7 +492,7 @@ describe("CLI", () => {
     const directory = await temporaryDirectory();
     const result = await invoke(["init", "--preset", "neo-brutalist", "--json"], directory);
     expect(result.code).toBe(0);
-    expect(JSON.parse(result.stdout).files).toHaveLength(7);
+    expect(JSON.parse(result.stdout).files).toHaveLength(15);
     expect(await readFile(join(directory, "AGENTS.md"), "utf8")).toContain("hard offset shadows");
     const mcp = JSON.parse(await readFile(join(directory, ".mcp.json"), "utf8"));
     expect(mcp.mcpServers.unslop).toEqual({

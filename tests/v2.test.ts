@@ -240,7 +240,7 @@ describe("10 studio archetypes and multi-format exports", () => {
       }
       const result = await installUnslop({ cwd: await temporaryDirectory(), preset: preset.name });
       expect(result.preset).toBe(preset.name);
-      expect(result.files).toHaveLength(7);
+      expect(result.files).toHaveLength(15);
     }
     for (const legacy of LEGACY_PRESET_NAMES) expect(loadPreset(legacy).name).toBe(legacy);
   });

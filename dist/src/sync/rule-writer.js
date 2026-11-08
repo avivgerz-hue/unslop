@@ -1,12 +1,17 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { loadPreset } from "../presets/index.js";
+import { UNSLOP_VERSION } from "../version.js";
 export const MANAGED_START = "<!-- unslop:start -->";
 export const MANAGED_END = "<!-- unslop:end -->";
-const RULE_TARGETS = [
-    { path: ".claude/skills/unslop/SKILL.md", claudeSkill: true },
+/** Canonical skills, agent rules, and retained v1 compatibility paths. */
+export const RULE_TARGETS = [
+    { path: ".claude/skills/unslop/SKILL.md", format: "skill" },
     { path: "CLAUDE.md" },
     { path: "AGENTS.md" },
+    { path: ".agents/skills/unslop/SKILL.md", format: "skill" },
+    { path: ".cursor/rules/unslop.mdc", format: "cursor-rule" },
+    { path: ".github/copilot-instructions.md" },
     { path: ".cursorrules" },
     { path: ".windsurfrules" },
     { path: ".clinerules" },
@@ -102,9 +107,9 @@ export function renderRuleDocument(preset) {
         "",
         "## 3. Typography contract",
         "",
-        `Display stack: \`${tokens.typography.displayFamily ?? tokens.typography.fontFamily}\`  `,
-        `Body stack: \`${tokens.typography.bodyFamily ?? tokens.typography.fontFamily}\`  `,
-        `Monospace stack: \`${tokens.typography.monospaceFamily}\`  `,
+        `Display stack: \`${tokens.typography.displayFamily ?? tokens.typography.fontFamily}\``,
+        `Body stack: \`${tokens.typography.bodyFamily ?? tokens.typography.fontFamily}\``,
+        `Monospace stack: \`${tokens.typography.monospaceFamily}\``,
         `Display tracking: \`${tokens.typography.displayTracking}\`; body tracking: \`${tokens.typography.bodyTracking}\`.`,
         "",
         markdownTable(["Scale step", "Size"], typeRows),
@@ -176,11 +181,22 @@ function replaceManagedBlock(existing, content) {
     }
     return `${existing.slice(0, start)}${managedBlock(content)}${existing.slice(afterEnd)}`;
 }
+function cursorRuleFrontmatter(preset) {
+    return [
+        "---",
+        `description: ${JSON.stringify(`Apply the ${preset.title} design system and run Unslop design-craft verification.`)}`,
+        'globs: "**/*.{js,jsx,ts,tsx,html,vue,svelte,css}"',
+        "alwaysApply: true",
+        "---",
+    ].join("\n");
+}
 function nextContent(existing, preset, target, force) {
     const document = renderRuleDocument(preset);
-    const fresh = target.claudeSkill
+    const fresh = target.format === "skill"
         ? renderAgentSkill(preset)
-        : `${managedBlock(document)}\n`;
+        : target.format === "cursor-rule"
+            ? `${cursorRuleFrontmatter(preset)}\n\n${managedBlock(document)}\n`
+            : `${managedBlock(document)}\n`;
     if (force || existing === undefined || existing.trim().length === 0)
         return fresh;
     const replaced = replaceManagedBlock(existing, document);
@@ -204,7 +220,8 @@ async function atomicWrite(path, content) {
     }
 }
 /**
- * Write Claude Code, Codex, Cursor, and Windsurf rules. Existing user content is
+ * Write skills and instructions for Claude Code, OpenCode, Codex, Cursor,
+ * Windsurf, Copilot, Cline/Roo, and universal agents. Existing user content is
  * preserved and repeated runs replace only the unslop managed block.
  */
 export async function syncRuleFiles(options) {
@@ -238,13 +255,14 @@ export const writeAgentRules = syncRuleFiles;
 function isJSONObject(value) {
     return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-/** Merge unslop into a project's .mcp.json without disturbing other servers. */
-export async function syncMcpConfig(options = {}) {
-    const cwd = resolve(options.cwd ?? process.cwd());
-    const path = join(cwd, ".mcp.json");
+function packageArguments(packageSpec) {
+    return ["-y", packageSpec, "--mcp"];
+}
+async function updateJsonConfig(cwd, path, update) {
+    const absolutePath = join(cwd, path);
     let existing;
     try {
-        existing = await readFile(path, "utf8");
+        existing = await readFile(absolutePath, "utf8");
     }
     catch (error) {
         if (error.code !== "ENOENT")
@@ -257,39 +275,118 @@ export async function syncMcpConfig(options = {}) {
             parsed = JSON.parse(existing);
         }
         catch (error) {
-            throw new Error(`Cannot update .mcp.json because it is not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`Cannot update ${path} because it is not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
         }
         if (!isJSONObject(parsed))
-            throw new Error("Cannot update .mcp.json: its root must be a JSON object.");
+            throw new Error(`Cannot update ${path}: its root must be a JSON object.`);
         config = parsed;
     }
-    if (config.mcpServers !== undefined && !isJSONObject(config.mcpServers)) {
-        throw new Error("Cannot update .mcp.json: mcpServers must be a JSON object.");
-    }
-    const servers = isJSONObject(config.mcpServers) ? config.mcpServers : {};
-    const currentUnslop = isJSONObject(servers.unslop) ? servers.unslop : {};
-    const packageSpec = options.packageSpec?.trim() || "unslop-mcp";
-    const content = `${JSON.stringify({
-        ...config,
-        mcpServers: {
-            ...servers,
-            unslop: {
-                ...currentUnslop,
-                command: "npx",
-                args: ["-y", packageSpec, "--mcp"],
-            },
-        },
-    }, null, 2)}\n`;
+    const content = `${JSON.stringify(update(config), null, 2)}\n`;
     if (existing === content)
-        return { path: ".mcp.json", status: "unchanged" };
-    await atomicWrite(path, content);
-    return { path: ".mcp.json", status: existing === undefined ? "created" : "updated" };
+        return { path, status: "unchanged" };
+    await atomicWrite(absolutePath, content);
+    return { path, status: existing === undefined ? "created" : "updated" };
 }
-/** Install agent rules and the native MCP configuration as one CLI operation. */
+function mergeServer(config, mapKey, serverName, definition) {
+    if (config[mapKey] !== undefined && !isJSONObject(config[mapKey])) {
+        throw new Error(`${mapKey} must be a JSON object.`);
+    }
+    const servers = isJSONObject(config[mapKey]) ? config[mapKey] : {};
+    const current = isJSONObject(servers[serverName]) ? servers[serverName] : {};
+    return {
+        ...config,
+        [mapKey]: {
+            ...servers,
+            [serverName]: { ...current, ...definition },
+        },
+    };
+}
+/** Merge unslop into a project's .mcp.json without disturbing other servers. */
+export async function syncMcpConfig(options = {}) {
+    const cwd = resolve(options.cwd ?? process.cwd());
+    const packageSpec = options.packageSpec?.trim() || "unslop-mcp";
+    return updateJsonConfig(cwd, ".mcp.json", (config) => mergeServer(config, "mcpServers", "unslop", {
+        command: "npx",
+        args: packageArguments(packageSpec),
+    }));
+}
+export const AGENT_CONFIG_PATHS = [
+    ".mcp.json",
+    "opencode.json",
+    ".cursor/mcp.json",
+    ".vscode/mcp.json",
+    ".zed/settings.json",
+    ".claude-plugin/plugin.json",
+];
+/**
+ * Merge native MCP/plugin configuration for every supported coding agent.
+ * Unrelated servers, settings, inputs, and custom fields are preserved.
+ */
+export async function syncAgentConfigurations(options = {}) {
+    const cwd = resolve(options.cwd ?? process.cwd());
+    const packageSpec = options.packageSpec?.trim() || "unslop-mcp";
+    const args = packageArguments(packageSpec);
+    const files = [];
+    files.push(await syncMcpConfig({ cwd, packageSpec }));
+    files.push(await updateJsonConfig(cwd, "opencode.json", (config) => ({
+        ...(config.$schema === undefined ? { $schema: "https://opencode.ai/config.json" } : {}),
+        ...mergeServer(config, "mcp", "unslop-mcp", {
+            type: "local",
+            command: ["npx", ...args],
+            enabled: true,
+        }),
+    })));
+    files.push(await updateJsonConfig(cwd, ".cursor/mcp.json", (config) => mergeServer(config, "mcpServers", "unslop", {
+        command: "npx",
+        args,
+    })));
+    files.push(await updateJsonConfig(cwd, ".vscode/mcp.json", (config) => mergeServer(config, "servers", "unslop", {
+        type: "stdio",
+        command: "npx",
+        args,
+    })));
+    files.push(await updateJsonConfig(cwd, ".zed/settings.json", (config) => {
+        if (config.context_servers !== undefined && !isJSONObject(config.context_servers)) {
+            throw new Error("context_servers must be a JSON object.");
+        }
+        const servers = isJSONObject(config.context_servers) ? config.context_servers : {};
+        const current = isJSONObject(servers.unslop) ? servers.unslop : {};
+        const command = isJSONObject(current.command) ? current.command : {};
+        return {
+            ...config,
+            context_servers: {
+                ...servers,
+                unslop: {
+                    ...current,
+                    command: { ...command, path: "npx", args },
+                },
+            },
+        };
+    }));
+    files.push(await updateJsonConfig(cwd, ".claude-plugin/plugin.json", (config) => {
+        const skills = Array.isArray(config.skills)
+            ? config.skills.filter((entry) => typeof entry === "string")
+            : typeof config.skills === "string" ? [config.skills] : [];
+        const author = isJSONObject(config.author) ? config.author : {};
+        return {
+            ...config,
+            name: "unslop",
+            version: UNSLOP_VERSION,
+            description: "Seven-pillar UI/UX design craft audits, studio archetypes, and exact transformation blueprints.",
+            author: { ...author, name: "VibeFoundry" },
+            homepage: "https://github.com/avivgerz-hue/unslop#readme",
+            repository: "https://github.com/avivgerz-hue/unslop",
+            license: "MIT",
+            skills: [...new Set([...skills, "./.claude/skills/unslop"])],
+        };
+    }));
+    return files;
+}
+/** Install agent skills, rules, native MCP configuration, and plugin metadata. */
 export async function installUnslop(options) {
     const result = await syncRuleFiles(options);
-    const mcp = await syncMcpConfig(options);
-    return { ...result, files: [...result.files, mcp] };
+    const configurations = await syncAgentConfigurations(options);
+    return { ...result, files: [...result.files, ...configurations] };
 }
 export function portableRulePath(path) {
     return path.split(sep).join("/");

@@ -21,8 +21,23 @@ export interface DesignPreset {
             accentText: string;
             [key: string]: string;
         };
+        /** Explicit dark companion for light-first archetypes. */
+        darkColors?: {
+            background: string;
+            surface: string;
+            surfaceElevated: string;
+            text: string;
+            textMuted: string;
+            border: string;
+            accent: string;
+            accentText: string;
+            [key: string]: string;
+        };
         typography: {
             fontFamily: string;
+            /** Optional optical roles; legacy presets fall back to fontFamily. */
+            displayFamily?: string;
+            bodyFamily?: string;
             monospaceFamily: string;
             scale: Record<string, string>;
             displayTracking: string;
@@ -64,8 +79,12 @@ export interface PresetSummary {
     colorScheme: "light" | "dark";
     accent: string;
 }
-export declare const PRESET_NAMES: readonly ["linear-dark", "swiss-grid", "stripe-minimal", "apple-glass", "neo-brutalist"];
+export declare const PRESET_NAMES: readonly ["swiss-editorial", "linear-precision", "stripe-atmospheric", "vercel-monochrome", "teenage-engineering", "anthropic-warm-editorial", "bloomberg-terminal-dense", "raycast-command", "fintech-institutional", "neo-brutalist-craft"];
+/** v1 preset IDs remain loadable without appearing in the canonical v2 gallery. */
+export declare const LEGACY_PRESET_NAMES: readonly ["linear-dark", "swiss-grid", "stripe-minimal", "apple-glass", "neo-brutalist"];
 export type BuiltInPresetName = (typeof PRESET_NAMES)[number];
+export type LegacyPresetName = (typeof LEGACY_PRESET_NAMES)[number];
+export type PresetName = BuiltInPresetName | LegacyPresetName;
 /**
  * Validates untrusted preset JSON at runtime. The returned object retains its
  * original values; no defaults are silently injected into malformed presets.

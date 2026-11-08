@@ -198,7 +198,7 @@ describe("merge-safe MCP project configuration", () => {
 });
 
 describe("native MCP server", () => {
-  it("negotiates MCP and lists exactly three fully specified tools", async () => {
+  it("negotiates MCP and lists exactly four fully specified tools", async () => {
     const server = new UnslopMCPServer({ cwd: "/tmp" });
     const initialized = await server.handleMessage({
       jsonrpc: "2.0", id: 1, method: "initialize",
@@ -213,7 +213,7 @@ describe("native MCP server", () => {
     const listed = await server.handleMessage({ jsonrpc: "2.0", id: "tools", method: "tools/list" });
     const tools = (listed?.result as { tools: typeof MCP_TOOL_DEFINITIONS }).tools;
     expect(tools.map((tool) => tool.name)).toEqual([
-      "unslop_audit", "unslop_extract_dna", "unslop_apply_preset",
+      "unslop_audit", "unslop_extract_dna", "unslop_apply_preset", "unslop_refactor_plan",
     ]);
     for (const tool of tools) expect(tool.inputSchema.type).toBe("object");
     const missing = await server.handleMessage({ jsonrpc: "2.0", id: 3, method: "missing/method" });
@@ -284,7 +284,7 @@ describe("native MCP server", () => {
     expect(messages).toHaveLength(3);
     expect(messages[0]).toMatchObject({ jsonrpc: "2.0", id: null, error: { code: -32700 } });
     expect(messages[1]).toMatchObject({ id: 1, result: { serverInfo: { name: "unslop" } } });
-    expect(messages[2].result.tools).toHaveLength(3);
+    expect(messages[2].result.tools).toHaveLength(4);
     expect(serialized).not.toContain(`unslop ${UNSLOP_VERSION}`);
   });
 
@@ -313,7 +313,7 @@ describe("native MCP server", () => {
     expect(messages).toHaveLength(2);
     expect(messages[0]).toMatchObject({ id: 1, result: { serverInfo: { name: "unslop" } } });
     expect(messages[1].result.tools.map((tool: { name: string }) => tool.name)).toEqual([
-      "unslop_audit", "unslop_extract_dna", "unslop_apply_preset",
+      "unslop_audit", "unslop_extract_dna", "unslop_apply_preset", "unslop_refactor_plan",
     ]);
   });
 

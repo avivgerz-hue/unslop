@@ -1,6 +1,8 @@
 import { readFile, readdir, stat } from "node:fs/promises";
 import { extname, relative, resolve, sep } from "node:path";
 import { contrastRatio, parseColor, requiredContrastRatio, } from "./wcag.js";
+import { analyzeDesignCraft, calculateDesignCraftScore, calculatePillarScores, pillarForRule, } from "./design-craft.js";
+export { AI_COPY_CLICHES, DESIGN_CRAFT_RULE_COUNT, DESIGN_CRAFT_RULES, DESIGN_PILLARS, analyzeDesignCraft, calculateDesignCraftScore, calculatePillarScores, designCraftRule, } from "./design-craft.js";
 export { contrastRatio, parseColor, relativeLuminance, requiredContrastRatio } from "./wcag.js";
 export const SUPPORTED_EXTENSIONS = [
     ".tsx",
@@ -347,8 +349,8 @@ function numericText(value) {
     const normalized = value.trim().replace(/\s+/g, " ");
     return /^(?:[$€£¥₹]\s*)?[+-]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?:\s?(?:%|ms|s|min|hr|k|m|b|x))?(?:\s?(?:USD|EUR|GBP))?$/i.test(normalized);
 }
-/** Analyze one supported source file without touching the filesystem. */
-export function analyzeSource(source, filePath = "component.tsx") {
+/** Run the backward-compatible v1 detectors without touching the filesystem. */
+function analyzeLegacySource(source, filePath = "component.tsx") {
     const index = new SourceIndex(source);
     const pending = [];
     const add = (violation) => {
@@ -661,6 +663,7 @@ export function analyzeSource(source, filePath = "component.tsx") {
         const location = index.location(pendingViolation.offset);
         return {
             ruleId: pendingViolation.ruleId,
+            pillar: pillarForRule(pendingViolation.ruleId),
             category: pendingViolation.category,
             severity: pendingViolation.severity,
             file: portablePath(filePath),
@@ -689,6 +692,20 @@ export function analyzeSource(source, filePath = "component.tsx") {
         left.column - right.column ||
         left.ruleId.localeCompare(right.ruleId));
 }
+/** Analyze one source file across legacy contracts and all seven v2 pillars. */
+export function analyzeSource(source, filePath = "component.tsx") {
+    const legacy = analyzeLegacySource(source, filePath);
+    const combined = [...legacy, ...analyzeDesignCraft(source, portablePath(filePath), legacy)];
+    const unique = new Map();
+    for (const violation of combined) {
+        const key = [violation.ruleId, violation.file, violation.line, violation.column].join(":");
+        if (!unique.has(key))
+            unique.set(key, violation);
+    }
+    return [...unique.values()].sort((left, right) => left.file.localeCompare(right.file) || left.line - right.line ||
+        left.column - right.column || Number(left.ruleId.startsWith("SLOP-")) - Number(right.ruleId.startsWith("SLOP-")) ||
+        left.ruleId.localeCompare(right.ruleId));
+}
 export const detectSlop = analyzeSource;
 export function calculateDesignIntegrityScore(violations) {
     const penalties = { error: 12, warning: 7, info: 3 };
@@ -696,7 +713,7 @@ export function calculateDesignIntegrityScore(violations) {
     return Math.max(0, Math.min(100, 100 - deduction));
 }
 export function designGrade(score) {
-    if (score >= 97)
+    if (score >= 95)
         return "A+";
     if (score >= 90)
         return "A";
@@ -715,6 +732,9 @@ export function summarizeViolations(violations) {
         elevation: 0,
         typography: 0,
         spacing: 0,
+        copy: 0,
+        ux: 0,
+        token: 0,
     };
     const byRule = {};
     let errors = 0;
@@ -737,14 +757,14 @@ export function generateRefactoringPrompt(violations, score = calculateDesignInt
         return [
             "# unslop refactoring brief",
             "",
-            `Design Integrity Score: ${score}/100. No slop violations were detected by static analysis.`,
+            `Design Craft Score: ${score}/100. No slop violations were detected by static analysis.`,
             "Preserve the existing token system. Verify visual hierarchy, keyboard states, responsive behavior, and contrast before making unsolicited changes.",
         ].join("\n");
     }
     const lines = [
         "# unslop refactoring brief",
         "",
-        `Design Integrity Score: ${score}/100 (${designGrade(score)}).`,
+        `Design Craft Score: ${score}/100 (${designGrade(score)}).`,
         "",
         "Refactor the violations below without changing product behavior or content. Reuse semantic tokens; do not swap one set of arbitrary values for another.",
         "",
@@ -810,14 +830,17 @@ export async function auditTarget(target = ".", options = {}) {
     violations.sort((left, right) => left.file.localeCompare(right.file) ||
         left.line - right.line ||
         left.column - right.column ||
+        Number(left.ruleId.startsWith("SLOP-")) - Number(right.ruleId.startsWith("SLOP-")) ||
         left.ruleId.localeCompare(right.ruleId));
-    const score = calculateDesignIntegrityScore(violations);
+    const score = calculateDesignCraftScore(violations);
     return {
         target: portablePath(target),
         filesScanned: files.length,
         files,
         violations,
         score,
+        designCraftScore: score,
+        pillarScores: calculatePillarScores(violations),
         grade: designGrade(score),
         summary: summarizeViolations(violations),
         refactoringPrompt: generateRefactoringPrompt(violations, score),
@@ -837,7 +860,7 @@ export function formatAuditReport(report) {
             lines.push(`${violation.file}:${violation.line}:${violation.column}  ${violation.severity.toUpperCase()}  ${violation.ruleId}`, `  ${violation.message}`, `  Fix: ${violation.recommendation}`);
         }
     }
-    lines.push("", `Design Integrity Score: ${report.score}/100 (${report.grade})`, `${report.summary.errors} errors · ${report.summary.warnings} warnings · ${report.summary.infos} info`, "", report.refactoringPrompt);
+    lines.push("", `Design Craft Score: ${report.designCraftScore}/100 (${report.grade})`, "7-Pillar Scorecard:", ...report.pillarScores.map((pillar) => `  ${pillar.name}: ${pillar.score}/100 (${pillar.grade}) · ${pillar.violations} findings`), `Design Integrity Score: ${report.score}/100 (${report.grade})`, `${report.summary.errors} errors · ${report.summary.warnings} warnings · ${report.summary.infos} info`, "", report.refactoringPrompt);
     return lines.join("\n");
 }
 //# sourceMappingURL=slop-detector.js.map

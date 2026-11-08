@@ -1,115 +1,210 @@
 ---
 name: unslop
-description: Eliminate generic AI-slop interfaces and engineer studio-grade frontend systems. Use when creating, refactoring, auditing, or reviewing web UI in React, Vue, Svelte, HTML, or CSS.
+description: Principal UI/UX Design Engineer protocol for Claude Code, Cursor, and Windsurf. Diagnose 72 anti-slop rules across 7 pillars, install one of 10 studio archetypes or extracted Design DNA, generate an exact transformation blueprint, and verify interfaces to 95–100/100 (A+).
 ---
 
-# unslop
+# unslop · Principal UI/UX Design Engineer Protocol
 
-You are not asked to make an interface merely “modern.” You are asked to make every visual decision specific, systematic, accessible, and defensible.
+Act as a principal design engineer, not a visual suggestion generator. Preserve product behavior, content ownership, framework conventions, and accessibility while transforming generic AI output into a coherent software interface. Make every decision through composition, semantic tokens, readable typography, explicit interaction states, and measurable verification.
 
-## Activate the design system
+## Non-negotiable engineering contract
 
-1. If the project contains an unslop managed rule block, its preset tokens are the source of truth.
-2. If no preset is installed, run `npx -y unslop-mcp init` or ask which built-in preset fits the product. Do not improvise a second token system.
-3. Inspect existing semantic components, tokens, content hierarchy, and interaction patterns before writing UI.
-4. Run `npx -y unslop-mcp audit .` before and after frontend work. Turn each reported `file:line` into a concrete refactor; never suppress a rule to improve the score.
+1. **Diagnose before editing.** Never begin with a new gradient, component library, or arbitrary utility rewrite.
+2. **Install one aesthetic direction.** Use exactly one canonical archetype or extracted Design DNA as the token source of truth. Do not mix archetypes or invent a parallel scale.
+3. **Change structure before surface.** Fix reading order, grid, information density, and content grouping before color, radius, or shadow polish.
+4. **Use semantic tokens.** Do not exchange hardcoded hexes for different hardcoded hexes, raw shadows for arbitrary shadow stacks, or one off-grid value for another.
+5. **Preserve behavior.** Keep routes, handlers, data flow, form semantics, and product-specific copy intact unless a concrete copy violation is being rewritten.
+6. **Design every state.** Include default, hover, focus-visible, active, disabled, loading, empty, error, success, and reduced-motion behavior where applicable.
+7. **Verify rendered software.** Static analysis is necessary but insufficient. Inspect narrow and wide viewports, keyboard operation, contrast, overflow, zoom, long content, and both themes.
+8. **Never suppress a rule to improve the score.** Fix the underlying engineering problem or document a deliberate optical exception in the token contract.
 
-## The anti-slop contract
+## Step 1 · Anti-Slop Diagnostic — `unslop_audit`
 
-### Composition
-
-- Derive the layout from the content and user task. Do not default to a centered hero followed by three identical feature cards.
-- Use an intentional grid with explicit content edges, column spans, gaps, and responsive behavior.
-- Group by proximity and alignment. Avoid wrapping every label, metric, and sentence in its own floating card.
-- Use asymmetry only when it improves hierarchy. Preserve enough negative space for the composition to breathe.
-- Emoji are not a substitute for a coherent icon set, product illustration, or information design.
-
-### Color
-
-- Use semantic `background`, `surface`, `surfaceElevated`, `text`, `textMuted`, `border`, `accent`, and `accentText` tokens.
-- Reserve the accent for actions, focus, selection, or meaningful data. Do not wash the entire page in the accent.
-- Do not introduce purple/indigo gradient clichés, cyan or magenta glows, arbitrary neon shadows, or decorative rainbow palettes.
-- Verify text and control contrast after compositing, especially on translucent surfaces. Never communicate state by color alone.
-- Apply WCAG 2.1 relative luminance exactly: linearize sRGB channels, composite alpha, and calculate `(L1 + 0.05) / (L2 + 0.05)`. Normal text needs 4.5:1; large text (24px, or 18.66px at 700+) needs 3:1. Resolve `slop/low-contrast` findings with semantic tokens rather than arbitrary nearby colors.
-
-### Typography
-
-- Use the preset’s type scale without inventing intermediate sizes.
-- Display headings require deliberate negative tracking, controlled line-height, balanced wrapping, and a constrained measure.
-- Keep body copy readable and normally between 45 and 75 characters per line. Avoid centering paragraphs.
-- Use no more than three font weights in one component tree. Build hierarchy through size, spacing, and color first.
-- Apply `font-variant-numeric: tabular-nums` to prices, metrics, counters, timestamps, identifiers, and data columns. Right-align comparable values.
-- Do not use uppercase, letter spacing, or weight to disguise weak information hierarchy.
-
-### Geometry
-
-- Keep spacing on the preset’s base grid. A one-off arbitrary value needs a documented optical or platform reason.
-- Never emit conflicting spacing or corner-radius utilities on the same element and responsive variant.
-- Use a small semantic radius hierarchy. Derive nested radii from the outer radius and intervening padding.
-- Reserve pill radii for pills, tags, and avatars. Do not round every container by default.
-- Account for icon view-box padding, glyph overhang, borders, and shadow offsets when optically aligning elements.
-
-### Elevation and material
-
-- Use the preset’s elevation tokens. Do not emit raw `shadow-xl` or `shadow-2xl` as a substitute for hierarchy.
-- Anchor elevated surfaces with a subtle 1px border where the preset calls for one. Prefer layered, restrained shadows over a single dark blur.
-- Separate ordinary regions with whitespace and hairlines before adding cards or shadows.
-- Use translucency only when content behind the material is meaningful. Provide an opaque fallback and verify contrast.
-
-### Motion and interaction
-
-- Motion must explain causality or provide direct-manipulation feedback. No decorative floating, pulsing, parallax, or perpetual glow.
-- Prefer transform and opacity; avoid layout-thrashing animation.
-- Implement default, hover, focus-visible, active, disabled, loading, empty, error, and success states wherever applicable.
-- Preserve keyboard operation and visible focus. Use native semantic elements before ARIA.
-- Respect `prefers-reduced-motion`; remove spatial and ambient movement without hiding state changes.
-
-## Execution loop
-
-1. **Read:** inspect product content, existing primitives, tokens, routes, and constraints.
-2. **Compose:** define the information hierarchy and responsive grid before choosing effects.
-3. **Tokenize:** map every color, font, size, radius, shadow, and spacing decision to the selected preset.
-4. **Implement:** build semantic, responsive, keyboard-accessible components with complete states.
-5. **Audit:** run `npx -y unslop-mcp audit .` and resolve all findings at their exact locations.
-6. **Verify:** inspect the rendered result at narrow and wide viewports; test long content, large numbers, zoom, contrast, focus, and reduced motion.
-
-## Native MCP and token workflows
-
-When the unslop MCP server is connected, prefer its deterministic tools over reimplementing analysis:
-
-- `unslop_audit`: pass an optional `path` and `ignore`; use the returned score, exact violations, and refactoring prompt.
-- `unslop_extract_dna`: pass a CSS `source` path or HTTP(S) URL and optional preset `name`; apply the returned compiled design system.
-- `unslop_apply_preset`: pass one of `linear-dark`, `swiss-grid`, `stripe-minimal`, `apple-glass`, or `neo-brutalist`, plus an optional `projectDir`. The tool updates agent rules and merges `.mcp.json` without replacing other servers.
-
-For component implementation, generate a framework-compatible token contract instead of inventing values:
+Baseline the current Design Craft Score and all seven pillars before touching components:
 
 ```bash
-npx -y unslop-mcp export-tokens --preset linear-dark --out tokens.css
-npx -y unslop-mcp export-tokens --source ./tokens.css --name extracted --out tokens.css
+npx -y unslop-mcp audit . --json
 ```
 
-The output includes Tailwind v4 `@theme`, standard `:root` variables, and `.dark` overrides. Map Tailwind utilities to the generated `@theme` tokens. In other frameworks, consume semantic variables such as `--surface-0`, `--text-primary`, `--border-subtle`, `--font-display`, and `--shadow-md` directly. Preserve the generated token names rather than creating a competing scale.
+When connected through MCP, call `unslop_audit` with the project path. Record:
 
-## Audit interpretation
+- Overall **Design Craft Score (0–100, Grade A+–F)**.
+- The seven pillar scores and exact `file:line:column` findings.
+- Existing semantic tokens, component primitives, routes, and content hierarchy.
+- Current keyboard, responsive, loading, empty, error, and theme behavior that must be preserved.
 
-The Design Integrity Score starts at 100. Each error deducts 12 points, each warning deducts 7, and each informational finding deducts 3, clamped to 0–100. WCAG contrast failures are errors. A high score means the source avoids known anti-patterns; it does not prove visual quality or accessibility. Static analysis skips indeterminate colors instead of guessing, so rendered contrast verification remains mandatory.
+| Pillar | Rule family | Diagnostic focus |
+| --- | --- | --- |
+| Color & Contrast | `SLOP-COLOR-*` | Generic gradients, harsh polarity, muddy text, hardcoded colors, exact WCAG AA/AAA, APCA-inspired perceptual contrast |
+| Typography & Hierarchy | `SLOP-TYPE-*` | Fluid display scales, reading measure, optical tracking and leading, tabular numeric UI, purposeful weight hierarchy |
+| Layout & Rhythm | `SLOP-LAYOUT-*` | Three-card clones, nested cards, off-grid spacing, excessive rounding, intentional grid and content edges |
+| Surface & Elevation | `SLOP-SURFACE-*` | Glass overuse, dark-mode shadow weight, decorative blobs, badge clutter, hairline elevation |
+| Copy & Microcopy | `SLOP-COPY-*` | AI marketing clichés, unsupported superlatives, emoji spam, vague benefits, missing product facts |
+| Interaction & Motion | `SLOP-UX-*` | Semantic controls, labels, keyboard rings, complete states, pointer targets, explicit transitions, reduced motion |
+| Theme & Tokens | `SLOP-TOKEN-*` | Dark parity, canvas-to-border elevation order, semantic names, token types, four/eight-pixel spacing |
 
-Use the generated refactoring brief as an engineering checklist. Preserve behavior and content. Never replace flagged arbitrary values with a new set of arbitrary values, and never claim visual excellence from static analysis alone.
+Do not interpret a high score in one pillar as permission to ignore another. A visually restrained interface can still fail keyboard ergonomics, reading measure, or theme parity.
 
-## Useful commands
+## Step 2 · Aesthetic Direction & Token Foundation
+
+Choose **one** direction before editing components.
+
+### Option A · Apply a studio archetype — `unslop_apply_preset`
+
+Use `unslop_apply_preset` through MCP, or install through the CLI:
 
 ```bash
-npx -y unslop-mcp init --preset linear-dark
-npx -y unslop-mcp --mcp
-npx -y unslop-mcp audit .
-npx -y unslop-mcp audit src --json
-npx -y unslop-mcp extract https://example.com --name example -o .claude/skills/unslop/SKILL.md
-npx -y unslop-mcp export-tokens --preset linear-dark --out tokens.css
+npx -y unslop-mcp init --preset linear-precision
 npx -y unslop-mcp presets
+npx -y unslop-mcp presets linear-precision
+```
 
-# Alternative using the GitHub repository:
-npx -y github:avivgerz-hue/unslop init
+| Archetype | Direction |
+| --- | --- |
+| `swiss-editorial` | Warm paper, literary serif plus grotesk, exposed editorial grid, crisp rules |
+| `linear-precision` | Obsidian surfaces, luminance hairlines, compact type, tabular operational precision |
+| `stripe-atmospheric` | Cool slate atmosphere, crisp white elevation, cobalt trust, micro-shadow depth |
+| `vercel-monochrome` | Architectural monochrome, geometric rhythm, minimal decoration, semantic status color |
+| `teenage-engineering` | Industrial controls, technical labels, physical grid borders, international orange |
+| `anthropic-warm-editorial` | Parchment and stone, literary headings, calm clay accents, generous reading measure |
+| `bloomberg-terminal-dense` | High-density financial data, strict tabular alignment, explicit tickers, compact workflows |
+| `raycast-command` | Frosted graphite command surfaces, keyboard-first selection, crisp shortcut badges |
+| `fintech-institutional` | Forest-navy authority, auditable numeric hierarchy, restrained brass and emerald semantics |
+| `neo-brutalist-craft` | Intentional ink borders, offset hard shadows, bold contrast, disciplined spacing |
+
+Legacy v1 IDs remain loadable for existing projects, but new work should select a canonical v2 archetype.
+
+### Option B · Extract Design DNA — `unslop_extract_dna`
+
+Extract a reference instead of guessing its aesthetic:
+
+```bash
+npx -y unslop-mcp extract https://example.com --name reference --json -o design-dna.json
+```
+
+Review extraction warnings and compiled tokens. Never copy another product’s content, branding, or proprietary assets; extract only the design characteristics needed for the requested system.
+
+### Install the token foundation first
+
+Export the selected preset or extracted DNA in the required formats before touching component code:
+
+```bash
+npx -y unslop-mcp export-tokens --preset linear-precision --format tailwind-v4 --out tokens.css
+npx -y unslop-mcp export-tokens --preset linear-precision --format tailwind-v3 --out tailwind.config.js
+npx -y unslop-mcp export-tokens --preset linear-precision --format css --out tokens.css
+npx -y unslop-mcp export-tokens --preset linear-precision --format w3c-json --out tokens.json
+```
+
+Use `--source <url-or-css> --name <name>` instead of `--preset` for extracted DNA. Confirm:
+
+- Canvas → Surface-1 → Surface-2 → Interactive → Border maintains a consistent elevation strategy.
+- Light and dark companions preserve readable text, muted text, focus, borders, and status semantics.
+- Typography includes fluid display steps, readable body size and leading, and `tabular-nums` for data.
+- Spacing uses a four-pixel base with intentional eight-pixel rhythm; optical exceptions are documented.
+- Radius, shadow, border, duration, and easing values come from the selected archetype only.
+
+## Step 3 · Structural & Layout Transformation — `unslop_refactor_plan`
+
+Generate the Design Transformation Blueprint before performing the main refactor:
+
+```bash
+npx -y unslop-mcp refactor-plan . --preset linear-precision --report UNSLOP-REPORT.md
+```
+
+Through MCP, call `unslop_refactor_plan` with `path`, `preset`, and optional `report`. Read the complete blueprint:
+
+1. **7-Pillar Scorecard:** prioritize failed correctness and ergonomics before aesthetic refinements.
+2. **Before → After Translation Table:** apply the exact preset-aware class, token, or copy replacement at each source location.
+3. **Prioritized Steps:** execute P0 first, then P1, then P2 without changing product behavior.
+
+Structural transformation rules:
+
+- Replace symmetric three-card AI clones with a composition suggested by the content: asymmetric bento, editorial split, primary workflow plus supporting detail, or dense data table.
+- Use a clear content container, shared edges, and deliberate spans such as 7/5 or 8/4 where the archetype supports them.
+- Flatten card-inside-card nesting. Group through alignment, spacing, and one surface boundary.
+- Keep paragraphs near 45–75ch. Use `max-w-prose` or a deliberate token measure rather than full-width body copy.
+- Replace arbitrary spacing with the nearest four-pixel semantic stop; preserve documented optical one/two-pixel exceptions.
+- Reserve large and full radii for compact pills, avatars, and controls that are genuinely pill-shaped.
+- Do not turn every interface into a bento grid, either. Dense tools, editorial pages, and command workflows require different structures.
+
+## Step 4 · Surface, Typography & Copy Polish
+
+Apply polish only after structure and tokens are coherent.
+
+### Color and surfaces
+
+- Replace component hex/RGB literals with semantic canvas, surface, text, border, accent, and status tokens.
+- Remove purple/pink/indigo clone gradients, neon glows, and decorative `blur-3xl opacity-30` blobs.
+- On dark surfaces, prefer adjacent luminance layers and `1px` low-alpha borders over heavy ambient shadows.
+- Limit backdrop blur to transient layered UI with an opaque fallback; never use it as the primary visual identity.
+- Verify WCAG 2.1 AA after alpha compositing. Increase to AAA where required and review the APCA-inspired perceptual warning rather than treating WCAG alone as the whole reading experience.
+
+### Typography and numeric UI
+
+- Apply fluid display steps with `clamp()` or responsive stops; protect intentional line breaks.
+- Use tight display tracking, body-appropriate leading, and no more than three purposeful weights in a component tree.
+- Apply `tabular-nums` to prices, metrics, counters, timestamps, identifiers, and data tables; right-align comparable values.
+- Keep functional text legible. Density must come from structure and alignment, not tiny low-contrast type.
+
+### Copy and microcopy
+
+- Replace clichés such as “Unleash the power,” “Revolutionize,” “Supercharge your workflow,” “Seamless integration,” and “Next-generation” with verifiable product statements.
+- State the user task, actual capability, protocol, performance fact, constraint, or measurable result.
+- Make button labels describe the action and outcome. Make errors explain what happened, whether data is safe, and how to recover.
+- Replace emoji bullet decoration with meaningful iconography or concise text. Do not erase product-specific voice merely to sound generic or corporate.
+
+## Step 5 · Interactive Ergonomics & Verification
+
+Finish every control and state, then repeat the diagnostic loop:
+
+```bash
+npx -y unslop-mcp audit . --fail-under 95
+npx -y unslop-mcp refactor-plan . --preset linear-precision --report UNSLOP-REPORT.md
+```
+
+Required interaction review:
+
+- Use native `<button>`, `<a>`, `<input>`, and `<select>` semantics instead of clickable `<div>` elements.
+- Associate every form control with a persistent label or explicit accessible name.
+- Provide high-contrast `:focus-visible` rings with adequate offset in both themes.
+- Design hover, active, disabled, loading, empty, error, and success states without relying on color alone.
+- Replace `transition-all` with explicit `transition-colors`, `transition-transform`, or `transition-opacity`, plus `motion-reduce:transition-none` or equivalent behavior.
+- Preserve logical DOM order; avoid positive `tabindex`. Provide practical pointer targets and keyboard alternatives.
+- Test long text, large numbers, localization expansion, 200% zoom, narrow and wide viewports, reduced motion, and keyboard-only completion.
+
+## Definition of done · 95–100/100 (A+)
+
+The task is complete only when:
+
+1. `unslop_audit` reports **95–100/100 (Grade A+)** with no suppressed findings.
+2. All seven pillars have been reviewed, not merely the overall average.
+3. `UNSLOP-REPORT.md` translations and P0/P1 steps have been applied or explicitly resolved.
+4. Components consume one semantic token system with verified light/dark parity.
+5. Keyboard, screen-reader semantics, all relevant states, reduced motion, responsive behavior, and content overflow have been exercised.
+6. The rendered interface has been inspected. Never claim visual excellence from static analysis alone.
+
+## Command and MCP reference
+
+```bash
+npx -y unslop-mcp --version
+npx -y unslop-mcp audit .
+npx -y unslop-mcp refactor-plan . --report UNSLOP-REPORT.md
+npx -y unslop-mcp init --preset swiss-editorial
+npx -y unslop-mcp extract ./tokens.css --name extracted -o .claude/skills/unslop/SKILL.md
+npx -y unslop-mcp export-tokens --preset swiss-editorial --format w3c-json --out tokens.json
+npx -y unslop-mcp --mcp
+```
+
+MCP tools:
+
+1. `unslop_audit` — 72-rule diagnostic and seven-pillar scorecard.
+2. `unslop_extract_dna` — reference extraction and compiled Design DNA.
+3. `unslop_apply_preset` — archetype installation and merge-safe MCP configuration.
+4. `unslop_refactor_plan` — exact Design Transformation Blueprint and prioritized refactor plan.
+
+GitHub execution remains available as an alternative to the npm package:
+
+```bash
+npx -y github:avivgerz-hue/unslop audit .
 npx -y github:avivgerz-hue/unslop --mcp
 ```
-
-For the currently published npm 1.2.0 tarball, use positional `mcp` instead of `--mcp` until a subsequent npm release includes the alias.

@@ -1,3 +1,13 @@
+import anthropicWarmEditorialJson from "./anthropic-warm-editorial.json" with { type: "json" };
+import bloombergTerminalDenseJson from "./bloomberg-terminal-dense.json" with { type: "json" };
+import fintechInstitutionalJson from "./fintech-institutional.json" with { type: "json" };
+import linearPrecisionJson from "./linear-precision.json" with { type: "json" };
+import neoBrutalistCraftJson from "./neo-brutalist-craft.json" with { type: "json" };
+import raycastCommandJson from "./raycast-command.json" with { type: "json" };
+import stripeAtmosphericJson from "./stripe-atmospheric.json" with { type: "json" };
+import swissEditorialJson from "./swiss-editorial.json" with { type: "json" };
+import teenageEngineeringJson from "./teenage-engineering.json" with { type: "json" };
+import vercelMonochromeJson from "./vercel-monochrome.json" with { type: "json" };
 import appleGlassJson from "./apple-glass.json" with { type: "json" };
 import linearDarkJson from "./linear-dark.json" with { type: "json" };
 import neoBrutalistJson from "./neo-brutalist.json" with { type: "json" };
@@ -28,8 +38,23 @@ export interface DesignPreset {
       accentText: string;
       [key: string]: string;
     };
+    /** Explicit dark companion for light-first archetypes. */
+    darkColors?: {
+      background: string;
+      surface: string;
+      surfaceElevated: string;
+      text: string;
+      textMuted: string;
+      border: string;
+      accent: string;
+      accentText: string;
+      [key: string]: string;
+    };
     typography: {
       fontFamily: string;
+      /** Optional optical roles; legacy presets fall back to fontFamily. */
+      displayFamily?: string;
+      bodyFamily?: string;
       monospaceFamily: string;
       scale: Record<string, string>;
       displayTracking: string;
@@ -74,6 +99,20 @@ export interface PresetSummary {
 }
 
 export const PRESET_NAMES = [
+  "swiss-editorial",
+  "linear-precision",
+  "stripe-atmospheric",
+  "vercel-monochrome",
+  "teenage-engineering",
+  "anthropic-warm-editorial",
+  "bloomberg-terminal-dense",
+  "raycast-command",
+  "fintech-institutional",
+  "neo-brutalist-craft",
+] as const;
+
+/** v1 preset IDs remain loadable without appearing in the canonical v2 gallery. */
+export const LEGACY_PRESET_NAMES = [
   "linear-dark",
   "swiss-grid",
   "stripe-minimal",
@@ -82,6 +121,8 @@ export const PRESET_NAMES = [
 ] as const;
 
 export type BuiltInPresetName = (typeof PRESET_NAMES)[number];
+export type LegacyPresetName = (typeof LEGACY_PRESET_NAMES)[number];
+export type PresetName = BuiltInPresetName | LegacyPresetName;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -150,9 +191,21 @@ export function validatePreset(value: unknown): DesignPreset {
     requireString(colors[key], `tokens.colors.${key}`);
   }
   validateStringRecord(colors, "tokens.colors");
+  if (tokens.darkColors !== undefined) {
+    const darkColors = requireRecord(tokens.darkColors, "tokens.darkColors");
+    for (const key of [
+      "background", "surface", "surfaceElevated", "text", "textMuted",
+      "border", "accent", "accentText",
+    ]) {
+      requireString(darkColors[key], `tokens.darkColors.${key}`);
+    }
+    validateStringRecord(darkColors, "tokens.darkColors");
+  }
 
   const typography = requireRecord(tokens.typography, "tokens.typography");
   requireString(typography.fontFamily, "tokens.typography.fontFamily");
+  if (typography.displayFamily !== undefined) requireString(typography.displayFamily, "tokens.typography.displayFamily");
+  if (typography.bodyFamily !== undefined) requireString(typography.bodyFamily, "tokens.typography.bodyFamily");
   requireString(typography.monospaceFamily, "tokens.typography.monospaceFamily");
   requireString(typography.displayTracking, "tokens.typography.displayTracking");
   requireString(typography.bodyTracking, "tokens.typography.bodyTracking");
@@ -221,7 +274,17 @@ export function validatePreset(value: unknown): DesignPreset {
   return value as DesignPreset;
 }
 
-const registry: Readonly<Record<BuiltInPresetName, DesignPreset>> = Object.freeze({
+const registry: Readonly<Record<PresetName, DesignPreset>> = Object.freeze({
+  "swiss-editorial": validatePreset(swissEditorialJson),
+  "linear-precision": validatePreset(linearPrecisionJson),
+  "stripe-atmospheric": validatePreset(stripeAtmosphericJson),
+  "vercel-monochrome": validatePreset(vercelMonochromeJson),
+  "teenage-engineering": validatePreset(teenageEngineeringJson),
+  "anthropic-warm-editorial": validatePreset(anthropicWarmEditorialJson),
+  "bloomberg-terminal-dense": validatePreset(bloombergTerminalDenseJson),
+  "raycast-command": validatePreset(raycastCommandJson),
+  "fintech-institutional": validatePreset(fintechInstitutionalJson),
+  "neo-brutalist-craft": validatePreset(neoBrutalistCraftJson),
   "linear-dark": validatePreset(linearDarkJson),
   "swiss-grid": validatePreset(swissGridJson),
   "stripe-minimal": validatePreset(stripeMinimalJson),
@@ -235,12 +298,15 @@ export function isBuiltInPresetName(name: string): name is BuiltInPresetName {
 
 export function loadPreset(name: string): DesignPreset {
   const normalized = name.trim().toLowerCase().replace(/\.json$/, "");
-  if (!isBuiltInPresetName(normalized)) {
+  if (!(PRESET_NAMES as readonly string[]).includes(normalized) &&
+      !(LEGACY_PRESET_NAMES as readonly string[]).includes(normalized)) {
     throw new Error(
-      `Unknown preset "${name}". Available presets: ${PRESET_NAMES.join(", ")}.`,
+      `Unknown preset "${name}". Available presets: ${PRESET_NAMES.join(", ")}. Legacy IDs: ${LEGACY_PRESET_NAMES.join(", ")}.`,
     );
   }
-  return structuredClone(registry[normalized]);
+  const preset = registry[normalized as PresetName];
+  if (!preset) throw new Error(`Preset registry is missing "${normalized}".`);
+  return structuredClone(preset);
 }
 
 export function listPresets(): DesignPreset[] {

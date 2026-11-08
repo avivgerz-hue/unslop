@@ -5,16 +5,17 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { auditTarget, formatAuditReport } from "../src/analyzer/slop-detector.js";
+import { createRefactorPlan, DEFAULT_REFACTOR_REPORT, writeRefactorReport, } from "../src/analyzer/refactor-plan.js";
 import { createPresetFromDNA, extractDesignDNA } from "../src/extractor/extract-dna.js";
 import { listPresets, listPresetSummaries, loadPreset } from "../src/presets/index.js";
 import { startMcpServer } from "../src/mcp/server.js";
 import { installUnslop, renderAgentSkill } from "../src/sync/rule-writer.js";
-import { renderTokenStylesheet } from "../src/sync/token-exporter.js";
+import { exportDesignTokens, normalizeTokenExportFormat, TOKEN_EXPORT_FORMATS, } from "../src/sync/token-exporter.js";
 import { UNSLOP_VERSION } from "../src/version.js";
 export const CLI_VERSION = UNSLOP_VERSION;
 class UsageError extends Error {
 }
-const HELP = `unslop ${CLI_VERSION} — studio-grade design constraints for coding agents
+const HELP = `unslop ${CLI_VERSION} — 7-pillar UI/UX design engineering for coding agents
 
 USAGE
   npx -y unslop-mcp <command> [options]
@@ -22,15 +23,15 @@ USAGE
 COMMANDS
   init [--preset <name>]       Install agent rules and .mcp.json in this project
   mcp, --mcp                   Run the native MCP server over stdio
-  audit [dir]                  Detect AI slop and generate a refactoring brief
+  audit [dir]                  Score 72 rules across all 7 design craft pillars
+  refactor-plan <target>       Write a Design Transformation Blueprint
   extract <url-or-css-path>    Compile design DNA into an Agent Skill
-  export-tokens                Export Tailwind v4 @theme and CSS variables
-  presets [name]               List presets or inspect one token contract
+  export-tokens                Export Tailwind v4/v3, CSS, or W3C JSON tokens
+  presets [name]               List 10 studio archetypes or inspect one contract
   help                         Show this reference
 
 INIT OPTIONS
-  -p, --preset <name>          linear-dark (default), swiss-grid, stripe-minimal,
-                               apple-glass, or neo-brutalist
+  -p, --preset <name>          linear-precision (default) or any of 10 archetypes
   -d, --dir <path>             Target project directory (default: .)
       --force                  Replace whole rule files, including user content
       --json                   Print a machine-readable sync result
@@ -38,7 +39,7 @@ INIT OPTIONS
 AUDIT OPTIONS
       --json                   Print the complete report as JSON
       --prompt                 Print only the structured refactoring prompt
-      --fail-under <0-100>     Fail when the integrity score is below a threshold
+      --fail-under <0-100>     Fail when the craft score is below a threshold
       --ignore <directory>     Ignore an additional directory (repeatable)
       --no-fail                Always exit successfully after completing the audit
 
@@ -49,9 +50,16 @@ EXTRACT OPTIONS
       --timeout <ms>           Per-request timeout (default: 10000)
       --max-stylesheets <n>    External stylesheet limit (default: 12)
 
+REFACTOR-PLAN OPTIONS
+  -p, --preset <name>          Translation archetype (default: linear-precision)
+  -r, --report <file>          Report path (default: UNSLOP-REPORT.md)
+      --json                   Print the complete blueprint as JSON
+      --ignore <directory>     Ignore an additional directory (repeatable)
+
 EXPORT-TOKENS OPTIONS
-  -p, --preset <name>          Built-in preset (default: linear-dark)
-  -o, --out <file>             Write CSS to a file instead of stdout
+  -p, --preset <name>          Built-in preset (default: linear-precision)
+  -f, --format <format>        ${TOKEN_EXPORT_FORMATS.join(", ")} (default: tailwind-v4)
+  -o, --out <file>             Write tokens to a file instead of stdout
   -s, --source <url-or-css>    Compile extracted DNA instead of a built-in preset
       --name <preset-name>     Name extracted DNA (default: extracted-dna)
       --timeout <ms>           Per-request timeout for --source URLs
@@ -135,7 +143,7 @@ export async function runCli(argv = process.argv.slice(2), context = {}) {
         return 0;
     }
     try {
-        if (command === "presets") {
+        if (command === "presets" || command === "preset") {
             const { values, positionals } = parse("presets", args, { json: { type: "boolean" } });
             if (positionals.length > 1)
                 throw new UsageError("presets accepts at most one preset name.");
@@ -148,15 +156,15 @@ export async function runCli(argv = process.argv.slice(2), context = {}) {
             }
             else {
                 const rows = listPresets().map((preset) => [
-                    preset.name.padEnd(16),
+                    preset.name.padEnd(26),
                     preset.tokens.colorScheme.padEnd(6),
                     preset.description,
                 ]);
                 stdout([
-                    "NAME              MODE    DESCRIPTION",
+                    "NAME                        MODE    DESCRIPTION",
                     ...rows.map((row) => row.join("  ")),
                     "",
-                    "Inspect a token contract: npx -y unslop-mcp presets linear-dark",
+                    "Inspect a token contract: npx -y unslop-mcp presets linear-precision",
                 ].join("\n"));
             }
             return 0;
@@ -171,7 +179,7 @@ export async function runCli(argv = process.argv.slice(2), context = {}) {
             assertNoPositionals("init", positionals);
             const result = await installUnslop({
                 cwd: resolve(cwd, values.dir ?? "."),
-                preset: values.preset ?? "linear-dark",
+                preset: values.preset ?? "linear-precision",
                 force: values.force ?? false,
             });
             if (values.json) {
@@ -200,6 +208,7 @@ export async function runCli(argv = process.argv.slice(2), context = {}) {
         if (command === "export-tokens") {
             const { values, positionals } = parse("export-tokens", args, {
                 preset: { type: "string", short: "p" },
+                format: { type: "string", short: "f" },
                 out: { type: "string", short: "o" },
                 source: { type: "string", short: "s" },
                 name: { type: "string" },
@@ -229,17 +238,49 @@ export async function runCli(argv = process.argv.slice(2), context = {}) {
                 if (values.timeout || values["max-stylesheets"]) {
                     throw new UsageError("--timeout and --max-stylesheets require --source.");
                 }
-                preset = loadPreset(values.preset ?? "linear-dark");
+                preset = loadPreset(values.preset ?? "linear-precision");
             }
-            const stylesheet = renderTokenStylesheet(preset);
+            const format = normalizeTokenExportFormat(values.format ??
+                (values.out?.endsWith(".json") ? "w3c-json" : "tailwind-v4"));
+            const stylesheet = exportDesignTokens(preset, format);
             if (values.out) {
                 const outputPath = resolve(cwd, values.out);
                 await mkdir(dirname(outputPath), { recursive: true });
                 await writeFile(outputPath, stylesheet, "utf8");
-                stdout(`Wrote ${values.out} using ${preset.name} (Tailwind v4 @theme, :root, and .dark).`);
+                stdout(`Wrote ${values.out} using ${preset.name} (${format}).`);
             }
             else {
                 stdout(stylesheet.trimEnd());
+            }
+            return 0;
+        }
+        if (command === "refactor-plan") {
+            const { values, positionals } = parse("refactor-plan", args, {
+                preset: { type: "string", short: "p" },
+                report: { type: "string", short: "r" },
+                json: { type: "boolean" },
+                ignore: { type: "string", multiple: true },
+            });
+            if (positionals.length !== 1) {
+                throw new UsageError("refactor-plan requires exactly one component or directory target.");
+            }
+            const plan = await createRefactorPlan(positionals[0], {
+                cwd,
+                preset: values.preset ?? "linear-precision",
+                ignore: values.ignore ?? [],
+            });
+            const report = values.report ?? DEFAULT_REFACTOR_REPORT;
+            await writeRefactorReport(plan, report, cwd);
+            if (values.json) {
+                stdout(JSON.stringify({ ...plan, report }, null, 2));
+            }
+            else {
+                stdout([
+                    `Design Craft Score: ${plan.designCraftScore}/100 (${plan.grade})`,
+                    ...plan.pillarScores.map((pillar) => `  ${pillar.name}: ${pillar.score}/100 (${pillar.grade})`),
+                    "",
+                    `Wrote ${report}: ${plan.translations.length} translations and ${plan.steps.length} prioritized steps using ${plan.preset.name}.`,
+                ].join("\n"));
             }
             return 0;
         }

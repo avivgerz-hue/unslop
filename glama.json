@@ -1,9 +1,9 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/server.json",
   "name": "unslop",
-  "displayName": "unslop — Anti-Slop Design Engine",
-  "description": "Design-system audits, Design DNA extraction, and preset enforcement for coding agents.",
-  "version": "1.2.0",
+  "displayName": "unslop — 7-Pillar Design Craft Engine",
+  "description": "72-rule UI/UX audits, 10 studio archetypes, Design DNA, multi-format tokens, and transformation blueprints for coding agents.",
+  "version": "2.0.0",
   "type": "mcp_server",
   "status": "stable",
   "maintainers": [
@@ -26,7 +26,7 @@
   "tools": [
     {
       "name": "unslop_audit",
-      "description": "Audit a frontend file or directory for AI slop. Returns the Design Integrity Score, exact diagnostics, and refactoring instructions.",
+      "description": "Audit JSX, HTML, Vue, Svelte, CSS, and Tailwind across 72 rules. Returns the Design Craft Score, 7-pillar scorecard, exact diagnostics, and refactoring instructions.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -85,11 +85,16 @@
           "preset": {
             "type": "string",
             "enum": [
-              "linear-dark",
-              "swiss-grid",
-              "stripe-minimal",
-              "apple-glass",
-              "neo-brutalist"
+              "swiss-editorial",
+              "linear-precision",
+              "stripe-atmospheric",
+              "vercel-monochrome",
+              "teenage-engineering",
+              "anthropic-warm-editorial",
+              "bloomberg-terminal-dense",
+              "raycast-command",
+              "fintech-institutional",
+              "neo-brutalist-craft"
             ]
           },
           "projectDir": {
@@ -102,6 +107,47 @@
         ],
         "additionalProperties": false
       }
+    },
+    {
+      "name": "unslop_refactor_plan",
+      "description": "Generate a Design Transformation Blueprint with a 7-pillar scorecard, exact preset-aware before/after translations, and prioritized file:line refactor steps.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Component or directory to analyze, relative to the server project root."
+          },
+          "preset": {
+            "type": "string",
+            "enum": [
+              "swiss-editorial",
+              "linear-precision",
+              "stripe-atmospheric",
+              "vercel-monochrome",
+              "teenage-engineering",
+              "anthropic-warm-editorial",
+              "bloomberg-terminal-dense",
+              "raycast-command",
+              "fintech-institutional",
+              "neo-brutalist-craft"
+            ],
+            "description": "Archetype used for exact replacement classes and tokens."
+          },
+          "report": {
+            "type": "string",
+            "description": "Markdown report path (default: UNSLOP-REPORT.md)."
+          },
+          "ignore": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Additional directory base names to skip."
+          }
+        },
+        "additionalProperties": false
+      }
     }
   ],
   "keywords": [
@@ -111,6 +157,10 @@
     "design-tokens",
     "tailwindcss",
     "wcag",
-    "anti-slop"
+    "anti-slop",
+    "ui-ux",
+    "design-craft",
+    "refactoring",
+    "w3c-design-tokens"
   ]
 }

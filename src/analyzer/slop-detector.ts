@@ -6,6 +6,25 @@ import {
   requiredContrastRatio,
   type RGBAColor,
 } from "./wcag.js";
+import {
+  analyzeDesignCraft,
+  calculateDesignCraftScore,
+  calculatePillarScores,
+  pillarForRule,
+  type PillarScore,
+} from "./design-craft.js";
+
+export {
+  AI_COPY_CLICHES,
+  DESIGN_CRAFT_RULE_COUNT,
+  DESIGN_CRAFT_RULES,
+  DESIGN_PILLARS,
+  analyzeDesignCraft,
+  calculateDesignCraftScore,
+  calculatePillarScores,
+  designCraftRule,
+} from "./design-craft.js";
+export type { DesignCraftRule, PillarScore } from "./design-craft.js";
 
 export { contrastRatio, parseColor, relativeLuminance, requiredContrastRatio } from "./wcag.js";
 export type { ColorInput, RGBAColor } from "./wcag.js";
@@ -19,11 +38,13 @@ export const SUPPORTED_EXTENSIONS = [
   ".css",
 ] as const;
 
-export type SlopCategory = "color" | "layout" | "elevation" | "typography" | "spacing";
+export type DesignPillarId = "color" | "typography" | "layout" | "surface" | "copy" | "ux" | "token";
+export type SlopCategory = "color" | "layout" | "elevation" | "typography" | "spacing" | "copy" | "ux" | "token";
 export type SlopSeverity = "error" | "warning" | "info";
 
 export interface SlopViolation {
   ruleId: string;
+  pillar: DesignPillarId;
   category: SlopCategory;
   severity: SlopSeverity;
   file: string;
@@ -48,6 +69,9 @@ export interface AuditReport {
   files: string[];
   violations: SlopViolation[];
   score: number;
+  /** Canonical seven-pillar score; score remains as the compatibility alias. */
+  designCraftScore: number;
+  pillarScores: PillarScore[];
   grade: string;
   summary: AuditSummary;
   refactoringPrompt: string;
@@ -461,8 +485,8 @@ function numericText(value: string): boolean {
   );
 }
 
-/** Analyze one supported source file without touching the filesystem. */
-export function analyzeSource(source: string, filePath = "component.tsx"): SlopViolation[] {
+/** Run the backward-compatible v1 detectors without touching the filesystem. */
+function analyzeLegacySource(source: string, filePath = "component.tsx"): SlopViolation[] {
   const index = new SourceIndex(source);
   const pending: MutableViolation[] = [];
   const add = (violation: MutableViolation): void => {
@@ -853,6 +877,7 @@ export function analyzeSource(source: string, filePath = "component.tsx"): SlopV
     const location = index.location(pendingViolation.offset);
     return {
       ruleId: pendingViolation.ruleId,
+      pillar: pillarForRule(pendingViolation.ruleId),
       category: pendingViolation.category,
       severity: pendingViolation.severity,
       file: portablePath(filePath),
@@ -886,6 +911,22 @@ export function analyzeSource(source: string, filePath = "component.tsx"): SlopV
   );
 }
 
+/** Analyze one source file across legacy contracts and all seven v2 pillars. */
+export function analyzeSource(source: string, filePath = "component.tsx"): SlopViolation[] {
+  const legacy = analyzeLegacySource(source, filePath);
+  const combined = [...legacy, ...analyzeDesignCraft(source, portablePath(filePath), legacy)];
+  const unique = new Map<string, SlopViolation>();
+  for (const violation of combined) {
+    const key = [violation.ruleId, violation.file, violation.line, violation.column].join(":");
+    if (!unique.has(key)) unique.set(key, violation);
+  }
+  return [...unique.values()].sort(
+    (left, right) => left.file.localeCompare(right.file) || left.line - right.line ||
+      left.column - right.column || Number(left.ruleId.startsWith("SLOP-")) - Number(right.ruleId.startsWith("SLOP-")) ||
+      left.ruleId.localeCompare(right.ruleId),
+  );
+}
+
 export const detectSlop = analyzeSource;
 
 export function calculateDesignIntegrityScore(violations: readonly SlopViolation[]): number {
@@ -895,7 +936,7 @@ export function calculateDesignIntegrityScore(violations: readonly SlopViolation
 }
 
 export function designGrade(score: number): string {
-  if (score >= 97) return "A+";
+  if (score >= 95) return "A+";
   if (score >= 90) return "A";
   if (score >= 80) return "B";
   if (score >= 70) return "C";
@@ -910,6 +951,9 @@ export function summarizeViolations(violations: readonly SlopViolation[]): Audit
     elevation: 0,
     typography: 0,
     spacing: 0,
+    copy: 0,
+    ux: 0,
+    token: 0,
   };
   const byRule: Record<string, number> = {};
   let errors = 0;
@@ -933,7 +977,7 @@ export function generateRefactoringPrompt(
     return [
       "# unslop refactoring brief",
       "",
-      `Design Integrity Score: ${score}/100. No slop violations were detected by static analysis.`,
+      `Design Craft Score: ${score}/100. No slop violations were detected by static analysis.`,
       "Preserve the existing token system. Verify visual hierarchy, keyboard states, responsive behavior, and contrast before making unsolicited changes.",
     ].join("\n");
   }
@@ -941,7 +985,7 @@ export function generateRefactoringPrompt(
   const lines = [
     "# unslop refactoring brief",
     "",
-    `Design Integrity Score: ${score}/100 (${designGrade(score)}).`,
+    `Design Craft Score: ${score}/100 (${designGrade(score)}).`,
     "",
     "Refactor the violations below without changing product behavior or content. Reuse semantic tokens; do not swap one set of arbitrary values for another.",
     "",
@@ -1027,15 +1071,18 @@ export async function auditTarget(target = ".", options: AuditOptions = {}): Pro
       left.file.localeCompare(right.file) ||
       left.line - right.line ||
       left.column - right.column ||
+      Number(left.ruleId.startsWith("SLOP-")) - Number(right.ruleId.startsWith("SLOP-")) ||
       left.ruleId.localeCompare(right.ruleId),
   );
-  const score = calculateDesignIntegrityScore(violations);
+  const score = calculateDesignCraftScore(violations);
   return {
     target: portablePath(target),
     filesScanned: files.length,
     files,
     violations,
     score,
+    designCraftScore: score,
+    pillarScores: calculatePillarScores(violations),
     grade: designGrade(score),
     summary: summarizeViolations(violations),
     refactoringPrompt: generateRefactoringPrompt(violations, score),
@@ -1062,6 +1109,9 @@ export function formatAuditReport(report: AuditReport): string {
   }
   lines.push(
     "",
+    `Design Craft Score: ${report.designCraftScore}/100 (${report.grade})`,
+    "7-Pillar Scorecard:",
+    ...report.pillarScores.map((pillar) => `  ${pillar.name}: ${pillar.score}/100 (${pillar.grade}) · ${pillar.violations} findings`),
     `Design Integrity Score: ${report.score}/100 (${report.grade})`,
     `${report.summary.errors} errors · ${report.summary.warnings} warnings · ${report.summary.infos} info`,
     "",

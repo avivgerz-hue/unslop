@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "name": "vercel-monochrome",
+  "title": "Vercel Monochrome",
+  "description": "Architectural black-and-white contrast, geometric spacing, crisp focus treatment, and status color reserved for high-signal system feedback.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#ffffff",
+      "surface": "#fafafa",
+      "surfaceElevated": "#f2f2f2",
+      "text": "#000000",
+      "textMuted": "#666666",
+      "border": "#eaeaea",
+      "accent": "#0068d6",
+      "accentText": "#ffffff",
+      "interactive": "#e5e5e5",
+      "success": "#007a3d",
+      "warning": "#8a5a00",
+      "danger": "#d92d20",
+      "info": "#0068d6",
+      "focus": "#0068d6"
+    },
+    "darkColors": {
+      "background": "#000000",
+      "surface": "#0a0a0a",
+      "surfaceElevated": "#141414",
+      "text": "#ffffff",
+      "textMuted": "#a1a1a1",
+      "border": "#262626",
+      "accent": "#52a8ff",
+      "accentText": "#06131f",
+      "interactive": "#1f1f1f",
+      "success": "#45d483",
+      "warning": "#f5c451",
+      "danger": "#ff6b62",
+      "info": "#52a8ff",
+      "focus": "#52a8ff"
+    },
+    "typography": {
+      "fontFamily": "Geist, Inter, ui-sans-serif, system-ui, sans-serif",
+      "monospaceFamily": "Geist Mono, SFMono-Regular, Consolas, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "0.9375rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "clamp(1.75rem, 2.4vw, 2.25rem)",
+        "4xl": "clamp(2.25rem, 5vw, 3.75rem)"
+      },
+      "displayTracking": "-0.05em",
+      "bodyTracking": "-0.01em",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    },
+    "radii": {
+      "sm": "4px",
+      "md": "6px",
+      "lg": "8px",
+      "xl": "12px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 1px 2px rgba(0,0,0,0.06)",
+      "md": "0 4px 16px rgba(0,0,0,0.08)",
+      "lg": "0 12px 32px rgba(0,0,0,0.12)"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ]
+    },
+    "motion": {
+      "duration": "120ms",
+      "easing": "cubic-bezier(0.2,0,0,1)",
+      "spring": {
+        "mass": 0.8,
+        "stiffness": 320,
+        "damping": 28
+      }
+    },
+    "layout": {
+      "maxWidth": "1280px",
+      "columns": 12,
+      "borderWidth": "1px",
+      "gridGap": "24px",
+      "contentInset": "24px"
+    }
+  },
+  "rules": [
+    "Use monochrome for structure; semantic color appears only for action, status, or focus.",
+    "Prefer exact one-pixel borders and whitespace over decorative elevation.",
+    "Set geometric display type with tight tracking and no faux gradients or text effects.",
+    "Keep navigation and controls dense, predictable, and fully keyboard operable.",
+    "Use one radius scale and never mix unrelated corner values in a component tree.",
+    "Deploy status color with an icon and explicit label, never color alone.",
+    "Grid lines and content edges must remain exact at every responsive breakpoint.",
+    "Use monospace for code and identifiers, not as a general personality substitute.",
+    "Keep transition durations at 120ms and limit properties to the interaction being communicated.",
+    "Pure black or white canvases require softened muted text and token-driven dark parity."
+  ]
+}

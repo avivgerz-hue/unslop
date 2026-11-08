@@ -1,3 +1,3 @@
-/** Single runtime version used by the CLI, MCP manifest, and generated configs. */
-export declare const UNSLOP_VERSION = "1.2.0";
+/** Runtime version is always read from the npm manifest; never duplicate it. */
+export declare const UNSLOP_VERSION: string;
 //# sourceMappingURL=version.d.ts.map

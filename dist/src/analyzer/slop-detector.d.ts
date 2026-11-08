@@ -1,10 +1,15 @@
+import { type PillarScore } from "./design-craft.js";
+export { AI_COPY_CLICHES, DESIGN_CRAFT_RULE_COUNT, DESIGN_CRAFT_RULES, DESIGN_PILLARS, analyzeDesignCraft, calculateDesignCraftScore, calculatePillarScores, designCraftRule, } from "./design-craft.js";
+export type { DesignCraftRule, PillarScore } from "./design-craft.js";
 export { contrastRatio, parseColor, relativeLuminance, requiredContrastRatio } from "./wcag.js";
 export type { ColorInput, RGBAColor } from "./wcag.js";
 export declare const SUPPORTED_EXTENSIONS: readonly [".tsx", ".jsx", ".vue", ".svelte", ".html", ".css"];
-export type SlopCategory = "color" | "layout" | "elevation" | "typography" | "spacing";
+export type DesignPillarId = "color" | "typography" | "layout" | "surface" | "copy" | "ux" | "token";
+export type SlopCategory = "color" | "layout" | "elevation" | "typography" | "spacing" | "copy" | "ux" | "token";
 export type SlopSeverity = "error" | "warning" | "info";
 export interface SlopViolation {
     ruleId: string;
+    pillar: DesignPillarId;
     category: SlopCategory;
     severity: SlopSeverity;
     file: string;
@@ -27,6 +32,9 @@ export interface AuditReport {
     files: string[];
     violations: SlopViolation[];
     score: number;
+    /** Canonical seven-pillar score; score remains as the compatibility alias. */
+    designCraftScore: number;
+    pillarScores: PillarScore[];
     grade: string;
     summary: AuditSummary;
     refactoringPrompt: string;
@@ -37,7 +45,7 @@ export interface AuditOptions {
     /** Additional directory base names to skip. */
     ignore?: string[];
 }
-/** Analyze one supported source file without touching the filesystem. */
+/** Analyze one source file across legacy contracts and all seven v2 pillars. */
 export declare function analyzeSource(source: string, filePath?: string): SlopViolation[];
 export declare const detectSlop: typeof analyzeSource;
 export declare function calculateDesignIntegrityScore(violations: readonly SlopViolation[]): number;

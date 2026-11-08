@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-export declare const CLI_VERSION = "1.2.0";
+export declare const CLI_VERSION: string;
 export interface CLIContext {
     cwd?: string;
     stdout?: (message: string) => void;

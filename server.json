@@ -1,9 +1,9 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.avivgerz-hue/unslop",
-  "title": "unslop — Anti-Slop Design Engine",
-  "description": "Design-system audits, Design DNA extraction, and preset enforcement for coding agents.",
-  "version": "1.2.0",
+  "title": "unslop — 7-Pillar Design Craft Engine",
+  "description": "72-rule UI/UX audits, 10 studio archetypes, multi-format tokens, and Design Transformation Blueprints.",
+  "version": "2.0.0",
   "websiteUrl": "https://github.com/avivgerz-hue/unslop",
   "repository": {
     "url": "https://github.com/avivgerz-hue/unslop",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "unslop-mcp",
-      "version": "1.2.0",
+      "version": "2.0.0",
       "transport": {
         "type": "stdio"
       },
@@ -51,7 +51,7 @@
         "tools": [
           {
             "name": "unslop_audit",
-            "description": "Audit a frontend file or directory for AI slop. Returns the Design Integrity Score, exact diagnostics, and refactoring instructions."
+            "description": "Audit six frontend source formats across 72 rules and score all seven design craft pillars."
           },
           {
             "name": "unslop_extract_dna",
@@ -60,6 +60,10 @@
           {
             "name": "unslop_apply_preset",
             "description": "Apply a built-in studio preset to project agent rules and merge unslop into .mcp.json without replacing other MCP servers."
+          },
+          {
+            "name": "unslop_refactor_plan",
+            "description": "Generate UNSLOP-REPORT.md with a 7-pillar scorecard, exact before/after token translations, and prioritized file:line refactor steps."
           }
         ]
       }

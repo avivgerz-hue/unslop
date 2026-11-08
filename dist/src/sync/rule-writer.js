@@ -28,7 +28,9 @@ export function renderTokenCSS(preset) {
         ":root {",
         `  color-scheme: ${tokens.colorScheme};`,
         ...Object.entries(tokens.colors).map(([name, value]) => `  --unslop-color-${kebabCase(name)}: ${value};`),
-        `  --unslop-font-sans: ${tokens.typography.fontFamily};`,
+        `  --unslop-font-sans: ${tokens.typography.bodyFamily ?? tokens.typography.fontFamily};`,
+        `  --unslop-font-display: ${tokens.typography.displayFamily ?? tokens.typography.fontFamily};`,
+        `  --unslop-font-body: ${tokens.typography.bodyFamily ?? tokens.typography.fontFamily};`,
         `  --unslop-font-mono: ${tokens.typography.monospaceFamily};`,
         ...Object.entries(tokens.typography.scale).map(([name, value]) => `  --unslop-text-${kebabCase(name)}: ${value};`),
         `  --unslop-tracking-display: ${tokens.typography.displayTracking};`,
@@ -100,7 +102,8 @@ export function renderRuleDocument(preset) {
         "",
         "## 3. Typography contract",
         "",
-        `Sans stack: \`${tokens.typography.fontFamily}\`  `,
+        `Display stack: \`${tokens.typography.displayFamily ?? tokens.typography.fontFamily}\`  `,
+        `Body stack: \`${tokens.typography.bodyFamily ?? tokens.typography.fontFamily}\`  `,
         `Monospace stack: \`${tokens.typography.monospaceFamily}\`  `,
         `Display tracking: \`${tokens.typography.displayTracking}\`; body tracking: \`${tokens.typography.bodyTracking}\`.`,
         "",
@@ -140,7 +143,7 @@ export function renderRuleDocument(preset) {
     if (spring) {
         sections.push(`- Spring: mass ${spring.mass}, stiffness ${spring.stiffness}, damping ${spring.damping}.`);
     }
-    sections.push("- Animate only properties that communicate causality. Prefer transform and opacity; avoid layout thrashing.", "- Under `prefers-reduced-motion: reduce`, remove spatial and ambient motion and preserve immediate state feedback.", "", "## 7. Preset-specific laws", "", ...preset.rules.map((rule, index) => `${index + 1}. ${rule}`), "", "## 8. CSS token source of truth", "", `Use these variables directly or map them once into Tailwind, CSS Modules, styled-components, or the host design system. Do not create a second competing token scale. For Tailwind v4 @theme plus :root and .dark variables, run \`npx -y unslop-mcp export-tokens --preset ${preset.name} --out tokens.css\`.`, "", "```css", renderTokenCSS(preset), "```", "", "## 9. Agent execution loop", "", "1. Inspect existing components and reuse their semantic primitives before creating new ones.", "2. Write the information hierarchy and responsive grid first; implement typography and spacing before visual effects.", "3. Implement all interaction states: default, hover, focus-visible, active, disabled, loading, empty, error, and success where applicable.", "4. Run `npx -y unslop-mcp audit .` and resolve every reported location without suppressing rules.", "5. Manually verify narrow and wide viewports, keyboard navigation, contrast, reduced motion, numeric alignment, and content overflow.", "", "A passing audit is necessary but not sufficient: never claim visual excellence without checking the rendered result.");
+    sections.push("- Animate only properties that communicate causality. Prefer transform and opacity; avoid layout thrashing.", "- Under `prefers-reduced-motion: reduce`, remove spatial and ambient motion and preserve immediate state feedback.", "", "## 7. Preset-specific laws", "", ...preset.rules.map((rule, index) => `${index + 1}. ${rule}`), "", "## 8. CSS token source of truth", "", `Use these variables directly or map them once into Tailwind, CSS Modules, styled-components, or the host design system. Do not create a second competing token scale. For Tailwind v4 @theme plus :root and .dark variables, run \`npx -y unslop-mcp export-tokens --preset ${preset.name} --out tokens.css\`.`, "", "```css", renderTokenCSS(preset), "```", "", "## 9. Principal design engineering loop", "", "1. Baseline the Design Craft Score with `npx -y unslop-mcp audit . --json`; review all seven SLOP-COLOR, SLOP-TYPE, SLOP-LAYOUT, SLOP-SURFACE, SLOP-COPY, SLOP-UX, and SLOP-TOKEN pillars.", "2. Inspect existing components and reuse their semantic primitives before creating new ones. Keep this archetype as the only token source of truth.", "3. Generate `npx -y unslop-mcp refactor-plan . --report UNSLOP-REPORT.md` and apply its exact before/after translations in P0, P1, P2 order.", "4. Write the information hierarchy and responsive grid first; implement typography and spacing before visual effects. Replace generic three-card clones with content-led compositions.", "5. Implement all interaction states: default, hover, focus-visible, active, disabled, loading, empty, error, and success where applicable. Use explicit transitions and reduced-motion behavior.", "6. Run `npx -y unslop-mcp audit . --fail-under 95` and resolve every reported location without suppressing rules.", "7. Manually verify narrow and wide viewports, keyboard navigation, both themes, contrast, reduced motion, numeric alignment, and content overflow before claiming 95–100/100 (A+).", "", "A passing audit is necessary but not sufficient: never claim visual excellence without checking the rendered result.");
     return sections.join("\n");
 }
 export function managedBlock(content) {

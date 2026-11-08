@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "name": "teenage-engineering",
+  "title": "Teenage Engineering",
+  "description": "Tactile industrial product UI with technical labels, physical grid borders, utilitarian surfaces, and high-visibility international orange.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#e7e5de",
+      "surface": "#efede6",
+      "surfaceElevated": "#f8f6ef",
+      "text": "#1d1d1b",
+      "textMuted": "#5f5e57",
+      "border": "#8f8d83",
+      "accent": "#ff4f00",
+      "accentText": "#17130f",
+      "interactive": "#cbc8bd",
+      "success": "#247a52",
+      "warning": "#9b6500",
+      "danger": "#b52b27",
+      "info": "#315f85",
+      "focus": "#ff4f00"
+    },
+    "darkColors": {
+      "background": "#20211f",
+      "surface": "#2b2c29",
+      "surfaceElevated": "#363733",
+      "text": "#f0efe7",
+      "textMuted": "#b4b3a9",
+      "border": "#66675f",
+      "accent": "#ff5a1f",
+      "accentText": "#1b130e",
+      "interactive": "#41423c",
+      "success": "#4ade80",
+      "warning": "#fbbf24",
+      "danger": "#f87171",
+      "info": "#60a5fa",
+      "focus": "#ff5a1f"
+    },
+    "typography": {
+      "fontFamily": "Arial, Helvetica Neue, Helvetica, sans-serif",
+      "monospaceFamily": "IBM Plex Mono, SFMono-Regular, Consolas, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "0.9375rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "clamp(1.75rem, 2.4vw, 2.25rem)",
+        "4xl": "clamp(2.25rem, 5vw, 3rem)"
+      },
+      "displayTracking": "-0.025em",
+      "bodyTracking": "0",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    },
+    "radii": {
+      "sm": "2px",
+      "md": "4px",
+      "lg": "6px",
+      "xl": "10px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "1px 1px 0 #8f8d83",
+      "md": "2px 2px 0 #6f6d65",
+      "lg": "4px 4px 0 #4b4a44"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ]
+    },
+    "motion": {
+      "duration": "100ms",
+      "easing": "cubic-bezier(0.3,0,0.2,1)",
+      "spring": {
+        "mass": 0.8,
+        "stiffness": 320,
+        "damping": 28
+      }
+    },
+    "layout": {
+      "maxWidth": "1180px",
+      "columns": 8,
+      "borderWidth": "1px",
+      "gridGap": "16px",
+      "contentInset": "24px"
+    }
+  },
+  "rules": [
+    "Treat controls as physical instrument panels with explicit labels, alignment, and tactile feedback.",
+    "Use international orange for active controls and critical landmarks only.",
+    "Technical monospace labels are uppercase, tracked, concise, and paired with readable body text.",
+    "Expose the eight-column hardware grid through one-pixel rules and exact registration.",
+    "Use small offset hard shadows for pressable mechanical elements, not ambient decoration.",
+    "Keep radio, LED, and status colors semantically consistent and labelled.",
+    "Every pointer action needs a keyboard equivalent and a visible focus state.",
+    "Use tabular readouts for frequency, time, battery, levels, and numerical parameters.",
+    "Do not soften the system with glass, glow, gradient, or oversized bubble radii.",
+    "Feedback is immediate—100ms—and reduced-motion mode removes travel rather than meaning."
+  ]
+}

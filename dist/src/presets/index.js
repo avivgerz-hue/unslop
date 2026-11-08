@@ -1,9 +1,32 @@
+import anthropicWarmEditorialJson from "./anthropic-warm-editorial.json" with { type: "json" };
+import bloombergTerminalDenseJson from "./bloomberg-terminal-dense.json" with { type: "json" };
+import fintechInstitutionalJson from "./fintech-institutional.json" with { type: "json" };
+import linearPrecisionJson from "./linear-precision.json" with { type: "json" };
+import neoBrutalistCraftJson from "./neo-brutalist-craft.json" with { type: "json" };
+import raycastCommandJson from "./raycast-command.json" with { type: "json" };
+import stripeAtmosphericJson from "./stripe-atmospheric.json" with { type: "json" };
+import swissEditorialJson from "./swiss-editorial.json" with { type: "json" };
+import teenageEngineeringJson from "./teenage-engineering.json" with { type: "json" };
+import vercelMonochromeJson from "./vercel-monochrome.json" with { type: "json" };
 import appleGlassJson from "./apple-glass.json" with { type: "json" };
 import linearDarkJson from "./linear-dark.json" with { type: "json" };
 import neoBrutalistJson from "./neo-brutalist.json" with { type: "json" };
 import stripeMinimalJson from "./stripe-minimal.json" with { type: "json" };
 import swissGridJson from "./swiss-grid.json" with { type: "json" };
 export const PRESET_NAMES = [
+    "swiss-editorial",
+    "linear-precision",
+    "stripe-atmospheric",
+    "vercel-monochrome",
+    "teenage-engineering",
+    "anthropic-warm-editorial",
+    "bloomberg-terminal-dense",
+    "raycast-command",
+    "fintech-institutional",
+    "neo-brutalist-craft",
+];
+/** v1 preset IDs remain loadable without appearing in the canonical v2 gallery. */
+export const LEGACY_PRESET_NAMES = [
     "linear-dark",
     "swiss-grid",
     "stripe-minimal",
@@ -70,8 +93,22 @@ export function validatePreset(value) {
         requireString(colors[key], `tokens.colors.${key}`);
     }
     validateStringRecord(colors, "tokens.colors");
+    if (tokens.darkColors !== undefined) {
+        const darkColors = requireRecord(tokens.darkColors, "tokens.darkColors");
+        for (const key of [
+            "background", "surface", "surfaceElevated", "text", "textMuted",
+            "border", "accent", "accentText",
+        ]) {
+            requireString(darkColors[key], `tokens.darkColors.${key}`);
+        }
+        validateStringRecord(darkColors, "tokens.darkColors");
+    }
     const typography = requireRecord(tokens.typography, "tokens.typography");
     requireString(typography.fontFamily, "tokens.typography.fontFamily");
+    if (typography.displayFamily !== undefined)
+        requireString(typography.displayFamily, "tokens.typography.displayFamily");
+    if (typography.bodyFamily !== undefined)
+        requireString(typography.bodyFamily, "tokens.typography.bodyFamily");
     requireString(typography.monospaceFamily, "tokens.typography.monospaceFamily");
     requireString(typography.displayTracking, "tokens.typography.displayTracking");
     requireString(typography.bodyTracking, "tokens.typography.bodyTracking");
@@ -133,6 +170,16 @@ export function validatePreset(value) {
     return value;
 }
 const registry = Object.freeze({
+    "swiss-editorial": validatePreset(swissEditorialJson),
+    "linear-precision": validatePreset(linearPrecisionJson),
+    "stripe-atmospheric": validatePreset(stripeAtmosphericJson),
+    "vercel-monochrome": validatePreset(vercelMonochromeJson),
+    "teenage-engineering": validatePreset(teenageEngineeringJson),
+    "anthropic-warm-editorial": validatePreset(anthropicWarmEditorialJson),
+    "bloomberg-terminal-dense": validatePreset(bloombergTerminalDenseJson),
+    "raycast-command": validatePreset(raycastCommandJson),
+    "fintech-institutional": validatePreset(fintechInstitutionalJson),
+    "neo-brutalist-craft": validatePreset(neoBrutalistCraftJson),
     "linear-dark": validatePreset(linearDarkJson),
     "swiss-grid": validatePreset(swissGridJson),
     "stripe-minimal": validatePreset(stripeMinimalJson),
@@ -144,10 +191,14 @@ export function isBuiltInPresetName(name) {
 }
 export function loadPreset(name) {
     const normalized = name.trim().toLowerCase().replace(/\.json$/, "");
-    if (!isBuiltInPresetName(normalized)) {
-        throw new Error(`Unknown preset "${name}". Available presets: ${PRESET_NAMES.join(", ")}.`);
+    if (!PRESET_NAMES.includes(normalized) &&
+        !LEGACY_PRESET_NAMES.includes(normalized)) {
+        throw new Error(`Unknown preset "${name}". Available presets: ${PRESET_NAMES.join(", ")}. Legacy IDs: ${LEGACY_PRESET_NAMES.join(", ")}.`);
     }
-    return structuredClone(registry[normalized]);
+    const preset = registry[normalized];
+    if (!preset)
+        throw new Error(`Preset registry is missing "${normalized}".`);
+    return structuredClone(preset);
 }
 export function listPresets() {
     return PRESET_NAMES.map((name) => structuredClone(registry[name]));

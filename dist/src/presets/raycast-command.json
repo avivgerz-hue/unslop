@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "name": "raycast-command",
+  "title": "Raycast Command",
+  "description": "Frosted graphite command-palette ergonomics with keyboard-first focus, compact rows, crisp shortcut badges, and immediate feedback.",
+  "tokens": {
+    "colorScheme": "dark",
+    "colors": {
+      "background": "#101112",
+      "surface": "#17181a",
+      "surfaceElevated": "#202225",
+      "text": "#f5f5f4",
+      "textMuted": "#a3a6ab",
+      "border": "#34373c",
+      "accent": "#f2f2f0",
+      "accentText": "#17181a",
+      "interactive": "#282b30",
+      "success": "#58c98a",
+      "warning": "#e8b85c",
+      "danger": "#f27278",
+      "info": "#75a7f0",
+      "focus": "#f2f2f0"
+    },
+    "typography": {
+      "fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+      "monospaceFamily": "SFMono-Regular, Consolas, Liberation Mono, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "0.875rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "clamp(1.75rem, 2.4vw, 2.25rem)",
+        "4xl": "clamp(2.25rem, 5vw, 2.5rem)"
+      },
+      "displayTracking": "-0.032em",
+      "bodyTracking": "-0.008em",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    },
+    "radii": {
+      "sm": "5px",
+      "md": "7px",
+      "lg": "10px",
+      "xl": "14px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 1px 2px rgba(0,0,0,0.24)",
+      "md": "0 8px 24px rgba(0,0,0,0.32), 0 0 0 1px rgba(255,255,255,0.05)",
+      "lg": "0 24px 64px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.07)"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ]
+    },
+    "motion": {
+      "duration": "120ms",
+      "easing": "cubic-bezier(0.2,0.8,0.2,1)",
+      "spring": {
+        "mass": 0.8,
+        "stiffness": 320,
+        "damping": 28
+      }
+    },
+    "layout": {
+      "maxWidth": "760px",
+      "columns": 8,
+      "borderWidth": "1px",
+      "gridGap": "8px",
+      "contentInset": "16px"
+    },
+    "effects": {
+      "backdropBlur": "20px",
+      "backdropSaturation": "140%"
+    }
+  },
+  "rules": [
+    "Design every workflow keyboard-first with visible selection, shortcuts, and predictable focus return.",
+    "Keep command rows compact, left-aligned, and built around one dominant action.",
+    "Use frosted graphite only for transient command surfaces with an opaque fallback.",
+    "Shortcut badges use monospace labels, subtle borders, and consistent key ordering.",
+    "Selection is communicated by surface and border as well as color.",
+    "Avoid decorative sidebar cards, marketing sections, and ambiguous icon-only commands.",
+    "Search feedback, empty states, errors, and loading states are designed as first-class rows.",
+    "Icons share one stroke, optical size, and alignment; never mix emoji with product iconography.",
+    "Focus and selection remain legible against every elevated graphite surface.",
+    "List motion is 120ms transform or opacity only and is removed under reduced motion."
+  ]
+}

@@ -2,6 +2,7 @@ import { once } from "node:events";
 import { resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { auditTarget, formatAuditReport } from "../analyzer/slop-detector.js";
+import { createRefactorPlan, DEFAULT_REFACTOR_REPORT, writeRefactorReport, } from "../analyzer/refactor-plan.js";
 import { createPresetFromDNA, extractDesignDNA } from "../extractor/extract-dna.js";
 import { loadPreset, PRESET_NAMES } from "../presets/index.js";
 import { installUnslop, renderAgentSkill } from "../sync/rule-writer.js";
@@ -11,7 +12,7 @@ const DEFAULT_MAX_MESSAGE_BYTES = 2 * 1024 * 1024;
 export const MCP_TOOL_DEFINITIONS = [
     {
         name: "unslop_audit",
-        description: "Audit a frontend file or directory for AI slop. Returns the Design Integrity Score, exact diagnostics, and refactoring instructions.",
+        description: "Audit JSX, HTML, Vue, Svelte, CSS, and Tailwind across 72 rules. Returns the Design Craft Score, 7-pillar scorecard, exact diagnostics, and refactoring instructions.",
         inputSchema: {
             type: "object",
             properties: {
@@ -50,6 +51,24 @@ export const MCP_TOOL_DEFINITIONS = [
                 projectDir: { type: "string", description: "Project directory, relative to the server project root." },
             },
             required: ["preset"],
+            additionalProperties: false,
+        },
+    },
+    {
+        name: "unslop_refactor_plan",
+        description: "Generate a Design Transformation Blueprint with a 7-pillar scorecard, exact preset-aware before/after translations, and prioritized file:line refactor steps.",
+        inputSchema: {
+            type: "object",
+            properties: {
+                path: { type: "string", description: "Component or directory to analyze, relative to the server project root." },
+                preset: { type: "string", enum: [...PRESET_NAMES], description: "Archetype used for exact replacement classes and tokens." },
+                report: { type: "string", description: "Markdown report path (default: UNSLOP-REPORT.md)." },
+                ignore: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "Additional directory base names to skip.",
+                },
+            },
             additionalProperties: false,
         },
     },
@@ -140,7 +159,7 @@ export class UnslopMCPServer {
                 protocolVersion,
                 capabilities: { tools: { listChanged: false } },
                 serverInfo: { name: "unslop", version: this.version },
-                instructions: "Use unslop_audit before and after frontend work, unslop_extract_dna to clone visual tokens, and unslop_apply_preset to install a complete design system.",
+                instructions: "Use unslop_audit to baseline all seven pillars, unslop_extract_dna or unslop_apply_preset for tokens, then unslop_refactor_plan to generate an exact transformation blueprint.",
             };
         }
         if (method === "notifications/initialized" || method === "notifications/cancelled")
@@ -219,6 +238,25 @@ export class UnslopMCPServer {
             return {
                 content: textContent(`Installed ${result.preset}.\n${result.files.map((file) => `${file.status}: ${file.path}`).join("\n")}`),
                 structuredContent: result,
+            };
+        }
+        if (name === "unslop_refactor_plan") {
+            const target = stringArgument(args, "path") ?? ".";
+            const preset = stringArgument(args, "preset") ?? "linear-precision";
+            const report = stringArgument(args, "report") ?? DEFAULT_REFACTOR_REPORT;
+            const ignore = args.ignore;
+            if (ignore !== undefined && (!Array.isArray(ignore) || ignore.some((entry) => typeof entry !== "string"))) {
+                throw new Error("ignore must be an array of directory names.");
+            }
+            const plan = await createRefactorPlan(resolve(this.cwd, target), {
+                cwd: this.cwd,
+                preset,
+                ignore: ignore ?? [],
+            });
+            await writeRefactorReport(plan, report, this.cwd);
+            return {
+                content: textContent(`${plan.markdown}\n\nReport written to ${report}.`),
+                structuredContent: { ...plan, report },
             };
         }
         throw new Error(`Unsupported tool: ${name}`);

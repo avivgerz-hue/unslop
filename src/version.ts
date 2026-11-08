@@ -1,2 +1,7 @@
-/** Single runtime version used by the CLI, MCP manifest, and generated configs. */
-export const UNSLOP_VERSION = "1.2.0";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const manifest = require("unslop-mcp/package.json") as { version: string };
+
+/** Runtime version is always read from the npm manifest; never duplicate it. */
+export const UNSLOP_VERSION: string = manifest.version;

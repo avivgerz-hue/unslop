@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "name": "anthropic-warm-editorial",
+  "title": "Anthropic Warm Editorial",
+  "description": "Warm parchment and stone surfaces with literary serif headings, calm clay accents, and generous long-form reading measure.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#f5f1e8",
+      "surface": "#faf7f0",
+      "surfaceElevated": "#fffdf8",
+      "text": "#292724",
+      "textMuted": "#6f685f",
+      "border": "#d8cfc1",
+      "accent": "#a54d2e",
+      "accentText": "#fffaf3",
+      "interactive": "#e6ded1",
+      "success": "#477257",
+      "warning": "#8a6426",
+      "danger": "#a43f38",
+      "info": "#4e6f83",
+      "focus": "#a54d2e"
+    },
+    "darkColors": {
+      "background": "#211f1c",
+      "surface": "#2a2723",
+      "surfaceElevated": "#34302a",
+      "text": "#f2ede3",
+      "textMuted": "#b8afa1",
+      "border": "#514a40",
+      "accent": "#d7835f",
+      "accentText": "#271812",
+      "interactive": "#403a32",
+      "success": "#8dc49d",
+      "warning": "#d6b778",
+      "danger": "#df8c84",
+      "info": "#98b4c3",
+      "focus": "#d7835f"
+    },
+    "typography": {
+      "fontFamily": "Iowan Old Style, Palatino Linotype, Book Antiqua, Palatino, Georgia, serif",
+      "monospaceFamily": "SFMono-Regular, Consolas, Liberation Mono, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "1.0625rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "clamp(1.75rem, 2.4vw, 2.25rem)",
+        "4xl": "clamp(2.25rem, 5vw, 3.75rem)"
+      },
+      "displayTracking": "-0.028em",
+      "bodyTracking": "0",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      },
+      "displayFamily": "Iowan Old Style, Palatino Linotype, Book Antiqua, Palatino, Georgia, serif",
+      "bodyFamily": "Inter, ui-sans-serif, system-ui, sans-serif"
+    },
+    "radii": {
+      "sm": "4px",
+      "md": "8px",
+      "lg": "12px",
+      "xl": "16px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 1px 2px rgba(65,52,38,0.05)",
+      "md": "0 8px 24px rgba(65,52,38,0.08)",
+      "lg": "0 20px 48px rgba(65,52,38,0.10)"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ]
+    },
+    "motion": {
+      "duration": "200ms",
+      "easing": "cubic-bezier(0.22,1,0.36,1)",
+      "spring": {
+        "mass": 0.8,
+        "stiffness": 320,
+        "damping": 28
+      }
+    },
+    "layout": {
+      "maxWidth": "1160px",
+      "columns": 12,
+      "borderWidth": "1px",
+      "gridGap": "24px",
+      "contentInset": "32px"
+    }
+  },
+  "rules": [
+    "Optimize for calm reading with a 60–72ch measure, warm paper, and literary hierarchy.",
+    "Use clay accents for links and selected actions rather than decorative washes.",
+    "Pair serif narrative headings with quiet system sans for controls and dense metadata.",
+    "Prefer thin stone rules and generous margins over boxed cards and heavy elevation.",
+    "Display headings use 1.05–1.2 line-height; body copy uses 1.6–1.75.",
+    "Do not mix more than three weights; italic and measure can provide additional hierarchy.",
+    "Keep form labels persistent and error language constructive and specific.",
+    "Illustration and imagery must share the warm tonal palette and never reduce text contrast.",
+    "Use 8px and 12px radii sparingly; pills belong to compact metadata only.",
+    "Motion is soft but brief, and all reading or navigation remains complete without animation."
+  ]
+}

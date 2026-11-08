@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "name": "swiss-editorial",
+  "title": "Swiss Editorial",
+  "description": "High-contrast editorial typography on warm paper, with exposed twelve-column grids, crisp rules, and a disciplined signal-red accent.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#f3f0e8",
+      "surface": "#faf8f2",
+      "surfaceElevated": "#fffdf8",
+      "text": "#1c1b18",
+      "textMuted": "#68635b",
+      "border": "#c8c1b4",
+      "accent": "#a83228",
+      "accentText": "#fffaf2",
+      "interactive": "#e2dccf",
+      "success": "#18794e",
+      "warning": "#9a6700",
+      "danger": "#a83228",
+      "info": "#315b78",
+      "focus": "#a83228"
+    },
+    "darkColors": {
+      "background": "#191917",
+      "surface": "#21211e",
+      "surfaceElevated": "#2a2a26",
+      "text": "#f4f0e7",
+      "textMuted": "#b0aa9e",
+      "border": "#4a4841",
+      "accent": "#e66a5c",
+      "accentText": "#211715",
+      "interactive": "#35332e",
+      "success": "#4ade80",
+      "warning": "#fbbf24",
+      "danger": "#f87171",
+      "info": "#8eb8d2",
+      "focus": "#e66a5c"
+    },
+    "typography": {
+      "fontFamily": "Source Serif 4, Georgia, Times New Roman, serif",
+      "monospaceFamily": "IBM Plex Mono, SFMono-Regular, Consolas, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "1.0625rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "clamp(1.75rem, 2.4vw, 2.25rem)",
+        "4xl": "clamp(2.25rem, 5vw, 4rem)"
+      },
+      "displayTracking": "-0.035em",
+      "bodyTracking": "0",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      },
+      "displayFamily": "Source Serif 4, Georgia, Times New Roman, serif",
+      "bodyFamily": "Inter, Helvetica Neue, Arial, sans-serif"
+    },
+    "radii": {
+      "sm": "0px",
+      "md": "2px",
+      "lg": "4px",
+      "xl": "8px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 1px 0 rgba(28,27,24,0.08)",
+      "md": "0 8px 24px rgba(28,27,24,0.08)",
+      "lg": "0 20px 48px rgba(28,27,24,0.12)"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ]
+    },
+    "motion": {
+      "duration": "180ms",
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "spring": {
+        "mass": 0.8,
+        "stiffness": 320,
+        "damping": 28
+      }
+    },
+    "layout": {
+      "maxWidth": "1320px",
+      "columns": 12,
+      "borderWidth": "1px",
+      "gridGap": "24px",
+      "contentInset": "32px"
+    }
+  },
+  "rules": [
+    "Lead with editorial hierarchy: display serif for narrative and grotesk or mono for controls and metadata.",
+    "Expose the twelve-column grid through aligned rules rather than decorative containers.",
+    "Keep article measure between 58ch and 72ch; captions may be narrower but never full viewport width.",
+    "Use warm paper, ink, and one signal-red action color; do not add gradient illustration.",
+    "Separate stories with 1px rules and generous white space instead of floating every section in a card.",
+    "Set display lines at 0.95–1.05 and body copy at 1.55–1.7.",
+    "Use asymmetric spans such as 7/5 or 8/4 to avoid generic centered hero compositions.",
+    "Align folios, timestamps, and numeric indexes with tabular figures.",
+    "Keep corners nearly square; rounding must never soften the editorial grid.",
+    "Motion is limited to restrained underline, reveal, and selection feedback within 180ms."
+  ]
+}

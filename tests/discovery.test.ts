@@ -25,7 +25,7 @@ describe("release and discovery metadata", () => {
       readText("CITATION.cff"),
     ]);
 
-    expect(UNSLOP_VERSION).toBe("1.2.0");
+    expect(UNSLOP_VERSION).toBe("2.0.0");
     expect(manifest.name).toBe("unslop-mcp");
     expect(manifest.version).toBe(UNSLOP_VERSION);
     expect(lockfile.name).toBe(manifest.name);
@@ -37,6 +37,19 @@ describe("release and discovery metadata", () => {
     expect(registry.version).toBe(UNSLOP_VERSION);
     expect(registry.packages[0].version).toBe(UNSLOP_VERSION);
     expect(citation).toContain(`version: ${UNSLOP_VERSION}\n`);
+  });
+
+  it("reads source and compiled runtime versions from the package manifest", async () => {
+    const [source, compiled, manifest] = await Promise.all([
+      readText("src/version.ts"),
+      readText("dist/src/version.js"),
+      readJSON("package.json"),
+    ]);
+    expect(manifest.exports["./package.json"]).toBe("./package.json");
+    expect(source).toContain('require("unslop-mcp/package.json")');
+    expect(compiled).toContain('require("unslop-mcp/package.json")');
+    expect(source).not.toMatch(/["']\d+\.\d+\.\d+["']/);
+    expect(compiled).not.toMatch(/["']\d+\.\d+\.\d+["']/);
   });
 
   it("publishes a unique, high-intent keyword set without dropping existing terms", async () => {
@@ -172,7 +185,7 @@ describe("release and discovery metadata", () => {
     expect(preview).toContain('viewBox="0 0 1600 1000"');
     expect(preview).toContain("Generic AI Slop UI");
     expect(preview).toContain("Unslop Studio Design DNA");
-    expect(preview).toContain("Design Integrity Score");
+    expect(preview).toContain("Design Craft Score");
     expect(preview).toContain("100/100 (A+)");
     expect(preview).not.toMatch(/<script|onload=|TODO|PLACEHOLDER/i);
     expect(readme).toContain("[![npm version](https://img.shields.io/npm/v/unslop-mcp.svg)](https://www.npmjs.com/package/unslop-mcp)");
@@ -180,7 +193,7 @@ describe("release and discovery metadata", () => {
     expect(readme).toContain("![unslop preview](./assets/hero-preview.svg)");
     expect(readme).toContain("docs/assets/before-after-unslop.png");
     expect(readme.indexOf("![unslop preview](./assets/hero-preview.svg)"))
-      .toBeLessThan(readme.indexOf("`unslop` is a zero-runtime-dependency CLI"));
+      .toBeLessThan(readme.indexOf("`unslop` is a zero-runtime-dependency"));
   });
 
   it("keeps GitHub installation independent of a local TypeScript compiler", async () => {

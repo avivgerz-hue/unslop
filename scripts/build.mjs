@@ -15,18 +15,35 @@ const dist = resolve(root, "dist");
 const entrypoint = resolve(dist, "bin/unslop.js");
 const requiredArtifacts = [
   entrypoint,
+  resolve(dist, "src/version.js"),
   resolve(dist, "src/mcp/server.js"),
   resolve(dist, "src/presets/index.js"),
-  resolve(dist, "src/presets/linear-dark.json"),
-  resolve(dist, "src/presets/swiss-grid.json"),
-  resolve(dist, "src/presets/stripe-minimal.json"),
-  resolve(dist, "src/presets/apple-glass.json"),
-  resolve(dist, "src/presets/neo-brutalist.json"),
+  resolve(dist, "src/analyzer/design-craft.js"),
+  resolve(dist, "src/analyzer/refactor-plan.js"),
+];
+const requiredPresets = [
+  "swiss-editorial",
+  "linear-precision",
+  "stripe-atmospheric",
+  "vercel-monochrome",
+  "teenage-engineering",
+  "anthropic-warm-editorial",
+  "bloomberg-terminal-dense",
+  "raycast-command",
+  "fintech-institutional",
+  "neo-brutalist-craft",
+  // v1 compatibility IDs remain part of the production artifact.
+  "linear-dark",
+  "swiss-grid",
+  "stripe-minimal",
+  "apple-glass",
+  "neo-brutalist",
 ];
 const localTypeScript = resolve(root, "node_modules/typescript/bin/tsc");
 
 function hasCommittedBuild() {
-  return requiredArtifacts.every((artifact) => existsSync(artifact));
+  return requiredArtifacts.every((artifact) => existsSync(artifact)) &&
+    requiredPresets.every((name) => existsSync(resolve(dist, `src/presets/${name}.json`)));
 }
 
 function fail(message) {

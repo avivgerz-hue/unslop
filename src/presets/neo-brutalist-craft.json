@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "name": "neo-brutalist-craft",
+  "title": "Neo Brutalist Craft",
+  "description": "Intentional ink borders, offset hard shadows, bold geometric contrast, and strict spacing discipline rather than chaotic brutalist decoration.",
+  "tokens": {
+    "colorScheme": "light",
+    "colors": {
+      "background": "#f2efdf",
+      "surface": "#faf7e9",
+      "surfaceElevated": "#fffdf4",
+      "text": "#111111",
+      "textMuted": "#514e45",
+      "border": "#111111",
+      "accent": "#ff5c35",
+      "accentText": "#111111",
+      "interactive": "#d8d1ba",
+      "success": "#16845b",
+      "warning": "#e0a400",
+      "danger": "#d53b36",
+      "info": "#2c62c8",
+      "focus": "#2c62c8"
+    },
+    "darkColors": {
+      "background": "#171714",
+      "surface": "#22221d",
+      "surfaceElevated": "#2d2d25",
+      "text": "#fffdf4",
+      "textMuted": "#c2bdab",
+      "border": "#fffdf4",
+      "accent": "#ff7352",
+      "accentText": "#17110e",
+      "interactive": "#38382e",
+      "success": "#4fd79d",
+      "warning": "#f1c44f",
+      "danger": "#ff746e",
+      "info": "#82a8ff",
+      "focus": "#ff7352"
+    },
+    "typography": {
+      "fontFamily": "Arial Black, Archivo Black, Helvetica Neue, Arial, sans-serif",
+      "monospaceFamily": "IBM Plex Mono, SFMono-Regular, Consolas, monospace",
+      "scale": {
+        "xs": "0.75rem",
+        "sm": "0.875rem",
+        "base": "1rem",
+        "lg": "1.125rem",
+        "xl": "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "clamp(1.75rem, 2.4vw, 2.25rem)",
+        "4xl": "clamp(2.25rem, 5vw, 4rem)"
+      },
+      "displayTracking": "-0.055em",
+      "bodyTracking": "0",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      },
+      "displayFamily": "Arial Black, Archivo Black, Helvetica Neue, Arial, sans-serif",
+      "bodyFamily": "Inter, Helvetica Neue, Arial, sans-serif"
+    },
+    "radii": {
+      "sm": "0px",
+      "md": "0px",
+      "lg": "4px",
+      "xl": "8px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "2px 2px 0 #111111",
+      "md": "4px 4px 0 #111111",
+      "lg": "8px 8px 0 #111111"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ]
+    },
+    "motion": {
+      "duration": "100ms",
+      "easing": "cubic-bezier(0.2,0.8,0.2,1)",
+      "spring": {
+        "mass": 0.8,
+        "stiffness": 320,
+        "damping": 28
+      }
+    },
+    "layout": {
+      "maxWidth": "1240px",
+      "columns": 12,
+      "borderWidth": "2px",
+      "gridGap": "24px",
+      "contentInset": "32px"
+    }
+  },
+  "rules": [
+    "Use bold ink borders and offset hard shadows intentionally, with one consistent light direction.",
+    "Anchor every element to the four-pixel grid; chaos in content never excuses chaos in spacing.",
+    "Choose one loud accent per composition and keep surrounding surfaces quiet.",
+    "Display type is bold and geometric; body copy switches to a readable system sans when needed.",
+    "Use square or small radii for surfaces and reserve pills for tags and compact actions.",
+    "Press feedback translates elements toward their hard shadow without changing layout.",
+    "Use asymmetric editorial or bento compositions instead of repeated centered cards.",
+    "All text and controls meet contrast requirements despite high-chroma accents.",
+    "Icons are geometric, consistent, and labelled; emoji are not a substitute for illustration.",
+    "Reduced-motion mode removes translation while preserving border, color, and pressed-state feedback."
+  ]
+}

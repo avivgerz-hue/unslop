@@ -1,6 +1,6 @@
-# unslop
+# unslop v2.0.0
 
-**Your agent can write the code. Stop letting it ship the same AI interface.**
+**Your agent can write the code. unslop gives it a measurable design engineering protocol.**
 
 [![npm version](https://img.shields.io/npm/v/unslop-mcp.svg)](https://www.npmjs.com/package/unslop-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/unslop-mcp.svg)](https://www.npmjs.com/package/unslop-mcp)
@@ -10,177 +10,190 @@
 
 ![unslop preview](./assets/hero-preview.svg)
 
-`unslop` is a zero-runtime-dependency CLI, native MCP server, and installable Agent Skill that gives coding agents a real design system, audits frontend source for generic AI patterns and WCAG contrast failures, exports Tailwind v4 tokens, and turns live interfaces into enforceable Design DNA.
+`unslop` is a zero-runtime-dependency **UI/UX Design Engineering CLI, native MCP Server, and AI Agent Skill**. It audits 72 rules across seven design craft pillars, installs ten studio-grade archetypes, extracts Design DNA, exports four token formats, and turns every finding into an exact, prioritized transformation blueprint for JSX/TSX, HTML, Vue, Svelte, CSS, and Tailwind codebases.
 
 Works with **Claude Code, OpenAI Codex, Cursor, Windsurf, Cline**, and any agent that reads project instructions.
 
 ![Before and after unslop: a generic purple-gradient AI landing page transformed into a precise, token-driven Linear Dark dashboard](https://raw.githubusercontent.com/avivgerz-hue/unslop/main/docs/assets/before-after-unslop.png)
 
 ```bash
-npx -y unslop-mcp init
+npx -y unslop-mcp init --preset linear-precision
+npx -y unslop-mcp audit .
+npx -y unslop-mcp refactor-plan . --report UNSLOP-REPORT.md
 ```
 
-That one command installs the `linear-dark` design contract into `.claude/skills/unslop/SKILL.md`, `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.windsurfrules`, and `.clinerules`, then merges the native server into `.mcp.json`. Existing instructions and unrelated MCP servers are preserved.
+The result is not a generic prompt. It is a versioned token contract, a **Design Craft Score from 0–100**, a seven-pillar scorecard, exact before/after translations, and file-level steps your agent can execute in one coherent pass.
 
-## The difference
+## v2 at a glance
 
-```text
-BEFORE: probabilistic taste                 AFTER: enforceable design physics
-──────────────────────────────────────      ──────────────────────────────────────
-“Make it modern and beautiful.”             4px grid · semantic surface hierarchy
-        ↓                                              ↓
- centered purple-gradient hero             12-column content-driven composition
-        ↓                                              ↓
- three centered emoji cards                tight display type · 45–75ch body measure
-        ↓                                              ↓
- shadow-xl + rounded-2xl everywhere        hairline borders · intentional elevation
-        ↓                                              ↓
- another interchangeable AI page           auditable tokens + complete UI states
-```
+| Capability | v2 contract |
+| --- | --- |
+| Design Craft Engine | **72 rules · 7 pillars · A+–F grades** |
+| Color analysis | Exact **WCAG 2.1 AA/AAA** plus **APCA-inspired perceptual checks** |
+| Studio archetypes | **10** complete production design systems; five v1 IDs remain compatible |
+| Token formats | Tailwind v4 `@theme`, Tailwind v3 config, CSS custom properties, W3C Design Tokens JSON |
+| Transformation | `refactor-plan` CLI and `unslop_refactor_plan` MCP tool generate `UNSLOP-REPORT.md` |
+| Agent protocol | Five-step principal UI/UX design engineer [`SKILL.md`](SKILL.md) |
+| Runtime | Node.js 20.19+, JSON-RPC 2.0 stdio, **zero runtime dependencies** |
 
-`unslop` does not ask a model to be more creative. It constrains the implementation with explicit typography, geometry, color roles, elevation, motion, and verification loops.
+## The 7-Pillar Design Craft Engine
 
-## Why teams install it
-
-- **Installable taste, not a prompt snippet.** Five complete, versioned presets compile to CSS variables and strict agent laws.
-- **Deterministic anti-slop audit.** Scan TSX, JSX, Vue, Svelte, HTML, and CSS with exact `file:line:column` diagnostics.
-- **Mathematical WCAG 2.1 checks.** Real sRGB relative luminance, alpha compositing, and normal/large-text thresholds—not approximate color heuristics.
-- **Native MCP tools.** Audit, extract DNA, and apply presets directly from Claude Code, Claude Desktop, Cursor, or Codex over JSON-RPC 2.0 stdio.
-- **Tailwind v4 token export.** Generate `@theme`, `:root`, and `.dark` contracts from any built-in preset or extracted Design DNA.
-- **A score your agent can act on.** Every audit includes a structured refactoring brief and acceptance criteria.
-- **Extract real Design DNA.** Read local CSS or a live URL, including inline styles, linked stylesheets, and `@import` graphs.
-- **No runtime dependency footprint.** Node.js built-ins do the analysis, extraction, synchronization, MCP transport, and CLI work.
-- **Safe to re-run.** Managed blocks are idempotent; your existing agent instructions and MCP servers remain intact.
-
-## Quickstart
-
-### 1. Choose a design system
-
-```bash
-npx -y unslop-mcp init --preset linear-dark
-```
-
-```text
-Installed the linear-dark design system:
-  created   .claude/skills/unslop/SKILL.md
-  created   CLAUDE.md
-  created   AGENTS.md
-  created   .cursorrules
-  created   .windsurfrules
-  created   .clinerules
-  created   .mcp.json
-
-Next: run npx -y unslop-mcp audit . before your agent writes more UI.
-```
-
-Then ask your agent:
-
-> Build the settings page using the unslop contract. Reuse the semantic tokens, implement every interaction state, run the audit, and resolve each finding.
-
-### 2. Audit the interface
-
-```bash
-npx -y unslop-mcp audit src
-```
-
-```text
-src/components/Hero.tsx:4:7  WARNING  slop/cliche-gradient
-  Cliché purple/indigo AI gradient stop detected.
-  Fix: Replace the gradient with a deliberate solid accent ...
-
-src/components/Metric.tsx:8:5  WARNING  slop/numeric-alignment
-  Numeric UI is missing tabular figures, causing unstable alignment.
-
-Design Integrity Score: 86/100 (B)
-```
-
-The full output also contains a copy-ready refactoring prompt. Machine-readable output is one flag away:
+Run a deterministic baseline before letting an agent rewrite the interface:
 
 ```bash
 npx -y unslop-mcp audit . --json
+```
+
+```text
+Design Craft Score: 78/100 (C)
+7-Pillar Scorecard:
+  Color & Contrast: 82/100 (B) · 3 findings
+  Typography & Hierarchy: 76/100 (C) · 4 findings
+  Layout & Spatial Rhythm: 70/100 (C) · 5 findings
+  Surface & Elevation: 88/100 (B) · 2 findings
+  Copy & Microcopy: 82/100 (B) · 3 findings
+  Interaction & Motion: 58/100 (F) · 7 findings
+  Theme & Token Architecture: 90/100 (A) · 2 findings
+```
+
+| Pillar | Canonical rules | What the engine detects |
+| --- | --- | --- |
+| **1 · Color, Atmospheric Polarity & Contrast Math** | `SLOP-COLOR-*` | Purple/pink/indigo clone gradients, neon glows, absolute black/white glare, muddy grays, hardcoded component colors, low-opacity text, exact WCAG AA/AAA, APCA-inspired polarity |
+| **2 · Typography & Scannable Hierarchy** | `SLOP-TYPE-*` | Fixed display scales, monotonous heading weights, paragraphs beyond readable measure, missing `tabular-nums`, cramped body leading, loose display leading, untracked uppercase labels |
+| **3 · Layout, Spatial Rhythm & Grid Craft** | `SLOP-LAYOUT-*` | Centered three-card clones, nested cards, off-grid arbitrary values, excessive container rounding, arbitrary grids, missing content measures, conflicting spacing and radii |
+| **4 · Visual Restraint & Surface Elevation** | `SLOP-SURFACE-*` | Glassmorphism overuse, heavy dark-mode shadows, decorative blur blobs, icon badge clutter, unanchored raw elevation, ad-hoc shadow stacks |
+| **5 · Copywriting & Microcopy Anti-Slop** | `SLOP-COPY-*` | 100+ cliché variants, including “Unleash the power,” “Revolutionize,” “Supercharge your workflow,” “Seamless integration,” “Next-generation,” hype, filler, superlatives, and emoji spam |
+| **6 · Interactive Ergonomics, Motion & States** | `SLOP-UX-*` | Clickable divs, missing labels and keyboard rings, incomplete hover/active/disabled states, small targets, positive `tabindex`, `transition-all`, missing reduced-motion behavior |
+| **7 · Theme Parity & Token Architecture** | `SLOP-TOKEN-*` | Broken Canvas → Surface-1 → Surface-2 → Interactive → Border order, asymmetric dark overrides, missing dark companions, off-grid or mistyped tokens |
+
+Legacy `slop/*` IDs remain in output for compatibility. Canonical `SLOP-*` findings drive the v2 seven-pillar score, with location-level deduplication so compatibility output does not double-penalize a finding.
+
+### Scores with an action attached
+
+Every audit includes exact `file:line:column` diagnostics and refactoring instructions. The overall score is the rounded mean of seven independently capped pillar scores; **95–100 is A+**. Use `--fail-under` in CI or agent loops:
+
+```bash
+npx -y unslop-mcp audit . --fail-under 95
 npx -y unslop-mcp audit . --prompt
-npx -y unslop-mcp audit . --fail-under 90
-npx -y unslop-mcp audit . --no-fail
+npx -y unslop-mcp audit src --json --no-fail
 ```
 
-By default, an audit exits `1` when it finds violations and `0` when clean. Invalid usage exits `2`. Unsupported or empty directories still produce a valid report with zero scanned files.
+Static analysis never replaces rendered verification. Keyboard operation, responsive behavior, actual contrast, content overflow, and reduced motion still need explicit inspection.
 
-### 3. Extract a visual language
+## Design Transformation Blueprint
 
-From a local stylesheet:
+`unslop_refactor_plan` turns the audit into an executable **Design Transformation Blueprint** instead of a list of vague taste suggestions:
 
 ```bash
-npx -y unslop-mcp extract ./tokens.css --name acme -o .claude/skills/unslop/SKILL.md
+npx -y unslop-mcp refactor-plan . --preset linear-precision --report UNSLOP-REPORT.md
 ```
 
-From a live URL:
+The report contains:
+
+1. **Design Craft Score and 7-Pillar Scorecard.**
+2. **Before → After Class & Token Translation Table** mapping detected classes, hex/RGB literals, off-grid values, and cliché copy to exact replacements from the selected archetype.
+3. **Prioritized P0/P1/P2 file:line steps** covering the entire interface transformation.
+4. **Acceptance criteria** for reaching 95–100 without suppressing rules or losing accessible states.
+
+Example translations:
+
+| Before | After |
+| --- | --- |
+| `from-purple-500 via-pink-500 to-indigo-500` | `bg-[var(--surface-1)] text-[var(--text-primary)]` |
+| `shadow-xl` | `border border-[var(--border-subtle)] shadow-[var(--shadow-md)]` |
+| `p-[13px]` | `p-[var(--spacing-12)]` |
+| `rounded-3xl` | `rounded-[var(--radius-lg)]` |
+| `transition-all` | `transition-colors motion-reduce:transition-none` |
+| `#777777` | `var(--text-primary)` |
+| “Unleash the power” | A concrete product capability and verifiable user outcome |
+
+Use `--json` for the complete machine-readable blueprint:
 
 ```bash
-npx -y unslop-mcp extract https://example.com --name example --json -o design-dna.json
+npx -y unslop-mcp refactor-plan src --preset swiss-editorial --report reports/DESIGN.md --json
 ```
 
-The extractor inventories:
+## 10 Studio-Grade Design Archetypes
 
-- surface, text, muted-text, border, accent, and on-accent colors;
-- CSS custom properties and font stacks;
-- font sizes, line heights, weights, and tracking;
-- radius and spacing scales;
-- complete layered elevation tokens and their individual shadow layers;
-- durations and easing functions.
-
-Markdown output is a complete Claude-compatible `SKILL.md`. `--json` emits both the raw token inventory and its validated, compiled preset. Network requests use timeouts, response-size limits, a bounded stylesheet queue, and HTTP(S)-only URLs; page JavaScript is never executed.
-
-### 4. Export Tailwind v4 and framework-agnostic tokens
+Inspect and install a complete token and agent-rule contract:
 
 ```bash
-npx -y unslop-mcp export-tokens --preset linear-dark --out tokens.css
+npx -y unslop-mcp presets
+npx -y unslop-mcp presets anthropic-warm-editorial
+npx -y unslop-mcp init --preset anthropic-warm-editorial
 ```
 
-The generated stylesheet contains three complementary contracts:
+| Archetype | Visual and engineering thesis |
+| --- | --- |
+| `swiss-editorial` | High-contrast editorial grid, warm paper, serif/grotesk pairing, crisp hairline rules |
+| `linear-precision` | Obsidian craft, luminance borders, compact tracking, subtle layers, tabular precision |
+| `stripe-atmospheric` | Refined slate atmosphere, crisp white surfaces, cobalt trust, layered micro-shadows |
+| `vercel-monochrome` | Architectural monochrome, geometric rhythm, zero decorative bloat, semantic status color |
+| `teenage-engineering` | Tactile industrial UI, monospace labels, international orange, physical grid borders |
+| `anthropic-warm-editorial` | Parchment and stone, literary serif headings, calm clay accents, generous reading measure |
+| `bloomberg-terminal-dense` | Ultra-high data density, strict numeric alignment, compact workflows, semantic tickers |
+| `raycast-command` | Frosted graphite command palette, keyboard-first selection, crisp shortcut badges |
+| `fintech-institutional` | Deep forest-navy authority, legible financial hierarchy, restrained brass and emerald |
+| `neo-brutalist-craft` | Intentional ink borders, offset hard shadows, bold geometric contrast, disciplined rhythm |
 
-- **Tailwind v4 `@theme`** with literal `--color-*`, `--font-*`, `--text-*`, `--radius-*`, `--shadow-*`, `--spacing-*`, motion, and container tokens.
-- **`:root` semantic variables** such as `--surface-0`, `--surface-1`, `--text-primary`, `--border-subtle`, and `--font-display` for CSS Modules, vanilla CSS, styled-components, or any other framework.
-- **`.dark` overrides** for semantic and Tailwind color variables. Dark presets retain their native palette; light presets receive a deterministic dark companion derived from their source colors.
+Each archetype includes full surface hierarchy, explicit light/dark companions, typography scale and weights, spacing rhythm, radii, shadow/border elevation, layout contract, motion curve and spring values, plus ten archetype-specific design laws.
 
-Use it with Tailwind v4:
+The v1 IDs `linear-dark`, `swiss-grid`, `stripe-minimal`, `apple-glass`, and `neo-brutalist` remain loadable for existing installations; the canonical v2 gallery contains the ten systems above.
 
-```css
-@import "tailwindcss";
-@import "./tokens.css";
-```
+## Four token formats — presets or extracted DNA
 
-Or without Tailwind:
+Use the same deterministic exporter for a built-in archetype or extracted Design DNA.
 
-```css
-.panel {
-  color: var(--text-primary);
-  background: var(--surface-1);
-  border: var(--border-width) solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-}
-```
-
-Compile tokens directly from extracted DNA instead of a built-in preset:
+### Tailwind v4 `@theme`
 
 ```bash
-npx -y unslop-mcp export-tokens --source https://example.com --name example --out example-tokens.css
-npx -y unslop-mcp export-tokens --source ./tokens.css --name acme
+npx -y unslop-mcp export-tokens --preset linear-precision --format tailwind-v4 --out tokens.css
 ```
 
-`--preset` and `--source` are mutually exclusive. Without `--out`, CSS is written to stdout.
+Produces `@theme`, `:root`, and `.dark` contracts with semantic colors, fonts, fluid type, tracking, weights, radii, shadows, spacing, motion, and layout values.
 
-## Native MCP server
+### Tailwind v3 configuration fragment
 
-Start the zero-dependency Model Context Protocol server over stdio:
+```bash
+npx -y unslop-mcp export-tokens --preset linear-precision --format tailwind-v3 --out tailwind.config.js
+```
+
+Emits a mergeable `theme.extend` fragment with semantic utilities.
+
+### Pure CSS custom properties
+
+```bash
+npx -y unslop-mcp export-tokens --preset linear-precision --format css --out tokens.css
+```
+
+Emits standalone `:root` and `.dark` variables without requiring Tailwind.
+
+### W3C Design Tokens JSON
+
+```bash
+npx -y unslop-mcp export-tokens --preset linear-precision --format w3c-json --out tokens.json
+```
+
+Emits typed `$type` / `$value` groups for light and dark colors, typography, dimensions, radii, spacing, shadows, motion, and layout. A `.json` output path infers this format automatically.
+
+### Extract Design DNA from CSS or a URL
+
+```bash
+npx -y unslop-mcp extract https://example.com --name reference --json -o design-dna.json
+npx -y unslop-mcp export-tokens --source https://example.com --name reference --format w3c-json --out tokens.json
+```
+
+The extractor reads local CSS or live HTML, inline styles, linked stylesheets, and `@import` graphs with explicit byte, request, and stylesheet budgets. Extraction warnings remain visible rather than silently inventing missing tokens.
+
+## Native MCP Server
+
+Start the zero-dependency JSON-RPC 2.0 stdio server:
 
 ```bash
 npx -y unslop-mcp --mcp
 ```
 
-**Published 1.2.0 compatibility:** this source update adds `--mcp`; that alias and the `unslop-mcp` executable name require a subsequent npm publish. Until then, the published tarball accepts the equivalent positional form `npx -y unslop-mcp@1.2.0 mcp`.
-
-`init` creates or updates this project configuration automatically:
+`init` merge-safely creates or updates `.mcp.json` without replacing unrelated servers, top-level settings, or custom fields on the unslop entry:
 
 ```json
 {
@@ -193,178 +206,74 @@ npx -y unslop-mcp --mcp
 }
 ```
 
-The merge preserves unrelated entries in `mcpServers`, other top-level settings, and custom fields on the unslop entry. Invalid JSON is rejected rather than overwritten. Claude Code can also register the server explicitly:
+Claude Code can register it explicitly:
 
 ```bash
 claude mcp add --scope project unslop -- npx -y unslop-mcp --mcp
 ```
 
-For Claude Desktop, add the same `mcpServers.unslop` entry to the application's MCP configuration. Cursor reads project `.mcp.json`; Codex and other MCP-compatible clients can launch the same stdio command.
+| MCP tool | Purpose |
+| --- | --- |
+| `unslop_audit` | 72-rule diagnostic, Design Craft Score, seven-pillar scorecard, exact findings |
+| `unslop_extract_dna` | CSS/URL extraction and a complete compiled Design DNA preset |
+| `unslop_apply_preset` | Install any canonical archetype and merge project agent rules/MCP configuration |
+| `unslop_refactor_plan` | Generate `UNSLOP-REPORT.md` with exact translations and prioritized transformation steps |
 
-| MCP tool | Required input | Result |
-| --- | --- | --- |
-| `unslop_audit` | None; optional `path` and `ignore` | Full audit, integrity score, exact diagnostics, and refactoring instructions |
-| `unslop_extract_dna` | `source` CSS path or HTTP(S) URL | Raw DNA, validated compiled preset, and ready-to-use Agent Skill |
-| `unslop_apply_preset` | `preset`; optional `projectDir` | Six synchronized agent-rule files plus merge-safe `.mcp.json` |
+Positional `mcp` remains a backward-compatible alias for `--mcp`.
 
-The transport supports `initialize`, `ping`, `tools/list`, `tools/call`, JSON-RPC errors, notifications, and newline-delimited stdio framing. Protocol messages are the only stdout output. Tool execution failures return MCP `isError` results without terminating the server.
+## Principal UI/UX Design Engineer Skill
 
-### Production Docker image
+The rewritten [`SKILL.md`](SKILL.md) is a five-step execution protocol for Claude Code, Cursor, Windsurf, and other coding agents:
 
-Build the minimal Node 22 Alpine image from the committed runtime; no TypeScript compiler, source files, or development dependencies enter the build context:
+1. **Anti-Slop Diagnostic:** baseline all seven pillars with `unslop_audit`.
+2. **Aesthetic Direction & Token Foundation:** choose one archetype or extract Design DNA; install tokens before editing components.
+3. **Structural & Layout Transformation:** use `unslop_refactor_plan` to replace clone layouts, enforce rhythm, and apply exact translations.
+4. **Surface, Typography & Copy Polish:** implement semantic colors, WCAG contrast, fluid type, tabular numbers, and concrete product copy.
+5. **Interactive Ergonomics & Verification:** complete focus and state behavior, then re-audit to **95–100/100 (A+)** and inspect the rendered result.
 
-```bash
-docker build -t unslop:mcp .
-docker run --rm -i unslop:mcp
-```
+`init` installs the selected contract into `.claude/skills/unslop/SKILL.md`, `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.windsurfrules`, and `.clinerules`. Existing content outside managed blocks is preserved and repeated installs are byte-for-byte idempotent.
 
-The image entrypoint is `node dist/bin/unslop.js mcp`. CI builds this image and verifies the `initialize` response, silent handling of `notifications/initialized`, and the three-tool `tools/list` response over stdio with networking disabled.
+## Alternative: zero-build GitHub execution
 
-### Alternative: zero-build GitHub execution
-
-The npm package is the primary installation path. As an alternative, run the committed distribution directly from GitHub without installing TypeScript or any other development dependency:
+The npm package is the primary installation path. To execute the committed distribution directly from GitHub:
 
 ```bash
 npx -y github:avivgerz-hue/unslop --version
-npx -y github:avivgerz-hue/unslop init
+npx -y github:avivgerz-hue/unslop init --preset linear-precision
 npx -y github:avivgerz-hue/unslop --mcp
 ```
 
-The repository includes `dist/`. During a GitHub install, `prepare` uses the local TypeScript compiler for development when it is available and otherwise validates and reuses the committed runtime and all five preset JSON files. A cold `npx` invocation still needs to download the package; no local compilation step is required.
+The repository includes `dist/`. During a GitHub install, `prepare` uses TypeScript when available and otherwise validates and reuses the committed runtime and all fifteen canonical-plus-legacy preset JSON files. No production dependency or local compilation step is required.
 
-### Registry and citation metadata
+## Docker MCP
 
-Machine-readable discovery documents live at the repository root:
+```bash
+docker build --tag unslop:mcp .
+docker run --rm -i unslop:mcp
+```
 
-- [`server.json`](server.json) follows the official MCP Registry schema, declares the published `unslop-mcp` npm package with the `npx` runtime and fixed `--mcp` argument, and carries the three tool summaries in the registry-approved publisher metadata extension. `package.json` includes the matching `mcpName` ownership declaration.
-- [`smithery.yaml`](smithery.yaml) starts `npx -y unslop-mcp --mcp` over stdio without requiring configuration.
-- [`glama.json`](glama.json) uses Glama's schema and mirrors the exact runtime tool names, descriptions, and input schemas.
-- [`CITATION.cff`](CITATION.cff) provides CFF 1.2.0 software citation metadata for VibeFoundry and powers GitHub's citation widget.
+The image entrypoint is `node dist/bin/unslop.js mcp`. CI builds the image and verifies `initialize`, silent handling of `notifications/initialized`, and all four tools in `tools/list` over stdio with networking disabled.
+
+## Registry and citation metadata
+
+- [`server.json`](server.json) follows the official MCP Registry schema and declares `unslop-mcp` 2.0.0 with the `npx -y … --mcp` startup contract and four tool summaries.
+- [`glama.json`](glama.json) mirrors the exact MCP tool schemas and canonical archetype enum.
+- [`smithery.yaml`](smithery.yaml) starts the native stdio server without additional configuration.
+- [`CITATION.cff`](CITATION.cff) provides software citation metadata for VibeFoundry.
 
 The npm package is published as [`unslop-mcp`](https://www.npmjs.com/package/unslop-mcp). These files support registry indexing but do not claim that a registry listing has occurred.
 
-## Preset gallery
-
-| Preset | Mode | Visual thesis | Best suited for |
-| --- | --- | --- | --- |
-| `linear-dark` | Dark | Quiet neutral layers, hairline borders, compact type, restrained indigo | Developer tools, operational dashboards, engineering products |
-| `swiss-grid` | Light | Editorial scale, exposed grid, black rules, one signal-red accent | Publications, portfolios, cultural and typographic sites |
-| `stripe-minimal` | Light | Cool atmospheric canvas, crisp white surfaces, layered soft elevation | SaaS, financial products, marketing with dense product UI |
-| `apple-glass` | Light | Optical hierarchy, sparse translucent materials, continuous corners, springs | Consumer products, media experiences, spatial interfaces |
-| `neo-brutalist` | Light | Opaque surfaces, stark ink borders, hard offset shadows, one loud accent | Experiments, communities, campaigns, playful tools |
-
-Inspect every token and law before choosing:
+## Development and verification
 
 ```bash
-npx -y unslop-mcp presets
-npx -y unslop-mcp presets swiss-grid
-npx -y unslop-mcp presets apple-glass --json
-```
-
-## What the audit detects
-
-| Rule ID | Detection |
-| --- | --- |
-| `slop/cliche-gradient` | Purple, indigo, violet, and fuchsia gradient utility stops and matching CSS gradients |
-| `slop/low-contrast` | WCAG 2.1 AA failures for detected CSS, inline-style, and Tailwind foreground/background pairs |
-| `slop/neon-glow` | Cyan, magenta, and fuchsia cyber-glow box shadows |
-| `slop/emoji-feature-grid` | Three-column grids combined with centered content and emoji in the same component region |
-| `slop/raw-elevation` | `shadow-xl`/`shadow-2xl` without a subtle border token, or a single heavy CSS shadow without support |
-| `slop/display-tracking` | Large `h1`/`h2` typography without tight or negative tracking |
-| `slop/numeric-alignment` | Static numeric UI and marked dynamic metrics without `tabular-nums` |
-| `slop/font-weight-mixing` | Four or more distinct weights in one component source tree |
-| `slop/conflicting-spacing` | Different values for the same spacing property and responsive variant on one element |
-| `slop/off-grid-spacing` | Arbitrary pixel/rem spacing outside the 4px grid, excluding deliberate 1px and 2px optical stops |
-| `slop/conflicting-radius` | Competing radius utilities for one element and corner axis |
-| `slop/radius-scale` | Four or more unrelated non-pill surface radii in a component tree |
-
-**WCAG 2.1 contrast:** colors are converted from hex, RGB(A), HSL(A), named colors, CSS variables, or supported Tailwind utilities into sRGB. Channels are linearized with the official WCAG formula, translucent foregrounds are composited over their backgrounds, and contrast is `(L1 + 0.05) / (L2 + 0.05)`. Normal text requires **4.5:1**; large text (at least 24px, or 18.66px at 700+) requires **3:1**. Unsupported or indeterminate color functions are skipped rather than guessed.
-
-**Design Integrity Score:** start at 100; subtract 12 per error, 7 per warning, and 3 per informational finding, clamped to `0–100`. Low-contrast findings are errors. The score is comparable and deterministic, not a claim that static analysis can replace rendered design review.
-
-## CLI reference
-
-```text
-unslop init [--preset <name>] [--dir <path>] [--force] [--json]
-unslop mcp
-unslop audit [dir] [--json | --prompt] [--fail-under <0-100>]
-                 [--ignore <directory>] [--no-fail]
-unslop extract <url-or-css-path> [--name <preset-name>] [--json]
-                 [--output <path>] [--timeout <ms>] [--max-stylesheets <n>]
-unslop export-tokens [--preset <name> | --source <url-or-css-path>]
-                     [--name <preset-name>] [--out <file>]
-unslop presets [name] [--json]
-unslop help
-unslop --version
-```
-
-### Safe rule synchronization
-
-Each generated agent-rule file contains an `unslop` managed block. Running `init` again updates only that block. Existing rule content is preserved byte-for-byte. `.mcp.json` is merged structurally and never replaces unrelated MCP servers. `--force` intentionally replaces whole agent-rule files, including unmanaged content—use it only when that is what you want; it does not erase other MCP servers.
-
-## Agent Skill usage
-
-### Claude Code
-
-`init` writes `.claude/skills/unslop/SKILL.md` with valid frontmatter and the selected design contract. `CLAUDE.md` points to the same managed rules so the constraints remain visible in project context.
-
-### OpenAI Codex
-
-Codex reads `AGENTS.md`. Keep the generated file at the repository root and ask Codex to run `npx -y unslop-mcp audit .` after implementing UI.
-
-### Cursor, Windsurf, and Cline
-
-The same contract is compiled into `.cursorrules`, `.windsurfrules`, and `.clinerules`. No plugin, MCP server, or additional runtime is required.
-
-### Manual installation
-
-Copy this repository’s root `SKILL.md` into `.claude/skills/unslop/SKILL.md` for the preset-agnostic anti-slop contract, or run `init` to include a complete preset. The compiled rules are plain Markdown and can be adapted to other agents without changing the CLI.
-
-## Programmatic API
-
-```ts
-import { auditTarget, contrastRatio } from "unslop/analyzer";
-import { extractDesignDNA, createPresetFromDNA } from "unslop/extractor";
-import { startMcpServer } from "unslop/mcp";
-import { loadPreset } from "unslop/presets";
-import { installUnslop, renderAgentSkill } from "unslop/sync";
-import { renderTokenStylesheet } from "unslop/tokens";
-
-const report = await auditTarget("./src");
-const dna = await extractDesignDNA("./tokens.css");
-const extractedPreset = createPresetFromDNA(dna, "acme");
-const skill = renderAgentSkill(extractedPreset);
-const stylesheet = renderTokenStylesheet(extractedPreset);
-
-await installUnslop({ cwd: process.cwd(), preset: loadPreset("linear-dark") });
-console.log(report.score, contrastRatio("#111111", "#ffffff"), skill, stylesheet);
-
-// Blocks until the MCP client's stdio stream closes:
-await startMcpServer({ cwd: process.cwd() });
-```
-
-The analyzer also exposes `analyzeSource` for in-memory fixtures and editor integrations.
-
-## Development
-
-```bash
-git clone https://github.com/avivgerz-hue/unslop.git
-cd unslop
 npm ci
-npm run build
+npm run typecheck
 npm test
+npm run build
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for analyzer-rule design, extraction safety, preset requirements, and pull-request guidelines.
+CI verifies Node.js 20 and 22, a production install without TypeScript, reproducible committed `dist/`, real CLI/MCP stdio negotiation, and the Docker MCP handshake. The v2 suite covers all seven pillars, all ten archetypes, every token format, extracted DNA, refactor blueprints, and manifest-driven 2.0.0 version output.
 
 ## License
 
-MIT © 2026 VibeFoundry. See [LICENSE](LICENSE).
-
-## Part of the VibeFoundry Agent Suite
-
-| Tool | Purpose |
-| --- | --- |
-| 🎨 [unslop](https://github.com/avivgerz-hue/unslop) | Studio-grade UI design systems & Anti-Slop engine for coding agents. |
-| 🛡️ [vibe-shield](https://github.com/avivgerz-hue/vibe-shield) | Automated security scanner & MCP guard for AI-generated codebases. |
-| 👻 [ghost-qa](https://github.com/avivgerz-hue/ghost-qa) | Autonomous headless browser QA & self-healing verification loop. |
+MIT · VibeFoundry

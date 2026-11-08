@@ -139,7 +139,7 @@ describe("slop detector", () => {
 
   it("returns a perfect score and useful prompt for clean source", () => {
     const source = `<main className="mx-auto max-w-6xl p-6">
-      <h1 className="text-6xl tracking-tight font-semibold">Design with intent</h1>
+      <h1 className="text-5xl md:text-6xl tracking-tight font-semibold">Design with intent</h1>
       <div className="rounded-lg border border-white/10 shadow-md p-6">
         <span className="tabular-nums">42,001</span>
       </div>
@@ -165,15 +165,15 @@ describe("slop detector", () => {
     await mkdir(join(directory, "components"));
     await mkdir(join(directory, "node_modules", "package"), { recursive: true });
     await writeFile(join(directory, "components", "b.tsx"), `<div className="shadow-xl"/>`, "utf8");
-    await writeFile(join(directory, "a.vue"), `<template><h1 class="text-5xl">Hello</h1></template>`, "utf8");
+    await writeFile(join(directory, "a.vue"), `<template><h1 class="text-4xl md:text-5xl">Hello</h1></template>`, "utf8");
     await writeFile(join(directory, "node_modules", "package", "ignored.tsx"), `<div className="from-purple-500"/>`, "utf8");
     await writeFile(join(directory, "notes.txt"), "from-purple-500", "utf8");
 
     const report = await auditTarget(directory, { cwd: directory });
     expect(report.files).toEqual(["a.vue", "components/b.tsx"]);
     expect(report.filesScanned).toBe(2);
-    expect(report.summary.warnings).toBe(2);
-    expect(report.violations.map((violation) => violation.file)).toEqual(["a.vue", "components/b.tsx"]);
+    expect(report.summary.warnings).toBe(4);
+    expect([...new Set(report.violations.map((violation) => violation.file))]).toEqual(["a.vue", "components/b.tsx"]);
     expect(formatAuditReport(report)).toContain(`Design Integrity Score: ${report.score}/100`);
   });
 
@@ -183,23 +183,28 @@ describe("slop detector", () => {
 });
 
 describe("preset registry", () => {
-  it("loads all five complete and distinct design systems", () => {
+  it("loads all ten complete and distinct v2 design systems", () => {
     expect(PRESET_NAMES).toEqual([
-      "linear-dark",
-      "swiss-grid",
-      "stripe-minimal",
-      "apple-glass",
-      "neo-brutalist",
+      "swiss-editorial",
+      "linear-precision",
+      "stripe-atmospheric",
+      "vercel-monochrome",
+      "teenage-engineering",
+      "anthropic-warm-editorial",
+      "bloomberg-terminal-dense",
+      "raycast-command",
+      "fintech-institutional",
+      "neo-brutalist-craft",
     ]);
     const presets = listPresets();
-    expect(presets).toHaveLength(5);
-    expect(new Set(presets.map((preset) => preset.tokens.colors.accent)).size).toBe(5);
+    expect(presets).toHaveLength(10);
+    expect(new Set(presets.map((preset) => preset.tokens.colors.accent)).size).toBe(10);
     for (const preset of presets) {
       expect(validatePreset(preset)).toEqual(preset);
       expect(preset.rules.length).toBeGreaterThanOrEqual(10);
       expect(Object.keys(preset.tokens.typography.scale)).toHaveLength(8);
     }
-    expect(listPresetSummaries()[0]).toMatchObject({ name: "linear-dark", colorScheme: "dark" });
+    expect(listPresetSummaries()[0]).toMatchObject({ name: "swiss-editorial", colorScheme: "light" });
   });
 
   it("returns defensive copies and normalizes preset names", () => {
@@ -476,7 +481,7 @@ describe("CLI", () => {
     expect((await invoke(["--version"])).stdout.trim()).toBe(CLI_VERSION);
     const presets = await invoke(["presets", "--json"]);
     expect(presets.code).toBe(0);
-    expect(JSON.parse(presets.stdout)).toHaveLength(5);
+    expect(JSON.parse(presets.stdout)).toHaveLength(10);
     expect((await invoke(["presets", "swiss-grid"])).stdout).toContain("Helvetica Neue");
     const unknown = await invoke(["invented-command"]);
     expect(unknown.code).toBe(2);
@@ -504,7 +509,7 @@ describe("CLI", () => {
     expect(JSON.parse(failed.stdout).violations[0].ruleId).toBe("slop/cliche-gradient");
     expect((await invoke(["audit", "--no-fail"], directory)).code).toBe(0);
 
-    await writeFile(join(directory, "bad.tsx"), `<h1 className="text-5xl tracking-tight">Clean</h1>`, "utf8");
+    await writeFile(join(directory, "bad.tsx"), `<h1 className="text-4xl md:text-5xl tracking-tight">Clean</h1>`, "utf8");
     expect((await invoke(["audit", "--fail-under", "100"], directory)).code).toBe(0);
     expect((await invoke(["audit", "--fail-under", "101"], directory)).code).toBe(2);
   });

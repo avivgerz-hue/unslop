@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "name": "bloomberg-terminal-dense",
+  "title": "Bloomberg Terminal Dense",
+  "description": "Ultra-high-density financial workstations with strict tabular alignment, high-contrast tickers, compact controls, and zero decorative whitespace.",
+  "tokens": {
+    "colorScheme": "dark",
+    "colors": {
+      "background": "#050607",
+      "surface": "#0b0d0f",
+      "surfaceElevated": "#121518",
+      "text": "#f2f2e9",
+      "textMuted": "#a4a69f",
+      "border": "#30353a",
+      "accent": "#ffb000",
+      "accentText": "#151000",
+      "interactive": "#1b2024",
+      "success": "#27d17f",
+      "warning": "#ffb000",
+      "danger": "#ff4d5e",
+      "info": "#4ea1ff",
+      "focus": "#ffb000"
+    },
+    "typography": {
+      "fontFamily": "Arial Narrow, Roboto Condensed, Arial, sans-serif",
+      "monospaceFamily": "IBM Plex Mono, SFMono-Regular, Consolas, monospace",
+      "scale": {
+        "xs": "0.625rem",
+        "sm": "0.6875rem",
+        "base": "0.75rem",
+        "lg": "0.8125rem",
+        "xl": "0.9375rem",
+        "2xl": "1.125rem",
+        "3xl": "1.375rem",
+        "4xl": "1.75rem"
+      },
+      "displayTracking": "-0.02em",
+      "bodyTracking": "0",
+      "numericVariant": "tabular-nums",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    },
+    "radii": {
+      "sm": "0px",
+      "md": "2px",
+      "lg": "3px",
+      "xl": "4px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "none",
+      "md": "0 0 0 1px #30353a",
+      "lg": "0 4px 12px rgba(0,0,0,0.5)"
+    },
+    "spacing": {
+      "base": 4,
+      "scale": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64
+      ]
+    },
+    "motion": {
+      "duration": "80ms",
+      "easing": "linear",
+      "spring": {
+        "mass": 0.8,
+        "stiffness": 320,
+        "damping": 28
+      }
+    },
+    "layout": {
+      "maxWidth": "1920px",
+      "columns": 24,
+      "borderWidth": "1px",
+      "gridGap": "8px",
+      "contentInset": "12px"
+    }
+  },
+  "rules": [
+    "Optimize every panel for scan speed, comparison, and deterministic keyboard operation.",
+    "Use 24-column workspace grids and eight-pixel spacing; do not waste terminal space on hero layouts.",
+    "All numeric values use tabular monospace figures, aligned decimals, and explicit units.",
+    "Amber indicates active context; green and red indicate signed movement with arrows and labels.",
+    "Separate panels with exact one-pixel rules, not floating cards or ambient shadows.",
+    "Keep controls compact without dropping below accessible keyboard and pointer targets.",
+    "Dense labels remain legible; never use tiny low-contrast text to manufacture density.",
+    "Live updates must not shift surrounding layout or steal focus.",
+    "Reserve monospace for data and commands; headings remain concise and structural.",
+    "Animation is limited to immediate state feedback and is disabled under reduced motion."
+  ]
+}

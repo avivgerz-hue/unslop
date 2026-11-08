@@ -34,6 +34,16 @@ afterEach(async () => {
 });
 
 describe("GitHub Marketplace action", () => {
+  it("uses exact Marketplace-safe metadata within the strict description limit", async () => {
+    const action = await readFile(join(root, "action.yml"), "utf8");
+    const name = action.match(/^name: "([^"]+)"$/m)?.[1];
+    const description = action.match(/^description: "([^"]+)"$/m)?.[1];
+    expect(name).toBe("Unslop — Anti-AI-Slop UI & Design Craft Linter");
+    expect(description).toBe("72-rule UI/UX design craft linter, WCAG/APCA contrast auditor, and studio design token generator.");
+    expect(description).toHaveLength(97);
+    expect(description?.length).toBeLessThan(125);
+  });
+
   it("ships a safe composite audit with required branding, inputs, and strict/report behavior", async () => {
     const action = await readFile(join(root, "action.yml"), "utf8");
     expect(action).toContain('branding:\n  icon: "layout"\n  color: "orange"');

@@ -1,5 +1,5 @@
-name: "Unslop — 7-Pillar Design Craft Audit"
-description: "Audit JSX, HTML, Vue, Svelte, CSS, and Tailwind with 72 design-craft rules, seven pillar scores, and optional transformation blueprints."
+name: "Unslop — Anti-AI-Slop UI & Design Craft Linter"
+description: "72-rule UI/UX design craft linter, WCAG/APCA contrast auditor, and studio design token generator."
 author: "VibeFoundry"
 
 branding:

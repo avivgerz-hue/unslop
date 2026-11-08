@@ -140,6 +140,35 @@ describe("release and discovery metadata", () => {
     }
   });
 
+  it("ships a minimal production container and an embedded vector preview", async () => {
+    const [dockerfile, dockerignore, preview, readme] = await Promise.all([
+      readText("Dockerfile"),
+      readText(".dockerignore"),
+      readText("assets/hero-preview.svg"),
+      readText("README.md"),
+    ]);
+
+    expect(dockerfile).toContain("FROM node:22-alpine\n");
+    expect(dockerfile).toContain("RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force\n");
+    expect(dockerfile).toContain("COPY dist ./dist\n");
+    expect(dockerfile).toContain('ENTRYPOINT ["node", "dist/bin/unslop.js", "mcp"]\n');
+    expect(dockerfile).not.toContain("COPY src");
+    expect(dockerignore).toContain("**\n");
+    expect(dockerignore).toContain("!dist/\n");
+    expect(dockerignore).toContain("!dist/**\n");
+
+    expect(preview).toContain('viewBox="0 0 1600 1000"');
+    expect(preview).toContain("Generic AI Slop UI");
+    expect(preview).toContain("Unslop Studio Design DNA");
+    expect(preview).toContain("Design Integrity Score");
+    expect(preview).toContain("100/100 (A+)");
+    expect(preview).not.toMatch(/<script|onload=|TODO|PLACEHOLDER/i);
+    expect(readme).toContain("![unslop preview](./assets/hero-preview.svg)");
+    expect(readme).toContain("docs/assets/before-after-unslop.png");
+    expect(readme.indexOf("![unslop preview](./assets/hero-preview.svg)"))
+      .toBeLessThan(readme.indexOf("`unslop` is a zero-runtime-dependency CLI"));
+  });
+
   it("keeps GitHub installation independent of a local TypeScript compiler", async () => {
     const [manifest, buildWrapper, ignoreRules] = await Promise.all([
       readJSON("package.json"),

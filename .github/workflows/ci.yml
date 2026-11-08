@@ -45,3 +45,18 @@ jobs:
         run: |
           printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | node dist/bin/unslop.js mcp > /tmp/unslop-mcp.ndjson
           node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-mcp.ndjson', 'utf8').trim().split('\n').map(JSON.parse); if (messages.length !== 2 || messages[0].result.serverInfo.version !== '1.2.0' || messages[1].result.tools.length !== 3) process.exit(1);"
+
+  docker-mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build minimal production image
+        run: docker build --tag unslop:mcp-ci .
+      - name: Verify containerized MCP stdio handshake and introspection
+        run: |
+          {
+            printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"docker-ci","version":"1"}}}'
+            printf '%s\n' '{"jsonrpc":"2.0","method":"notifications/initialized"}'
+            printf '%s\n' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'
+          } | timeout 20s docker run --rm -i --network none unslop:mcp-ci > /tmp/unslop-docker-mcp.ndjson
+          node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-docker-mcp.ndjson', 'utf8').trim().split('\n').map((line) => JSON.parse(line)); const tools = messages[1]?.result?.tools?.map((tool) => tool.name); if (messages.length !== 2 || messages[0]?.id !== 1 || messages[0]?.result?.serverInfo?.version !== '1.2.0' || messages[0]?.result?.protocolVersion !== '2025-06-18' || messages[1]?.id !== 2 || JSON.stringify(tools) !== JSON.stringify(['unslop_audit', 'unslop_extract_dna', 'unslop_apply_preset'])) { console.error(messages); process.exit(1); } console.log('Docker MCP: initialize and tools/list responded; initialized notification emitted no response.');"

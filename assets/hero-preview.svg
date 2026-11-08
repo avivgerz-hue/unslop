@@ -1,0 +1,282 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title description">
+  <title id="title">unslop before-and-after design audit preview</title>
+  <desc id="description">A dark-mode comparison of a generic purple AI landing page and a precise studio dashboard, beside a terminal showing a Design Integrity Score of 100 out of 100.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111727"/>
+      <stop offset="0.52" stop-color="#090d14"/>
+      <stop offset="1" stop-color="#07090e"/>
+    </linearGradient>
+    <radialGradient id="ambient" cx="0" cy="0" r="1" gradientTransform="translate(1330 60) rotate(135) scale(760 540)">
+      <stop offset="0" stop-color="#6474f1" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#6474f1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="slopHero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d28d9"/>
+      <stop offset="0.48" stop-color="#9333ea"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="score" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8b9cf9"/>
+      <stop offset="1" stop-color="#72e2b2"/>
+    </linearGradient>
+    <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8391fa" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#8391fa" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#a2b2d1" stroke-opacity="0.035"/>
+    </pattern>
+    <filter id="panelShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000000" flood-opacity="0.34"/>
+    </filter>
+    <filter id="purpleGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <clipPath id="slopClip"><rect x="88" y="318" width="392" height="396" rx="14"/></clipPath>
+    <clipPath id="studioClip"><rect x="552" y="318" width="392" height="396" rx="14"/></clipPath>
+    <style>
+      .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #edf1fa; }
+      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; fill: #d8e0ef; }
+      .label { font-size: 11px; font-weight: 700; letter-spacing: 2px; }
+      .muted { fill: #8a96ab; }
+      .faint { fill: #5e6a7e; }
+      .accent { fill: #a9b4ff; }
+      .green { fill: #79dfaf; }
+      .red { fill: #ff9caa; }
+      .hairline { stroke: #283244; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#canvas)"/>
+  <rect width="1600" height="1000" fill="url(#ambient)"/>
+  <rect x="24" y="24" width="1552" height="952" rx="28" fill="#0b0f16" fill-opacity="0.72" stroke="#273042"/>
+  <rect x="25" y="25" width="1550" height="950" rx="27" fill="url(#grid)"/>
+
+  <!-- Product header -->
+  <g class="sans">
+    <rect x="64" y="58" width="38" height="38" rx="11" fill="#151b28" stroke="#3a455c"/>
+    <path d="M76 69v10c0 5 3 8 7 8s7-3 7-8V69" fill="none" stroke="#aab5ff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M73 86l20-18" stroke="#78dfaf" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="116" y="77" font-size="18" font-weight="750" letter-spacing="2.5">UNSLOP</text>
+    <text x="116" y="98" class="label muted" font-size="9">DESIGN INTEGRITY ENGINE</text>
+    <rect x="1292" y="62" width="244" height="32" rx="16" fill="#111824" stroke="#2b364a"/>
+    <circle cx="1312" cy="78" r="4" fill="#79dfaf"/>
+    <text x="1326" y="82" class="label muted" font-size="10" letter-spacing="1.4">MCP · CLI · AGENT SKILL</text>
+
+    <text x="64" y="158" font-size="38" font-weight="680" letter-spacing="-1.2">From generic output to a design contract.</text>
+    <text x="64" y="188" font-size="15" class="muted">Visual systems, measurable constraints, and agent-ready refactoring.</text>
+    <text x="64" y="232" class="label faint">01 / VISUAL COMPARISON + AUDIT</text>
+  </g>
+
+  <!-- Generic AI panel -->
+  <g filter="url(#panelShadow)">
+    <rect x="64" y="254" width="440" height="500" rx="20" fill="#11141d" stroke="#3a293f"/>
+  </g>
+  <g class="sans">
+    <circle cx="90" cy="286" r="4" fill="#ff879c"/>
+    <text x="104" y="291" font-size="15" font-weight="650">Generic AI Slop UI</text>
+    <rect x="404" y="273" width="76" height="26" rx="13" fill="#351d2a" stroke="#633046"/>
+    <text x="442" y="291" text-anchor="middle" font-size="12" font-weight="700" class="red">42 / F</text>
+  </g>
+  <g clip-path="url(#slopClip)">
+    <rect x="88" y="318" width="392" height="396" fill="#171321"/>
+    <rect x="88" y="318" width="392" height="32" fill="#211a30"/>
+    <circle cx="106" cy="334" r="4" fill="#ff7d92"/>
+    <circle cx="120" cy="334" r="4" fill="#e9bd67"/>
+    <circle cx="134" cy="334" r="4" fill="#a782e8"/>
+    <rect x="198" y="327" width="172" height="14" rx="7" fill="#30263f"/>
+    <rect x="88" y="350" width="392" height="166" fill="url(#slopHero)"/>
+    <circle cx="420" cy="368" r="64" fill="#d67cff" fill-opacity="0.38" filter="url(#purpleGlow)"/>
+    <circle cx="124" cy="504" r="58" fill="#3826ad" fill-opacity="0.55" filter="url(#purpleGlow)"/>
+    <g class="sans" text-anchor="middle">
+      <text x="284" y="397" font-size="13" fill="#e5d4ff">Introducing something amazing</text>
+      <text x="284" y="431" font-size="25" font-weight="750">Ship faster with AI</text>
+      <text x="284" y="454" font-size="12" fill="#e2d5f4" fill-opacity="0.78">The revolutionary platform for modern teams</text>
+      <rect x="215" y="470" width="138" height="32" rx="16" fill="#f4ecff"/>
+      <text x="284" y="491" font-size="12" font-weight="700" fill="#6d28d9">Get started →</text>
+    </g>
+    <rect x="88" y="516" width="392" height="198" fill="#171321"/>
+    <g class="sans">
+      <rect x="104" y="534" width="112" height="108" rx="16" fill="#251d35" stroke="#473361"/>
+      <path d="M160 551v16m-8-8h16m-13-5l10 10m0-10l-10 10" stroke="#d6a6ff" stroke-width="2" stroke-linecap="round"/>
+      <text x="160" y="596" text-anchor="middle" font-size="12" font-weight="650">AI Magic</text>
+      <text x="160" y="617" text-anchor="middle" font-size="10" class="muted">Game-changing</text>
+
+      <rect x="228" y="534" width="112" height="108" rx="16" fill="#251d35" stroke="#473361"/>
+      <circle cx="284" cy="560" r="12" fill="#5c3c91"/>
+      <path d="M279 565l11-11m-7 1h6v6" fill="none" stroke="#e4c9ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="284" y="596" text-anchor="middle" font-size="12" font-weight="650">Fast Launch</text>
+      <text x="284" y="617" text-anchor="middle" font-size="10" class="muted">Next-generation</text>
+
+      <rect x="352" y="534" width="112" height="108" rx="16" fill="#251d35" stroke="#473361"/>
+      <rect x="396" y="550" width="24" height="20" rx="6" fill="none" stroke="#d6a6ff" stroke-width="2"/>
+      <circle cx="404" cy="560" r="2" fill="#d6a6ff"/><circle cx="412" cy="560" r="2" fill="#d6a6ff"/>
+      <path d="M408 546v4m-6 28v4m12-4v4" stroke="#d6a6ff" stroke-width="2" stroke-linecap="round"/>
+      <text x="408" y="596" text-anchor="middle" font-size="12" font-weight="650">Smart Bot</text>
+      <text x="408" y="617" text-anchor="middle" font-size="10" class="muted">Seamless</text>
+    </g>
+    <g class="sans" font-size="9" font-weight="650">
+      <rect x="104" y="660" width="108" height="24" rx="12" fill="#342033"/>
+      <text x="158" y="676" text-anchor="middle" class="red">CLICHÉ GRADIENT</text>
+      <rect x="222" y="660" width="94" height="24" rx="12" fill="#342033"/>
+      <text x="269" y="676" text-anchor="middle" class="red">FEATURE GRID</text>
+      <rect x="326" y="660" width="138" height="24" rx="12" fill="#342033"/>
+      <text x="395" y="676" text-anchor="middle" class="red">ARBITRARY TOKENS</text>
+    </g>
+  </g>
+  <rect x="88" y="318" width="392" height="396" rx="14" fill="none" stroke="#493456"/>
+
+  <!-- Studio panel -->
+  <g filter="url(#panelShadow)">
+    <rect x="528" y="254" width="440" height="500" rx="20" fill="#10161f" stroke="#2f4250"/>
+  </g>
+  <g class="sans">
+    <circle cx="554" cy="286" r="4" fill="#79dfaf"/>
+    <text x="568" y="291" font-size="15" font-weight="650">Unslop Studio Design DNA</text>
+    <rect x="860" y="273" width="84" height="26" rx="13" fill="#16352e" stroke="#285f50"/>
+    <text x="902" y="291" text-anchor="middle" font-size="12" font-weight="700" class="green">100 / A+</text>
+  </g>
+  <g clip-path="url(#studioClip)">
+    <rect x="552" y="318" width="392" height="396" fill="#0e141d"/>
+    <rect x="552" y="318" width="392" height="32" fill="#171e29"/>
+    <circle cx="570" cy="334" r="4" fill="#6a7485"/>
+    <circle cx="584" cy="334" r="4" fill="#6a7485"/>
+    <circle cx="598" cy="334" r="4" fill="#6a7485"/>
+    <rect x="662" y="327" width="172" height="14" rx="3" fill="#242e3d"/>
+    <rect x="552" y="350" width="82" height="364" fill="#111821"/>
+    <rect x="634" y="350" width="310" height="364" fill="#0e141d"/>
+    <path d="M634 350v364" stroke="#283445"/>
+    <g class="sans">
+      <rect x="566" y="368" width="20" height="20" rx="5" fill="#27324a"/>
+      <path d="M571 374v5c0 3 2 5 4 5s4-2 4-5v-5" fill="none" stroke="#a9b4ff" stroke-width="1.5"/>
+      <text x="594" y="382" font-size="9" font-weight="700" letter-spacing="1">STUDIO</text>
+      <text x="566" y="417" class="label faint" font-size="8">WORKSPACE</text>
+      <rect x="560" y="430" width="66" height="28" rx="5" fill="#202b40"/>
+      <rect x="568" y="438" width="8" height="8" rx="2" fill="#9da9fa"/>
+      <text x="584" y="447" font-size="9" class="accent">Overview</text>
+      <circle cx="572" cy="478" r="4" fill="#59677c"/>
+      <text x="584" y="482" font-size="9" class="muted">Tokens</text>
+      <circle cx="572" cy="508" r="4" fill="#59677c"/>
+      <text x="584" y="512" font-size="9" class="muted">Audits</text>
+      <circle cx="572" cy="538" r="4" fill="#59677c"/>
+      <text x="584" y="542" font-size="9" class="muted">DNA</text>
+      <path d="M566 682h48" stroke="#2a3545"/>
+      <text x="566" y="699" font-size="8" class="faint">LINEAR DARK / 1.0</text>
+
+      <text x="654" y="381" font-size="10" font-weight="700" letter-spacing="1.4" class="faint">DESIGN DNA / OVERVIEW</text>
+      <text x="654" y="407" font-size="22" font-weight="650" letter-spacing="-0.5">Operations</text>
+      <rect x="840" y="378" width="84" height="28" rx="6" fill="#7887ed"/>
+      <text x="882" y="396" text-anchor="middle" font-size="10" font-weight="650">New view</text>
+
+      <rect x="654" y="426" width="82" height="70" rx="7" fill="#141c27" stroke="#2a3546"/>
+      <text x="664" y="445" font-size="8" class="muted">ACTIVE USERS</text>
+      <text x="664" y="473" font-size="20" font-weight="650">12.8k</text>
+      <circle cx="722" cy="441" r="3" fill="#79dfaf"/>
+
+      <rect x="748" y="426" width="82" height="70" rx="7" fill="#141c27" stroke="#2a3546"/>
+      <text x="758" y="445" font-size="8" class="muted">CONTRAST</text>
+      <text x="758" y="473" font-size="20" font-weight="650">98.2%</text>
+      <circle cx="816" cy="441" r="3" fill="#79dfaf"/>
+
+      <rect x="842" y="426" width="82" height="70" rx="7" fill="#141c27" stroke="#2a3546"/>
+      <text x="852" y="445" font-size="8" class="muted">RESPONSE</text>
+      <text x="852" y="473" font-size="20" font-weight="650">42ms</text>
+      <circle cx="910" cy="441" r="3" fill="#8b98f4"/>
+
+      <rect x="654" y="510" width="270" height="112" rx="7" fill="#121a25" stroke="#293546"/>
+      <text x="666" y="530" font-size="9" font-weight="600">Design integrity</text>
+      <text x="910" y="530" text-anchor="end" font-size="8" class="green">+18.4%</text>
+      <path d="M666 548h246M666 570h246M666 592h246" stroke="#273243" stroke-width="1"/>
+      <path d="M666 600L690 585 714 590 738 563 762 570 786 552 810 558 834 540 858 549 882 535 912 542V610H666Z" fill="url(#chartFill)"/>
+      <path d="M666 600L690 585 714 590 738 563 762 570 786 552 810 558 834 540 858 549 882 535 912 542" fill="none" stroke="#91a0fa" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="882" cy="535" r="3" fill="#79dfaf"/>
+
+      <text x="654" y="647" class="label faint" font-size="8">SEMANTIC TOKENS</text>
+      <circle cx="660" cy="668" r="5" fill="#171d28" stroke="#526078"/>
+      <text x="672" y="672" font-size="9" class="muted">surface-0</text>
+      <circle cx="754" cy="668" r="5" fill="#e6e9f2"/>
+      <text x="766" y="672" font-size="9" class="muted">text-primary</text>
+      <circle cx="860" cy="668" r="5" fill="#7d8cf1"/>
+      <text x="872" y="672" font-size="9" class="muted">accent</text>
+      <path d="M654 690h270" stroke="#273243"/>
+      <text x="654" y="705" font-size="8" class="faint">4PX GRID</text>
+      <text x="742" y="705" font-size="8" class="faint">45–75CH</text>
+      <text x="838" y="705" font-size="8" class="faint">TABULAR NUMBERS</text>
+    </g>
+  </g>
+  <rect x="552" y="318" width="392" height="396" rx="14" fill="none" stroke="#314151"/>
+
+  <!-- Terminal panel -->
+  <g filter="url(#panelShadow)">
+    <rect x="992" y="254" width="544" height="500" rx="20" fill="#0d131c" stroke="#2c394b"/>
+  </g>
+  <g class="sans">
+    <circle cx="1018" cy="286" r="4" fill="#8b9cf9"/>
+    <text x="1032" y="291" font-size="15" font-weight="650">Terminal / unslop audit</text>
+    <rect x="1414" y="273" width="98" height="26" rx="13" fill="#162532" stroke="#294355"/>
+    <text x="1463" y="291" text-anchor="middle" font-size="10" font-weight="700" class="green">MCP VERIFIED</text>
+  </g>
+  <rect x="1016" y="318" width="496" height="396" rx="14" fill="#090e15" stroke="#283445"/>
+  <rect x="1016" y="318" width="496" height="34" rx="14" fill="#151d29"/>
+  <path d="M1016 352h496" stroke="#283445"/>
+  <circle cx="1034" cy="335" r="4" fill="#ff879c"/>
+  <circle cx="1048" cy="335" r="4" fill="#e9bd67"/>
+  <circle cx="1062" cy="335" r="4" fill="#79dfaf"/>
+  <text x="1264" y="339" text-anchor="middle" class="mono muted" font-size="10">bash · node 22</text>
+  <g class="mono" font-size="12">
+    <text x="1032" y="379"><tspan class="green">$</tspan><tspan> npx github:avivgerz-hue/unslop audit .</tspan></text>
+    <text x="1032" y="410" class="muted">unslop audit · 12 files scanned</text>
+    <text x="1032" y="440" class="green">✓ No AI slop anti-patterns detected.</text>
+    <path d="M1032 460h448" stroke="#233043"/>
+    <text x="1032" y="487" class="muted">Design Integrity Score: 100/100 (A+)</text>
+    <text x="1032" y="558" font-size="64" font-weight="650" class="sans">100</text>
+    <text x="1162" y="558" font-size="23" class="muted">/100</text>
+    <rect x="1404" y="502" width="76" height="58" rx="12" fill="#17382f" stroke="#2b6654"/>
+    <text x="1442" y="541" text-anchor="middle" font-size="26" font-weight="700" class="green">A+</text>
+    <rect x="1032" y="580" width="448" height="8" rx="4" fill="#1d2937"/>
+    <rect x="1032" y="580" width="448" height="8" rx="4" fill="url(#score)"/>
+    <text x="1032" y="618" class="green">0 errors</text>
+    <text x="1140" y="618" class="muted">·</text>
+    <text x="1160" y="618" class="green">0 warnings</text>
+    <text x="1286" y="618" class="muted">·</text>
+    <text x="1306" y="618" class="green">0 info</text>
+    <rect x="1032" y="642" width="448" height="1" fill="#233043"/>
+    <text x="1032" y="670" class="accent">@theme · :root · .dark</text>
+    <text x="1032" y="695" class="muted">Design DNA verified · prompt ready</text>
+  </g>
+
+  <!-- Contract metrics -->
+  <g class="sans">
+    <text x="64" y="804" class="label faint">02 / THE ENFORCEABLE CONTRACT</text>
+
+    <rect x="64" y="826" width="356" height="90" rx="14" fill="#101722" stroke="#273446"/>
+    <rect x="80" y="844" width="38" height="38" rx="10" fill="#202a43"/>
+    <path d="M90 855h18M90 862h18M90 869h12" stroke="#a9b4ff" stroke-width="2" stroke-linecap="round"/>
+    <text x="132" y="858" font-size="12" font-weight="700" letter-spacing="0.5">5 COMPLETE PRESETS</text>
+    <text x="132" y="882" font-size="11" class="muted">Typed tokens · light + dark</text>
+
+    <rect x="436" y="826" width="356" height="90" rx="14" fill="#101722" stroke="#273446"/>
+    <rect x="452" y="844" width="38" height="38" rx="10" fill="#17352f"/>
+    <circle cx="471" cy="863" r="10" fill="none" stroke="#79dfaf" stroke-width="2"/>
+    <path d="M466 863l3 3 7-8" fill="none" stroke="#79dfaf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="504" y="858" font-size="12" font-weight="700" letter-spacing="0.5">WCAG 2.1 AA</text>
+    <text x="504" y="882" font-size="11" class="muted">Official sRGB mathematics</text>
+
+    <rect x="808" y="826" width="356" height="90" rx="14" fill="#101722" stroke="#273446"/>
+    <rect x="824" y="844" width="38" height="38" rx="10" fill="#202a43"/>
+    <rect x="834" y="853" width="18" height="20" rx="4" fill="none" stroke="#a9b4ff" stroke-width="2"/>
+    <path d="M838 859h10m-10 5h7" stroke="#a9b4ff" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="876" y="858" font-size="12" font-weight="700" letter-spacing="0.5">NATIVE MCP</text>
+    <text x="876" y="882" font-size="11" class="muted">3 tools · JSON-RPC 2.0 stdio</text>
+
+    <rect x="1180" y="826" width="356" height="90" rx="14" fill="#101722" stroke="#273446"/>
+    <rect x="1196" y="844" width="38" height="38" rx="10" fill="#252033"/>
+    <path d="M1206 854l18 18m0-18l-18 18" stroke="#d5b4ff" stroke-width="2" stroke-linecap="round"/>
+    <text x="1248" y="858" font-size="12" font-weight="700" letter-spacing="0.5">ZERO RUNTIME DEPS</text>
+    <text x="1248" y="882" font-size="11" class="muted">Node 20.19+ · deterministic</text>
+
+    <text x="64" y="950" class="label faint">BEFORE / PROBABILISTIC TASTE</text>
+    <text x="1536" y="950" text-anchor="end" class="label accent">AFTER / ENFORCEABLE DESIGN PHYSICS</text>
+  </g>
+</svg>

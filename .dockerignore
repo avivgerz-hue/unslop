@@ -1,0 +1,6 @@
+# Send only the production manifest, lockfile, and prebuilt runtime to Docker.
+**
+!package.json
+!package-lock.json
+!dist/
+!dist/**

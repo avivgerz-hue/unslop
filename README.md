@@ -7,11 +7,13 @@
 [![Node.js 20.19+](https://img.shields.io/badge/node-%3E%3D20.19-3c873a)](https://nodejs.org/)
 [![MIT license](https://img.shields.io/badge/license-MIT-111111)](LICENSE)
 
-![Before and after unslop: a generic purple-gradient AI landing page transformed into a precise, token-driven Linear Dark dashboard](https://raw.githubusercontent.com/avivgerz-hue/unslop/main/docs/assets/before-after-unslop.png)
+![unslop preview](./assets/hero-preview.svg)
 
 `unslop` is a zero-runtime-dependency CLI, native MCP server, and installable Agent Skill that gives coding agents a real design system, audits frontend source for generic AI patterns and WCAG contrast failures, exports Tailwind v4 tokens, and turns live interfaces into enforceable Design DNA.
 
 Works with **Claude Code, OpenAI Codex, Cursor, Windsurf, Cline**, and any agent that reads project instructions.
+
+![Before and after unslop: a generic purple-gradient AI landing page transformed into a precise, token-driven Linear Dark dashboard](https://raw.githubusercontent.com/avivgerz-hue/unslop/main/docs/assets/before-after-unslop.png)
 
 ```bash
 npx github:avivgerz-hue/unslop init
@@ -203,6 +205,17 @@ For Claude Desktop, add the same `mcpServers.unslop` entry to the application's 
 | `unslop_apply_preset` | `preset`; optional `projectDir` | Six synchronized agent-rule files plus merge-safe `.mcp.json` |
 
 The transport supports `initialize`, `ping`, `tools/list`, `tools/call`, JSON-RPC errors, notifications, and newline-delimited stdio framing. Protocol messages are the only stdout output. Tool execution failures return MCP `isError` results without terminating the server.
+
+### Production Docker image
+
+Build the minimal Node 22 Alpine image from the committed runtime; no TypeScript compiler, source files, or development dependencies enter the build context:
+
+```bash
+docker build -t unslop:mcp .
+docker run --rm -i unslop:mcp
+```
+
+The image entrypoint is `node dist/bin/unslop.js mcp`. CI builds this image and verifies the `initialize` response, silent handling of `notifications/initialized`, and the three-tool `tools/list` response over stdio with networking disabled.
 
 ### Zero-build GitHub execution
 

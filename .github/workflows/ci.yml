@@ -43,7 +43,7 @@ jobs:
           test "$(node dist/bin/unslop.js --version)" = "1.2.0"
       - name: Smoke-test native MCP stdio
         run: |
-          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | node dist/bin/unslop.js mcp > /tmp/unslop-mcp.ndjson
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | node dist/bin/unslop.js --mcp > /tmp/unslop-mcp.ndjson
           node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-mcp.ndjson', 'utf8').trim().split('\n').map(JSON.parse); if (messages.length !== 2 || messages[0].result.serverInfo.version !== '1.2.0' || messages[1].result.tools.length !== 3) process.exit(1);"
 
   docker-mcp:

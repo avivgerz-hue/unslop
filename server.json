@@ -12,15 +12,23 @@
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "github:avivgerz-hue/unslop",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "unslop-mcp",
+      "version": "1.2.0",
       "transport": {
         "type": "stdio"
       },
       "runtimeHint": "npx",
+      "runtimeArguments": [
+        {
+          "type": "positional",
+          "value": "-y"
+        }
+      ],
       "packageArguments": [
         {
           "type": "positional",
-          "value": "mcp"
+          "value": "--mcp"
         }
       ]
     }
@@ -32,8 +40,9 @@
         "startup": {
           "command": "npx",
           "args": [
-            "github:avivgerz-hue/unslop",
-            "mcp"
+            "-y",
+            "unslop-mcp",
+            "--mcp"
           ]
         },
         "maintainers": [

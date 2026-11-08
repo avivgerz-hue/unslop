@@ -17,11 +17,11 @@ class UsageError extends Error {
 const HELP = `unslop ${CLI_VERSION} — studio-grade design constraints for coding agents
 
 USAGE
-  npx github:avivgerz-hue/unslop <command> [options]
+  npx -y unslop-mcp <command> [options]
 
 COMMANDS
   init [--preset <name>]       Install agent rules and .mcp.json in this project
-  mcp                          Run the native MCP server over stdio
+  mcp, --mcp                   Run the native MCP server over stdio
   audit [dir]                  Detect AI slop and generate a refactoring brief
   extract <url-or-css-path>    Compile design DNA into an Agent Skill
   export-tokens                Export Tailwind v4 @theme and CSS variables
@@ -58,15 +58,15 @@ EXPORT-TOKENS OPTIONS
       --max-stylesheets <n>    External stylesheet limit for --source URLs
 
 MCP OPTIONS
-  The mcp command uses only stdio for JSON-RPC messages. Run it from the project
-  root, or let the generated .mcp.json launch it through npx.
+  The mcp command (also --mcp) uses only stdio for JSON-RPC messages. Run it
+  from the project root, or let the generated .mcp.json launch it through npx.
 
 EXIT STATUS
   0  Command succeeded; audit found no violations
   1  Audit found violations, score was below --fail-under, or command failed
   2  Invalid command-line usage
 
-Run "npx github:avivgerz-hue/unslop presets" to compare built-in design systems.`;
+Run "npx -y unslop-mcp presets" to compare built-in design systems.`;
 function parse(command, args, options) {
     try {
         return parseArgs({ args, options, allowPositionals: true, strict: true });
@@ -156,7 +156,7 @@ export async function runCli(argv = process.argv.slice(2), context = {}) {
                     "NAME              MODE    DESCRIPTION",
                     ...rows.map((row) => row.join("  ")),
                     "",
-                    "Inspect a token contract: npx github:avivgerz-hue/unslop presets linear-dark",
+                    "Inspect a token contract: npx -y unslop-mcp presets linear-dark",
                 ].join("\n"));
             }
             return 0;
@@ -182,15 +182,19 @@ export async function runCli(argv = process.argv.slice(2), context = {}) {
                     `Installed the ${result.preset} design system:`,
                     ...result.files.map((file) => `  ${file.status.padEnd(9)} ${file.path}`),
                     "",
-                    "Next: run npx github:avivgerz-hue/unslop audit . before your agent writes more UI.",
+                    "Next: run npx -y unslop-mcp audit . before your agent writes more UI.",
                 ].join("\n"));
             }
             return 0;
         }
-        if (command === "mcp") {
+        if (command === "mcp" || command === "--mcp") {
             const { positionals } = parse("mcp", args, {});
             assertNoPositionals("mcp", positionals);
-            await startMcpServer({ cwd });
+            await startMcpServer({
+                cwd,
+                ...(context.input ? { input: context.input } : {}),
+                ...(context.output ? { output: context.output } : {}),
+            });
             return 0;
         }
         if (command === "export-tokens") {
@@ -310,7 +314,7 @@ export async function runCli(argv = process.argv.slice(2), context = {}) {
     catch (error) {
         stderr(`unslop: ${error instanceof Error ? error.message : String(error)}`);
         if (error instanceof UsageError) {
-            stderr("Run npx github:avivgerz-hue/unslop help for usage.");
+            stderr("Run npx -y unslop-mcp help for usage.");
             return 2;
         }
         return 1;

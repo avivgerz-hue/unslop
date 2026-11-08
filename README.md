@@ -2,8 +2,9 @@
 
 **Your agent can write the code. Stop letting it ship the same AI interface.**
 
+[![npm version](https://img.shields.io/npm/v/unslop-mcp.svg)](https://www.npmjs.com/package/unslop-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/unslop-mcp.svg)](https://www.npmjs.com/package/unslop-mcp)
 [![CI](https://github.com/avivgerz-hue/unslop/actions/workflows/ci.yml/badge.svg)](https://github.com/avivgerz-hue/unslop/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/unslop.svg)](https://www.npmjs.com/package/unslop)
 [![Node.js 20.19+](https://img.shields.io/badge/node-%3E%3D20.19-3c873a)](https://nodejs.org/)
 [![MIT license](https://img.shields.io/badge/license-MIT-111111)](LICENSE)
 
@@ -16,7 +17,7 @@ Works with **Claude Code, OpenAI Codex, Cursor, Windsurf, Cline**, and any agent
 ![Before and after unslop: a generic purple-gradient AI landing page transformed into a precise, token-driven Linear Dark dashboard](https://raw.githubusercontent.com/avivgerz-hue/unslop/main/docs/assets/before-after-unslop.png)
 
 ```bash
-npx github:avivgerz-hue/unslop init
+npx -y unslop-mcp init
 ```
 
 That one command installs the `linear-dark` design contract into `.claude/skills/unslop/SKILL.md`, `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.windsurfrules`, and `.clinerules`, then merges the native server into `.mcp.json`. Existing instructions and unrelated MCP servers are preserved.
@@ -56,7 +57,7 @@ BEFORE: probabilistic taste                 AFTER: enforceable design physics
 ### 1. Choose a design system
 
 ```bash
-npx github:avivgerz-hue/unslop init --preset linear-dark
+npx -y unslop-mcp init --preset linear-dark
 ```
 
 ```text
@@ -69,7 +70,7 @@ Installed the linear-dark design system:
   created   .clinerules
   created   .mcp.json
 
-Next: run npx github:avivgerz-hue/unslop audit . before your agent writes more UI.
+Next: run npx -y unslop-mcp audit . before your agent writes more UI.
 ```
 
 Then ask your agent:
@@ -79,7 +80,7 @@ Then ask your agent:
 ### 2. Audit the interface
 
 ```bash
-npx github:avivgerz-hue/unslop audit src
+npx -y unslop-mcp audit src
 ```
 
 ```text
@@ -96,10 +97,10 @@ Design Integrity Score: 86/100 (B)
 The full output also contains a copy-ready refactoring prompt. Machine-readable output is one flag away:
 
 ```bash
-npx github:avivgerz-hue/unslop audit . --json
-npx github:avivgerz-hue/unslop audit . --prompt
-npx github:avivgerz-hue/unslop audit . --fail-under 90
-npx github:avivgerz-hue/unslop audit . --no-fail
+npx -y unslop-mcp audit . --json
+npx -y unslop-mcp audit . --prompt
+npx -y unslop-mcp audit . --fail-under 90
+npx -y unslop-mcp audit . --no-fail
 ```
 
 By default, an audit exits `1` when it finds violations and `0` when clean. Invalid usage exits `2`. Unsupported or empty directories still produce a valid report with zero scanned files.
@@ -109,13 +110,13 @@ By default, an audit exits `1` when it finds violations and `0` when clean. Inva
 From a local stylesheet:
 
 ```bash
-npx github:avivgerz-hue/unslop extract ./tokens.css --name acme -o .claude/skills/unslop/SKILL.md
+npx -y unslop-mcp extract ./tokens.css --name acme -o .claude/skills/unslop/SKILL.md
 ```
 
 From a live URL:
 
 ```bash
-npx github:avivgerz-hue/unslop extract https://example.com --name example --json -o design-dna.json
+npx -y unslop-mcp extract https://example.com --name example --json -o design-dna.json
 ```
 
 The extractor inventories:
@@ -132,7 +133,7 @@ Markdown output is a complete Claude-compatible `SKILL.md`. `--json` emits both 
 ### 4. Export Tailwind v4 and framework-agnostic tokens
 
 ```bash
-npx github:avivgerz-hue/unslop export-tokens --preset linear-dark --out tokens.css
+npx -y unslop-mcp export-tokens --preset linear-dark --out tokens.css
 ```
 
 The generated stylesheet contains three complementary contracts:
@@ -163,8 +164,8 @@ Or without Tailwind:
 Compile tokens directly from extracted DNA instead of a built-in preset:
 
 ```bash
-npx github:avivgerz-hue/unslop export-tokens --source https://example.com --name example --out example-tokens.css
-npx github:avivgerz-hue/unslop export-tokens --source ./tokens.css --name acme
+npx -y unslop-mcp export-tokens --source https://example.com --name example --out example-tokens.css
+npx -y unslop-mcp export-tokens --source ./tokens.css --name acme
 ```
 
 `--preset` and `--source` are mutually exclusive. Without `--out`, CSS is written to stdout.
@@ -174,8 +175,10 @@ npx github:avivgerz-hue/unslop export-tokens --source ./tokens.css --name acme
 Start the zero-dependency Model Context Protocol server over stdio:
 
 ```bash
-npx github:avivgerz-hue/unslop mcp
+npx -y unslop-mcp --mcp
 ```
+
+**Published 1.2.0 compatibility:** this source update adds `--mcp`; that alias and the `unslop-mcp` executable name require a subsequent npm publish. Until then, the published tarball accepts the equivalent positional form `npx -y unslop-mcp@1.2.0 mcp`.
 
 `init` creates or updates this project configuration automatically:
 
@@ -184,7 +187,7 @@ npx github:avivgerz-hue/unslop mcp
   "mcpServers": {
     "unslop": {
       "command": "npx",
-      "args": ["github:avivgerz-hue/unslop", "mcp"]
+      "args": ["-y", "unslop-mcp", "--mcp"]
     }
   }
 }
@@ -193,7 +196,7 @@ npx github:avivgerz-hue/unslop mcp
 The merge preserves unrelated entries in `mcpServers`, other top-level settings, and custom fields on the unslop entry. Invalid JSON is rejected rather than overwritten. Claude Code can also register the server explicitly:
 
 ```bash
-claude mcp add --scope project unslop -- npx github:avivgerz-hue/unslop mcp
+claude mcp add --scope project unslop -- npx -y unslop-mcp --mcp
 ```
 
 For Claude Desktop, add the same `mcpServers.unslop` entry to the application's MCP configuration. Cursor reads project `.mcp.json`; Codex and other MCP-compatible clients can launch the same stdio command.
@@ -217,14 +220,14 @@ docker run --rm -i unslop:mcp
 
 The image entrypoint is `node dist/bin/unslop.js mcp`. CI builds this image and verifies the `initialize` response, silent handling of `notifications/initialized`, and the three-tool `tools/list` response over stdio with networking disabled.
 
-### Zero-build GitHub execution
+### Alternative: zero-build GitHub execution
 
-Run the committed distribution directly from GitHub without installing TypeScript or any other development dependency:
+The npm package is the primary installation path. As an alternative, run the committed distribution directly from GitHub without installing TypeScript or any other development dependency:
 
 ```bash
-npx github:avivgerz-hue/unslop --version
-npx github:avivgerz-hue/unslop init
-npx github:avivgerz-hue/unslop mcp
+npx -y github:avivgerz-hue/unslop --version
+npx -y github:avivgerz-hue/unslop init
+npx -y github:avivgerz-hue/unslop --mcp
 ```
 
 The repository includes `dist/`. During a GitHub install, `prepare` uses the local TypeScript compiler for development when it is available and otherwise validates and reuses the committed runtime and all five preset JSON files. A cold `npx` invocation still needs to download the package; no local compilation step is required.
@@ -233,12 +236,12 @@ The repository includes `dist/`. During a GitHub install, `prepare` uses the loc
 
 Machine-readable discovery documents live at the repository root:
 
-- [`server.json`](server.json) follows the official MCP Registry schema, declares the GitHub npm specifier with the `npx` runtime and fixed `mcp` argument, and carries the three tool summaries in the registry-approved publisher metadata extension. `package.json` includes the matching `mcpName` ownership declaration.
-- [`smithery.yaml`](smithery.yaml) starts `npx github:avivgerz-hue/unslop mcp` over stdio without requiring configuration.
+- [`server.json`](server.json) follows the official MCP Registry schema, declares the published `unslop-mcp` npm package with the `npx` runtime and fixed `--mcp` argument, and carries the three tool summaries in the registry-approved publisher metadata extension. `package.json` includes the matching `mcpName` ownership declaration.
+- [`smithery.yaml`](smithery.yaml) starts `npx -y unslop-mcp --mcp` over stdio without requiring configuration.
 - [`glama.json`](glama.json) uses Glama's schema and mirrors the exact runtime tool names, descriptions, and input schemas.
 - [`CITATION.cff`](CITATION.cff) provides CFF 1.2.0 software citation metadata for VibeFoundry and powers GitHub's citation widget.
 
-These files describe the project for registry indexing; their presence does not claim that a registry listing or npm publication has occurred.
+The npm package is published as [`unslop-mcp`](https://www.npmjs.com/package/unslop-mcp). These files support registry indexing but do not claim that a registry listing has occurred.
 
 ## Preset gallery
 
@@ -253,9 +256,9 @@ These files describe the project for registry indexing; their presence does not 
 Inspect every token and law before choosing:
 
 ```bash
-npx github:avivgerz-hue/unslop presets
-npx github:avivgerz-hue/unslop presets swiss-grid
-npx github:avivgerz-hue/unslop presets apple-glass --json
+npx -y unslop-mcp presets
+npx -y unslop-mcp presets swiss-grid
+npx -y unslop-mcp presets apple-glass --json
 ```
 
 ## What the audit detects
@@ -307,7 +310,7 @@ Each generated agent-rule file contains an `unslop` managed block. Running `init
 
 ### OpenAI Codex
 
-Codex reads `AGENTS.md`. Keep the generated file at the repository root and ask Codex to run `npx github:avivgerz-hue/unslop audit .` after implementing UI.
+Codex reads `AGENTS.md`. Keep the generated file at the repository root and ask Codex to run `npx -y unslop-mcp audit .` after implementing UI.
 
 ### Cursor, Windsurf, and Cline
 

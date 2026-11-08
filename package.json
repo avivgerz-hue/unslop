@@ -1,11 +1,12 @@
 {
-  "name": "unslop",
+  "name": "unslop-mcp",
   "version": "1.2.0",
   "mcpName": "io.github.avivgerz-hue/unslop",
   "description": "Studio-grade design systems, native MCP tools, Tailwind v4 tokens, and deterministic anti-slop/WCAG audits for coding agents.",
   "type": "module",
   "bin": {
-    "unslop": "./dist/bin/unslop.js"
+    "unslop": "dist/bin/unslop.js",
+    "unslop-mcp": "dist/bin/unslop.js"
   },
   "exports": {
     "./analyzer": {

@@ -182,7 +182,7 @@ describe("merge-safe MCP project configuration", () => {
     expect(config.mcpServers.other).toEqual(existing.mcpServers.other);
     expect(config.mcpServers.unslop).toEqual({
       command: "npx",
-      args: ["github:avivgerz-hue/unslop", "mcp"],
+      args: ["-y", "unslop-mcp", "--mcp"],
       env: { KEEP: "yes" },
     });
     const second = await installUnslop({ cwd: directory, preset: "linear-dark" });
@@ -259,7 +259,10 @@ describe("native MCP server", () => {
     const application = applied?.result as { structuredContent: { files: unknown[] } };
     expect(application.structuredContent.files).toHaveLength(7);
     expect(await readFile(join(directory, "AGENTS.md"), "utf8")).toContain("Swiss Grid");
-    expect(JSON.parse(await readFile(join(directory, ".mcp.json"), "utf8")).mcpServers.unslop.args).toContain("mcp");
+    expect(JSON.parse(await readFile(join(directory, ".mcp.json"), "utf8")).mcpServers.unslop).toEqual({
+      command: "npx",
+      args: ["-y", "unslop-mcp", "--mcp"],
+    });
   });
 
   it("handles JSON-RPC errors and newline-delimited stdio framing without stdout noise", async () => {
@@ -283,6 +286,35 @@ describe("native MCP server", () => {
     expect(messages[1]).toMatchObject({ id: 1, result: { serverInfo: { name: "unslop" } } });
     expect(messages[2].result.tools).toHaveLength(3);
     expect(serialized).not.toContain(`unslop ${UNSLOP_VERSION}`);
+  });
+
+  it("serves MCP over stdio through the --mcp command alias", async () => {
+    const directory = await temporaryDirectory();
+    const input = new PassThrough();
+    const output = new PassThrough();
+    let serialized = "";
+    let stderr = "";
+    output.on("data", (chunk: Buffer) => { serialized += chunk.toString("utf8"); });
+    const running = runCli(["--mcp"], {
+      cwd: directory,
+      input,
+      output,
+      stderr: (message) => { stderr += `${message}\n`; },
+    });
+    input.end(`${[
+      JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: {} }),
+      JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }),
+      JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} }),
+      "",
+    ].join("\n")}`);
+    await expect(running).resolves.toBe(0);
+    expect(stderr).toBe("");
+    const messages = serialized.trim().split("\n").map((line) => JSON.parse(line));
+    expect(messages).toHaveLength(2);
+    expect(messages[0]).toMatchObject({ id: 1, result: { serverInfo: { name: "unslop" } } });
+    expect(messages[1].result.tools.map((tool: { name: string }) => tool.name)).toEqual([
+      "unslop_audit", "unslop_extract_dna", "unslop_apply_preset",
+    ]);
   });
 
   it("returns operational tool failures as MCP isError results", async () => {

@@ -26,12 +26,16 @@ describe("release and discovery metadata", () => {
     ]);
 
     expect(UNSLOP_VERSION).toBe("1.2.0");
+    expect(manifest.name).toBe("unslop-mcp");
     expect(manifest.version).toBe(UNSLOP_VERSION);
+    expect(lockfile.name).toBe(manifest.name);
+    expect(lockfile.packages[""].name).toBe(manifest.name);
+    expect(lockfile.packages[""].bin).toEqual(manifest.bin);
     expect(lockfile.version).toBe(UNSLOP_VERSION);
     expect(lockfile.packages[""].version).toBe(UNSLOP_VERSION);
     expect(glama.version).toBe(UNSLOP_VERSION);
     expect(registry.version).toBe(UNSLOP_VERSION);
-    expect(registry.packages[0].version).toBeUndefined();
+    expect(registry.packages[0].version).toBe(UNSLOP_VERSION);
     expect(citation).toContain(`version: ${UNSLOP_VERSION}\n`);
   });
 
@@ -69,11 +73,11 @@ describe("release and discovery metadata", () => {
     expect(glama.maintainers).toEqual(["avivgerz-hue"]);
     expect(glama.license).toBe("MIT");
     expect(glama.command).toBe("npx");
-    expect(glama.args).toEqual(["github:avivgerz-hue/unslop", "mcp"]);
+    expect(glama.args).toEqual(["-y", "unslop-mcp", "--mcp"]);
     expect(glama.tools).toEqual(MCP_TOOL_DEFINITIONS);
   });
 
-  it("uses official MCP Registry metadata with the standardized GitHub startup", async () => {
+  it("uses official MCP Registry metadata with the published npm startup", async () => {
     const [manifest, registry] = await Promise.all([
       readJSON("package.json"),
       readJSON("server.json"),
@@ -89,14 +93,17 @@ describe("release and discovery metadata", () => {
     });
     expect(registry.packages).toEqual([{
       registryType: "npm",
-      identifier: "github:avivgerz-hue/unslop",
+      registryBaseUrl: "https://registry.npmjs.org",
+      identifier: "unslop-mcp",
+      version: UNSLOP_VERSION,
       transport: { type: "stdio" },
       runtimeHint: "npx",
-      packageArguments: [{ type: "positional", value: "mcp" }],
+      runtimeArguments: [{ type: "positional", value: "-y" }],
+      packageArguments: [{ type: "positional", value: "--mcp" }],
     }]);
     expect(publisher["com.vibefoundry"].startup).toEqual({
       command: "npx",
-      args: ["github:avivgerz-hue/unslop", "mcp"],
+      args: ["-y", "unslop-mcp", "--mcp"],
     });
     expect(publisher["com.vibefoundry"].tools.map((tool: { name: string }) => tool.name))
       .toEqual(MCP_TOOL_DEFINITIONS.map((tool) => tool.name));
@@ -111,7 +118,7 @@ describe("release and discovery metadata", () => {
     const functionBody = smithery.match(/commandFunction: \|-\n([\s\S]*?)\n?$/)?.[1];
     expect(functionBody).toBeDefined();
     const command = new Function(`return (${functionBody})`)()();
-    expect(command).toEqual({ command: "npx", args: ["github:avivgerz-hue/unslop", "mcp"] });
+    expect(command).toEqual({ command: "npx", args: ["-y", "unslop-mcp", "--mcp"] });
     expect(smithery).toContain("type: stdio\n");
     expect(smithery).toContain("configSchema: {}\n");
 
@@ -123,7 +130,7 @@ describe("release and discovery metadata", () => {
     expect(citation).toContain('date-released: "2026-11-07"\n');
   });
 
-  it("rejects legacy npm commands and flagged GitHub commands in user-facing content", async () => {
+  it("uses npm commands primarily and retains only explicit GitHub alternatives", async () => {
     const filenames = [
       "README.md",
       "SKILL.md",
@@ -132,11 +139,16 @@ describe("release and discovery metadata", () => {
       "src/extractor/extract-dna.ts",
       "src/analyzer/slop-detector.ts",
     ];
-    const flaggedGitHubCommand = ["npx", "-y", "github:avivgerz-hue/unslop"].join(" ");
+    const gitHubAlternative = ["npx", "-y", "github:avivgerz-hue/unslop"].join(" ");
     for (const filename of filenames) {
       const content = await readText(filename);
+      expect(content, filename).toContain("npx -y unslop-mcp");
       expect(content, filename).not.toMatch(/npx\s+(?:-y\s+)?unslop(?=@|\s)/);
-      expect(content, filename).not.toContain(flaggedGitHubCommand);
+      if (filename === "README.md" || filename === "SKILL.md") {
+        expect(content, filename).toContain(gitHubAlternative);
+      } else {
+        expect(content, filename).not.toContain(gitHubAlternative);
+      }
     }
   });
 
@@ -163,6 +175,8 @@ describe("release and discovery metadata", () => {
     expect(preview).toContain("Design Integrity Score");
     expect(preview).toContain("100/100 (A+)");
     expect(preview).not.toMatch(/<script|onload=|TODO|PLACEHOLDER/i);
+    expect(readme).toContain("[![npm version](https://img.shields.io/npm/v/unslop-mcp.svg)](https://www.npmjs.com/package/unslop-mcp)");
+    expect(readme).toContain("[![npm downloads](https://img.shields.io/npm/dm/unslop-mcp.svg)](https://www.npmjs.com/package/unslop-mcp)");
     expect(readme).toContain("![unslop preview](./assets/hero-preview.svg)");
     expect(readme).toContain("docs/assets/before-after-unslop.png");
     expect(readme.indexOf("![unslop preview](./assets/hero-preview.svg)"))
@@ -176,7 +190,11 @@ describe("release and discovery metadata", () => {
       readText(".gitignore"),
     ]);
     expect(manifest.scripts.prepare).toBe("npm run build --if-present");
-    expect(manifest.bin.unslop).toBe("./dist/bin/unslop.js");
+    expect(manifest.name).toBe("unslop-mcp");
+    expect(manifest.bin).toEqual({
+      unslop: "dist/bin/unslop.js",
+      "unslop-mcp": "dist/bin/unslop.js",
+    });
     expect(manifest.dependencies).toBeUndefined();
     expect(ignoreRules.split("\n")).not.toContain("dist/");
     expect(buildWrapper).toContain("TypeScript is not installed; using committed dist/.");

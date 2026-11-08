@@ -18,10 +18,11 @@
   ],
   "command": "npx",
   "args": [
-    "github:avivgerz-hue/unslop",
-    "mcp"
+    "-y",
+    "unslop-mcp",
+    "--mcp"
   ],
-  "install": "npx github:avivgerz-hue/unslop mcp",
+  "install": "npx -y unslop-mcp --mcp",
   "tools": [
     {
       "name": "unslop_audit",

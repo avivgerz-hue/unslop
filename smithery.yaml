@@ -6,5 +6,5 @@ startCommand:
   commandFunction: |-
     () => ({
       command: 'npx',
-      args: ['github:avivgerz-hue/unslop', 'mcp']
+      args: ['-y', 'unslop-mcp', '--mcp']
     })

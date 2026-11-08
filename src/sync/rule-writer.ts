@@ -197,7 +197,7 @@ export function renderRuleDocument(preset: DesignPreset): string {
     "",
     "## 8. CSS token source of truth",
     "",
-    `Use these variables directly or map them once into Tailwind, CSS Modules, styled-components, or the host design system. Do not create a second competing token scale. For Tailwind v4 @theme plus :root and .dark variables, run \`npx github:avivgerz-hue/unslop export-tokens --preset ${preset.name} --out tokens.css\`.`,
+    `Use these variables directly or map them once into Tailwind, CSS Modules, styled-components, or the host design system. Do not create a second competing token scale. For Tailwind v4 @theme plus :root and .dark variables, run \`npx -y unslop-mcp export-tokens --preset ${preset.name} --out tokens.css\`.`,
     "",
     "```css",
     renderTokenCSS(preset),
@@ -208,7 +208,7 @@ export function renderRuleDocument(preset: DesignPreset): string {
     "1. Inspect existing components and reuse their semantic primitives before creating new ones.",
     "2. Write the information hierarchy and responsive grid first; implement typography and spacing before visual effects.",
     "3. Implement all interaction states: default, hover, focus-visible, active, disabled, loading, empty, error, and success where applicable.",
-    "4. Run `npx github:avivgerz-hue/unslop audit .` and resolve every reported location without suppressing rules.",
+    "4. Run `npx -y unslop-mcp audit .` and resolve every reported location without suppressing rules.",
     "5. Manually verify narrow and wide viewports, keyboard navigation, contrast, reduced motion, numeric alignment, and content overflow.",
     "",
     "A passing audit is necessary but not sufficient: never claim visual excellence without checking the rendered result.",
@@ -316,7 +316,7 @@ export const writeAgentRules = syncRuleFiles;
 
 export interface MCPSyncOptions {
   cwd?: string;
-  /** Package specifier used by npx. Defaults to the public GitHub repository. */
+  /** Package specifier used by npx. Defaults to the published npm package. */
   packageSpec?: string;
 }
 
@@ -353,7 +353,7 @@ export async function syncMcpConfig(options: MCPSyncOptions = {}): Promise<Synce
   }
   const servers = isJSONObject(config.mcpServers) ? config.mcpServers : {};
   const currentUnslop = isJSONObject(servers.unslop) ? servers.unslop : {};
-  const packageSpec = options.packageSpec?.trim() || "github:avivgerz-hue/unslop";
+  const packageSpec = options.packageSpec?.trim() || "unslop-mcp";
   const content = `${JSON.stringify(
     {
       ...config,
@@ -362,7 +362,7 @@ export async function syncMcpConfig(options: MCPSyncOptions = {}): Promise<Synce
         unslop: {
           ...currentUnslop,
           command: "npx",
-          args: [packageSpec, "mcp"],
+          args: ["-y", packageSpec, "--mcp"],
         },
       },
     },

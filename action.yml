@@ -45,7 +45,19 @@ runs:
           args+=(--preset "${UNSLOP_PRESET}")
         fi
         args+=(--report "${UNSLOP_REPORT:-UNSLOP-REPORT.md}")
-        npx -y unslop-mcp@2.0.0 refactor-plan "${args[@]}"
+        error_log="$(mktemp)"
+        set +e
+        npx -y unslop-mcp@2.0.0 refactor-plan "${args[@]}" 2>"${error_log}"
+        status=$?
+        set -e
+        if [[ "${status}" -ne 0 ]]; then
+          while IFS= read -r line; do
+            echo "::error title=Unslop blueprint::${line}"
+          done < "${error_log}"
+          rm -f "${error_log}"
+          exit "${status}"
+        fi
+        rm -f "${error_log}"
 
     - name: Audit design craft
       shell: bash

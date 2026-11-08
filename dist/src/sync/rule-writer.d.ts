@@ -31,7 +31,7 @@ export declare function syncRuleFiles(options: RuleSyncOptions): Promise<RuleSyn
 export declare const writeAgentRules: typeof syncRuleFiles;
 export interface MCPSyncOptions {
     cwd?: string;
-    /** Package specifier used by npx. Defaults to the current release. */
+    /** Package specifier used by npx. Defaults to the public GitHub repository. */
     packageSpec?: string;
 }
 /** Merge unslop into a project's .mcp.json without disturbing other servers. */

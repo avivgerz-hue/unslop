@@ -12,9 +12,7 @@
   "packages": [
     {
       "registryType": "npm",
-      "registryBaseUrl": "https://registry.npmjs.org",
-      "identifier": "unslop",
-      "version": "1.2.0",
+      "identifier": "github:avivgerz-hue/unslop",
       "transport": {
         "type": "stdio"
       },
@@ -31,6 +29,13 @@
     "io.modelcontextprotocol.registry/publisher-provided": {
       "com.vibefoundry": {
         "license": "MIT",
+        "startup": {
+          "command": "npx",
+          "args": [
+            "github:avivgerz-hue/unslop",
+            "mcp"
+          ]
+        },
         "maintainers": [
           "avivgerz-hue"
         ],

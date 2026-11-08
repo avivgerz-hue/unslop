@@ -16,9 +16,9 @@
   "transport": [
     "stdio"
   ],
-  "command": "node",
+  "command": "npx",
   "args": [
-    "dist/bin/unslop.js",
+    "github:avivgerz-hue/unslop",
     "mcp"
   ],
   "install": "npx github:avivgerz-hue/unslop mcp",

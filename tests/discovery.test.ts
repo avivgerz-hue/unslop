@@ -31,7 +31,7 @@ describe("release and discovery metadata", () => {
     expect(lockfile.packages[""].version).toBe(UNSLOP_VERSION);
     expect(glama.version).toBe(UNSLOP_VERSION);
     expect(registry.version).toBe(UNSLOP_VERSION);
-    expect(registry.packages[0].version).toBe(UNSLOP_VERSION);
+    expect(registry.packages[0].version).toBeUndefined();
     expect(citation).toContain(`version: ${UNSLOP_VERSION}\n`);
   });
 
@@ -68,12 +68,12 @@ describe("release and discovery metadata", () => {
     expect(glama.$schema).toBe("https://glama.ai/mcp/schemas/server.json");
     expect(glama.maintainers).toEqual(["avivgerz-hue"]);
     expect(glama.license).toBe("MIT");
-    expect(glama.command).toBe("node");
-    expect(glama.args).toEqual(["dist/bin/unslop.js", "mcp"]);
+    expect(glama.command).toBe("npx");
+    expect(glama.args).toEqual(["github:avivgerz-hue/unslop", "mcp"]);
     expect(glama.tools).toEqual(MCP_TOOL_DEFINITIONS);
   });
 
-  it("uses the official MCP Registry package and ownership conventions", async () => {
+  it("uses official MCP Registry metadata with the standardized GitHub startup", async () => {
     const [manifest, registry] = await Promise.all([
       readJSON("package.json"),
       readJSON("server.json"),
@@ -89,13 +89,15 @@ describe("release and discovery metadata", () => {
     });
     expect(registry.packages).toEqual([{
       registryType: "npm",
-      registryBaseUrl: "https://registry.npmjs.org",
-      identifier: "unslop",
-      version: UNSLOP_VERSION,
+      identifier: "github:avivgerz-hue/unslop",
       transport: { type: "stdio" },
       runtimeHint: "npx",
       packageArguments: [{ type: "positional", value: "mcp" }],
     }]);
+    expect(publisher["com.vibefoundry"].startup).toEqual({
+      command: "npx",
+      args: ["github:avivgerz-hue/unslop", "mcp"],
+    });
     expect(publisher["com.vibefoundry"].tools.map((tool: { name: string }) => tool.name))
       .toEqual(MCP_TOOL_DEFINITIONS.map((tool) => tool.name));
     expect(Buffer.byteLength(JSON.stringify(publisher), "utf8")).toBeLessThanOrEqual(4096);
@@ -109,7 +111,7 @@ describe("release and discovery metadata", () => {
     const functionBody = smithery.match(/commandFunction: \|-\n([\s\S]*?)\n?$/)?.[1];
     expect(functionBody).toBeDefined();
     const command = new Function(`return (${functionBody})`)()();
-    expect(command).toEqual({ command: "node", args: ["dist/bin/unslop.js", "mcp"] });
+    expect(command).toEqual({ command: "npx", args: ["github:avivgerz-hue/unslop", "mcp"] });
     expect(smithery).toContain("type: stdio\n");
     expect(smithery).toContain("configSchema: {}\n");
 
@@ -119,6 +121,23 @@ describe("release and discovery metadata", () => {
     expect(citation).toContain("repository-code: https://github.com/avivgerz-hue/unslop\n");
     expect(citation).toContain("url: https://github.com/avivgerz-hue/unslop\n");
     expect(citation).toContain('date-released: "2026-11-07"\n');
+  });
+
+  it("rejects legacy npm commands and flagged GitHub commands in user-facing content", async () => {
+    const filenames = [
+      "README.md",
+      "SKILL.md",
+      "bin/unslop.ts",
+      "src/sync/rule-writer.ts",
+      "src/extractor/extract-dna.ts",
+      "src/analyzer/slop-detector.ts",
+    ];
+    const flaggedGitHubCommand = ["npx", "-y", "github:avivgerz-hue/unslop"].join(" ");
+    for (const filename of filenames) {
+      const content = await readText(filename);
+      expect(content, filename).not.toMatch(/npx\s+(?:-y\s+)?unslop(?=@|\s)/);
+      expect(content, filename).not.toContain(flaggedGitHubCommand);
+    }
   });
 
   it("keeps GitHub installation independent of a local TypeScript compiler", async () => {

@@ -5,6 +5,6 @@ startCommand:
   configSchema: {}
   commandFunction: |-
     () => ({
-      command: 'node',
-      args: ['dist/bin/unslop.js', 'mcp']
+      command: 'npx',
+      args: ['github:avivgerz-hue/unslop', 'mcp']
     })

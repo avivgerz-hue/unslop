@@ -36,6 +36,10 @@ runs:
         UNSLOP_REPORT: ${{ inputs.report }}
       run: |
         set -euo pipefail
+        if ! command -v npx >/dev/null 2>&1; then
+          echo "::error title=Unslop runtime::npx is required. Add actions/setup-node before avivgerz-hue/unslop."
+          exit 127
+        fi
         args=("${UNSLOP_TARGET}")
         if [[ -n "${UNSLOP_PRESET}" ]]; then
           args+=(--preset "${UNSLOP_PRESET}")
@@ -53,6 +57,10 @@ runs:
         if [[ "${UNSLOP_STRICT}" != "true" && "${UNSLOP_STRICT}" != "false" ]]; then
           echo "unslop: strict must be true or false" >&2
           exit 2
+        fi
+        if ! command -v npx >/dev/null 2>&1; then
+          echo "::error title=Unslop runtime::npx is required. Add actions/setup-node before avivgerz-hue/unslop."
+          exit 127
         fi
         args=("${UNSLOP_TARGET}")
         if [[ "${UNSLOP_STRICT}" == "true" ]]; then

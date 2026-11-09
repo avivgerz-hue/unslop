@@ -3,7 +3,7 @@
   "name": "io.github.avivgerz-hue/unslop",
   "title": "unslop — 7-Pillar Design Craft Engine",
   "description": "72-rule UI/UX audits, 10 studio archetypes, multi-format tokens, and Design Transformation Blueprints.",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "websiteUrl": "https://github.com/avivgerz-hue/unslop",
   "repository": {
     "url": "https://github.com/avivgerz-hue/unslop",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "unslop-mcp",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "transport": {
         "type": "stdio"
       },

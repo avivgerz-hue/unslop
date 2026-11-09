@@ -22,8 +22,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - name: Verify committed distribution is current
-        run: git diff --exit-code -- dist/
+      - run: npm run build:studio
+      - name: Verify committed distribution and studio are current
+        run: git diff --exit-code -- dist/ docs/index.html
+      - run: npm run typecheck
       - run: npm test
 
   github-install:
@@ -41,11 +43,11 @@ jobs:
           test ! -e node_modules/typescript
           npm run prepare
           test "$(node dist/bin/unslop.js --version)" = "$(node -p "require('./package.json').version")"
-          test "$(node dist/bin/unslop.js --version)" = "2.0.0"
+          test "$(node dist/bin/unslop.js --version)" = "2.1.0"
       - name: Smoke-test native MCP stdio
         run: |
           printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | node dist/bin/unslop.js --mcp > /tmp/unslop-mcp.ndjson
-          node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-mcp.ndjson', 'utf8').trim().split('\n').map(JSON.parse); if (messages.length !== 2 || messages[0].result.serverInfo.version !== '2.0.0' || messages[1].result.tools.length !== 4) process.exit(1);"
+          node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-mcp.ndjson', 'utf8').trim().split('\n').map(JSON.parse); if (messages.length !== 2 || messages[0].result.serverInfo.version !== '2.1.0' || messages[1].result.tools.length !== 4) process.exit(1);"
 
   action-smoke:
     runs-on: ubuntu-latest
@@ -55,6 +57,19 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      # The next npm version may not yet be published during PR CI. Exercise the
+      # actual packed candidate through the composite action instead of the registry.
+      - name: Prepare packed release candidate for Action smoke test
+        run: |
+          npm ci
+          npm run build
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP" --silent
+          mkdir -p "$RUNNER_TEMP/unslop-candidate" "$RUNNER_TEMP/unslop-ci-bin"
+          tar -xzf "$RUNNER_TEMP/unslop-mcp-2.1.0.tgz" -C "$RUNNER_TEMP/unslop-candidate"
+          cp scripts/ci-local-npx.sh "$RUNNER_TEMP/unslop-ci-bin/npx"
+          chmod +x "$RUNNER_TEMP/unslop-ci-bin/npx"
+          echo "UNSLOP_CI_PACKAGE=$RUNNER_TEMP/unslop-candidate/package" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/unslop-ci-bin" >> "$GITHUB_PATH"
       - name: Create an intentionally slop-filled fixture
         run: printf '%s\n' '<div className="from-purple-500 shadow-xl">Unleash the power</div>' > action-fixture.tsx
       - name: Run the local composite action with a transformation blueprint
@@ -89,4 +104,4 @@ jobs:
             printf '%s\n' '{"jsonrpc":"2.0","method":"notifications/initialized"}'
             printf '%s\n' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'
           } | timeout 20s docker run --rm -i --network none unslop:mcp-ci > /tmp/unslop-docker-mcp.ndjson
-          node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-docker-mcp.ndjson', 'utf8').trim().split('\n').map((line) => JSON.parse(line)); const tools = messages[1]?.result?.tools?.map((tool) => tool.name); if (messages.length !== 2 || messages[0]?.id !== 1 || messages[0]?.result?.serverInfo?.version !== '2.0.0' || messages[0]?.result?.protocolVersion !== '2025-06-18' || messages[1]?.id !== 2 || JSON.stringify(tools) !== JSON.stringify(['unslop_audit', 'unslop_extract_dna', 'unslop_apply_preset', 'unslop_refactor_plan'])) { console.error(messages); process.exit(1); } console.log('Docker MCP: initialize and tools/list responded; initialized notification emitted no response.');"
+          node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-docker-mcp.ndjson', 'utf8').trim().split('\n').map((line) => JSON.parse(line)); const tools = messages[1]?.result?.tools?.map((tool) => tool.name); if (messages.length !== 2 || messages[0]?.id !== 1 || messages[0]?.result?.serverInfo?.version !== '2.1.0' || messages[0]?.result?.protocolVersion !== '2025-06-18' || messages[1]?.id !== 2 || JSON.stringify(tools) !== JSON.stringify(['unslop_audit', 'unslop_extract_dna', 'unslop_apply_preset', 'unslop_refactor_plan'])) { console.error(messages); process.exit(1); } console.log('Docker MCP: initialize and tools/list responded; initialized notification emitted no response.');"

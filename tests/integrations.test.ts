@@ -52,8 +52,8 @@ describe("GitHub Marketplace action", () => {
     expect(action).toMatch(/  strict:\n[\s\S]*?default: "false"/);
     expect(action).toMatch(/  preset:\n[\s\S]*?default: ""/);
     expect(action).toMatch(/  report:\n[\s\S]*?default: ""/);
-    expect(action).toContain("npx -y unslop-mcp@2.0.0 audit");
-    expect(action).toContain("npx -y unslop-mcp@2.0.0 refactor-plan");
+    expect(action).toContain("npx -y unslop-mcp@2.1.0 audit");
+    expect(action).toContain("npx -y unslop-mcp@2.1.0 refactor-plan");
     expect(action).toContain("args+=(--fail-under 95)");
     expect(action).toContain("args+=(--no-fail)");
     expect(action).toContain('if: ${{ inputs.preset != \'\' || inputs.report != \'\' }}');
@@ -190,7 +190,7 @@ describe("universal coding-agent integration", () => {
     expect(agents).toContain("<!-- unslop:start -->");
     expect(claude).toContain("<!-- unslop:start -->");
     expect(opencode.mcp["unslop-mcp"].enabled).toBe(true);
-    expect(plugin.version).toBe("2.0.0");
+    expect(plugin.version).toBe("2.1.0");
     expect(claudeSkill).toContain("name: unslop");
     expect(codexSkill).toContain("name: unslop");
     expect(readme).toContain("## Supported Coding Agents (Claude Code, OpenCode, Codex, Cursor, Windsurf, Copilot, Cline, Zed)");

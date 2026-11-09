@@ -34,6 +34,20 @@ export interface CLIContext {
 
 class UsageError extends Error {}
 
+/** Only audit and refactor-plan calculate a grade; other commands show a labeled example. */
+function starFooter(grade?: string): string {
+  const badgeGrade = encodeURIComponent(grade ?? "A+");
+  return [
+    "",
+    "★ Fighting AI UI slop? Star Unslop on GitHub:",
+    "  https://github.com/avivgerz-hue/unslop",
+    "  Instant terminal star: gh repo star avivgerz-hue/unslop",
+    "",
+    grade ? `Your Design Craft badge (${grade}):` : "Example Design Craft badge (run audit to get your grade):",
+    `  [![Unslop Design Craft](https://img.shields.io/badge/Unslop_Craft-Grade_${badgeGrade}-f97316)](https://github.com/avivgerz-hue/unslop)`,
+  ].join("\n");
+}
+
 const HELP = `unslop ${CLI_VERSION} — 7-pillar UI/UX design engineering for coding agents
 
 USAGE
@@ -189,6 +203,7 @@ export async function runCli(argv: string[] = process.argv.slice(2), context: CL
           "Inspect a token contract: npx -y unslop-mcp presets linear-precision",
         ].join("\n"));
       }
+      if (!values.json) stdout(starFooter());
       return 0;
     }
 
@@ -215,6 +230,7 @@ export async function runCli(argv: string[] = process.argv.slice(2), context: CL
           "Next: run npx -y unslop-mcp audit . before your agent writes more UI.",
         ].join("\n"));
       }
+      if (!values.json) stdout(starFooter());
       return 0;
     }
 
@@ -302,6 +318,7 @@ export async function runCli(argv: string[] = process.argv.slice(2), context: CL
           `Wrote ${report}: ${plan.translations.length} translations and ${plan.steps.length} prioritized steps using ${plan.preset.name}.`,
         ].join("\n"));
       }
+      if (!values.json) stdout(starFooter(plan.grade));
       return 0;
     }
 
@@ -328,6 +345,7 @@ export async function runCli(argv: string[] = process.argv.slice(2), context: CL
       if (values.json) stdout(JSON.stringify(report, null, 2));
       else if (values.prompt) stdout(report.refactoringPrompt);
       else stdout(formatAuditReport(report));
+      if (!values.json) stdout(starFooter(report.grade));
 
       if (values["no-fail"]) return 0;
       return report.violations.length > 0 || (threshold !== undefined && report.score < threshold) ? 1 : 0;
@@ -362,6 +380,7 @@ export async function runCli(argv: string[] = process.argv.slice(2), context: CL
       } else {
         stdout(output.trimEnd());
       }
+      if (!values.json) stdout(starFooter());
       return 0;
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "unslop-mcp",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "mcpName": "io.github.avivgerz-hue/unslop",
   "description": "The definitive 7-pillar UI/UX Design Engineering CLI, MCP server, and Agent Skill: 72 rules, 10 studio archetypes, multi-format tokens, and exact transformation blueprints.",
   "type": "module",
@@ -59,7 +59,8 @@
     "prepare": "npm run build --if-present",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:studio": "node scripts/build-studio.mjs"
   },
   "keywords": [
     "mcp",
@@ -108,7 +109,10 @@
     "node": ">=20.19.0"
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^22.19.0",
+    "esbuild": "^0.28.2",
+    "jsdom": "^26.1.0",
     "typescript": "^5.9.3",
     "vite": "^8.3.6",
     "vitest": "^4.1.12"

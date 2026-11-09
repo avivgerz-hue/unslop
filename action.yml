@@ -49,7 +49,7 @@ runs:
           args+=(--preset "${UNSLOP_PRESET}")
         fi
         args+=(--report "${UNSLOP_REPORT:-UNSLOP-REPORT.md}")
-        npx -y unslop-mcp@2.0.0 refactor-plan "${args[@]}"
+        npx -y unslop-mcp@2.1.0 refactor-plan "${args[@]}"
 
     - name: Audit design craft
       shell: bash
@@ -76,4 +76,4 @@ runs:
         else
           args+=(--no-fail)
         fi
-        npx -y unslop-mcp@2.0.0 audit "${args[@]}"
+        npx -y unslop-mcp@2.1.0 audit "${args[@]}"

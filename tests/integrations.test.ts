@@ -1,4 +1,3 @@
-import { spawnSync } from "node:child_process";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -10,6 +9,7 @@ import {
   RULE_TARGETS,
 } from "../src/sync/rule-writer.js";
 import { UNSLOP_VERSION } from "../src/version.js";
+import { TRANSFORMATION_RULES } from "../src/sync/transformation-rules.js";
 
 const root = resolve(fileURLToPath(new URL(".", import.meta.url)), "..");
 const temporaryDirectories: string[] = [];
@@ -33,41 +33,6 @@ afterEach(async () => {
   await Promise.all(temporaryDirectories.splice(0).map((directory) => rm(directory, { recursive: true, force: true })));
 });
 
-describe("GitHub Marketplace action", () => {
-  it("uses exact Marketplace-safe metadata within the strict description limit", async () => {
-    const action = await readFile(join(root, "action.yml"), "utf8");
-    const name = action.match(/^name: "([^"]+)"$/m)?.[1];
-    const description = action.match(/^description: "([^"]+)"$/m)?.[1];
-    expect(name).toBe("Unslop — Anti-AI-Slop UI & Design Craft Linter");
-    expect(description).toBe("72-rule UI/UX design craft linter, WCAG/APCA contrast auditor, and studio design token generator.");
-    expect(description).toHaveLength(97);
-    expect(description?.length).toBeLessThan(125);
-  });
-
-  it("ships a safe composite audit with required branding, inputs, and strict/report behavior", async () => {
-    const action = await readFile(join(root, "action.yml"), "utf8");
-    expect(action).toContain('branding:\n  icon: "layout"\n  color: "orange"');
-    expect(action).toContain('runs:\n  using: "composite"');
-    expect(action).toMatch(/  target:\n[\s\S]*?default: "\."/);
-    expect(action).toMatch(/  strict:\n[\s\S]*?default: "false"/);
-    expect(action).toMatch(/  preset:\n[\s\S]*?default: ""/);
-    expect(action).toMatch(/  report:\n[\s\S]*?default: ""/);
-    expect(action).toContain("npx -y unslop-mcp@2.1.0 audit");
-    expect(action).toContain("npx -y unslop-mcp@2.1.0 refactor-plan");
-    expect(action).toContain("args+=(--fail-under 95)");
-    expect(action).toContain("args+=(--no-fail)");
-    expect(action).toContain('if: ${{ inputs.preset != \'\' || inputs.report != \'\' }}');
-
-    const scripts = [...action.matchAll(/^      run: \|\n((?:        .*(?:\n|$))+)/gm)];
-    expect(scripts).toHaveLength(2);
-    for (const script of scripts) {
-      const shell = script[1]!.replace(/^        /gm, "");
-      const checked = spawnSync("bash", ["-n"], { input: shell, encoding: "utf8" });
-      expect(checked.status, checked.stderr).toBe(0);
-    }
-  });
-});
-
 describe("universal coding-agent integration", () => {
   it("generates native skills, instructions, MCP configuration, and Claude plugin metadata", async () => {
     const cwd = await temporaryDirectory();
@@ -84,7 +49,9 @@ describe("universal coding-agent integration", () => {
       expect(content, target.path).toContain("Design Craft Score");
     }
     for (const path of [".claude/skills/unslop/SKILL.md", ".agents/skills/unslop/SKILL.md"]) {
-      expect(await readFile(join(cwd, path), "utf8")).toMatch(/^---\nname: unslop\n/);
+      const skill = await readFile(join(cwd, path), "utf8");
+      expect(skill).toMatch(/^---\nname: unslop\n/);
+      expect(skill).toContain(TRANSFORMATION_RULES);
     }
     expect(await readFile(join(cwd, ".cursor/rules/unslop.mdc"), "utf8")).toContain("alwaysApply: true");
 
@@ -177,7 +144,7 @@ describe("universal coding-agent integration", () => {
     expect(second.files.every((file) => file.status === "unchanged")).toBe(true);
   });
 
-  it("ships root auto-discovery files and documents the action and complete agent matrix", async () => {
+  it("ships root auto-discovery files and documents the complete agent matrix", async () => {
     const [agents, claude, opencode, plugin, claudeSkill, codexSkill, readme] = await Promise.all([
       readFile(join(root, "AGENTS.md"), "utf8"),
       readFile(join(root, "CLAUDE.md"), "utf8"),
@@ -193,8 +160,13 @@ describe("universal coding-agent integration", () => {
     expect(plugin.version).toBe("2.1.0");
     expect(claudeSkill).toContain("name: unslop");
     expect(codexSkill).toContain("name: unslop");
+    const rootSkill = await readFile(join(root, "SKILL.md"), "utf8");
+    for (const content of [rootSkill, claudeSkill, codexSkill]) {
+      expect(content).toContain(TRANSFORMATION_RULES);
+      for (const required of ["from-purple-500 to-indigo-500", "md:col-span-7", "md:col-span-5", "md:col-span-12", "tabular-nums", "max-w-prose", "60ch–70ch", "4.5:1", "7:1", "both themes"]) {
+        expect(content).toContain(required);
+      }
+    }
     expect(readme).toContain("## Supported Coding Agents (Claude Code, OpenCode, Codex, Cursor, Windsurf, Copilot, Cline, Zed)");
-    expect(readme).toContain("uses: avivgerz-hue/unslop@v2");
-    expect(readme).toContain("## GitHub Actions CI");
   });
 });

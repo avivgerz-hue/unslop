@@ -16,6 +16,7 @@ import {
 import {
   createRefactorPlan,
   DEFAULT_REFACTOR_REPORT,
+  translateViolation,
   writeRefactorReport,
 } from "../src/analyzer/refactor-plan.js";
 import { createPresetFromDNA, extractDesignDNA } from "../src/extractor/extract-dna.js";
@@ -283,6 +284,26 @@ describe("10 studio archetypes and multi-format exports", () => {
 });
 
 describe("Design Transformation Blueprint", () => {
+  it("translates mixed evidence according to the finding, not unrelated classes or copy", () => {
+    const preset = loadPreset("linear-precision");
+    const finding = {
+      ruleId: "SLOP-COLOR-001", pillar: "color" as const, category: "color" as const,
+      severity: "warning" as const, file: "Hero.tsx", line: 1, column: 1,
+      message: "finding", recommendation: "preserve content",
+      evidence: "bg-gradient-to-r from-purple-500 to-indigo-500 blur-3xl rounded-3xl p-[13px] Unleash the power",
+    };
+    const translate = (ruleId: string) => translateViolation({ ...finding, ruleId }, preset);
+    expect(translate("SLOP-COLOR-001").after).toContain("border-[var(--border-subtle)]");
+    expect(translate("SLOP-SURFACE-003").after).toContain("Remove the decorative blob element");
+    expect(translate("SLOP-LAYOUT-001").after).toContain("nth-child(1)]:col-span-7");
+    expect(translate("SLOP-LAYOUT-001").after).toContain("nth-child(2)]:col-span-5");
+    expect(translate("SLOP-LAYOUT-001").after).toContain("nth-child(3)]:col-span-12");
+    expect(translate("SLOP-TYPE-003").after).toContain("max-w-[65ch]");
+    expect(translate("SLOP-TYPE-004").after).toContain("tabular-nums");
+    expect(translate("SLOP-LAYOUT-003").after).toContain("--spacing-12");
+    expect(translate("SLOP-COPY-001").kind).toBe("copy");
+  });
+
   it("creates a rich scorecard, exact translations, and prioritized file:line steps", async () => {
     const directory = await temporaryDirectory();
     await writeFile(join(directory, "Hero.tsx"), `<section className="from-purple-500 shadow-xl rounded-3xl p-[13px]">

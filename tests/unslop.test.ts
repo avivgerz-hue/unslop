@@ -445,11 +445,11 @@ describe("agent rule writer", () => {
 
   it("supports explicit force replacement and rejects malformed managed markers", async () => {
     const directory = await temporaryDirectory();
-    await writeFile(join(directory, "AGENTS.md"), `Before\n${MANAGED_START}\nbroken`, "utf8");
+    await writeFile(join(directory, "AGENTS.md"), `User-owned sentinel\n${MANAGED_START}\nbroken`, "utf8");
     await expect(syncRuleFiles({ cwd: directory, preset: "linear-dark" })).rejects.toThrow("both");
     await syncRuleFiles({ cwd: directory, preset: "linear-dark", force: true });
     const forced = await readFile(join(directory, "AGENTS.md"), "utf8");
-    expect(forced).not.toContain("Before");
+    expect(forced).not.toContain("User-owned sentinel");
     expect(forced).toContain("Linear Dark");
   });
 

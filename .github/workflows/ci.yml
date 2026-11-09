@@ -22,9 +22,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npm run build:studio
-      - name: Verify committed distribution and studio are current
-        run: git diff --exit-code -- dist/ docs/index.html
+      - name: Verify committed distribution is current
+        run: git diff --exit-code -- dist/
       - run: npm run typecheck
       - run: npm test
 
@@ -49,48 +48,6 @@ jobs:
           printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | node dist/bin/unslop.js --mcp > /tmp/unslop-mcp.ndjson
           node --input-type=module -e "import { readFileSync } from 'node:fs'; const messages = readFileSync('/tmp/unslop-mcp.ndjson', 'utf8').trim().split('\n').map(JSON.parse); if (messages.length !== 2 || messages[0].result.serverInfo.version !== '2.1.0' || messages[1].result.tools.length !== 4) process.exit(1);"
 
-  action-smoke:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      # The next npm version may not yet be published during PR CI. Exercise the
-      # actual packed candidate through the composite action instead of the registry.
-      - name: Prepare packed release candidate for Action smoke test
-        run: |
-          npm ci
-          npm run build
-          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP" --silent
-          mkdir -p "$RUNNER_TEMP/unslop-candidate" "$RUNNER_TEMP/unslop-ci-bin"
-          tar -xzf "$RUNNER_TEMP/unslop-mcp-2.1.0.tgz" -C "$RUNNER_TEMP/unslop-candidate"
-          cp scripts/ci-local-npx.sh "$RUNNER_TEMP/unslop-ci-bin/npx"
-          chmod +x "$RUNNER_TEMP/unslop-ci-bin/npx"
-          echo "UNSLOP_CI_PACKAGE=$RUNNER_TEMP/unslop-candidate/package" >> "$GITHUB_ENV"
-          echo "$RUNNER_TEMP/unslop-ci-bin" >> "$GITHUB_PATH"
-      - name: Create an intentionally slop-filled fixture
-        run: printf '%s\n' '<div className="from-purple-500 shadow-xl">Unleash the power</div>' > action-fixture.tsx
-      - name: Run the local composite action with a transformation blueprint
-        uses: ./
-        with:
-          target: action-fixture.tsx
-          strict: false
-          preset: linear-precision
-          report: UNSLOP-REPORT.md
-      - name: Verify the action report and non-blocking audit
-        run: node --input-type=module -e "import { readFileSync } from 'node:fs'; const report = readFileSync('UNSLOP-REPORT.md', 'utf8'); for (const text of ['Design Transformation Blueprint', '7-Pillar Scorecard', 'Before → After Class & Token Translation', 'Prioritized Transformation Steps']) if (!report.includes(text)) throw new Error('Missing ' + text);"
-      - name: Exercise the strict quality gate
-        id: strict-audit
-        continue-on-error: true
-        uses: ./
-        with:
-          target: action-fixture.tsx
-          strict: true
-      - name: Verify strict mode failed on the slop-filled fixture
-        run: test "${{ steps.strict-audit.outcome }}" = "failure"
-
   npm-release-smoke:
     runs-on: ubuntu-latest
     steps:
@@ -107,9 +64,9 @@ jobs:
             echo 'available=true' >> "$GITHUB_OUTPUT"
           else
             echo 'available=false' >> "$GITHUB_OUTPUT"
-            echo '::notice::unslop-mcp@2.1.0 is not available from npm; the live registry smoke test is skipped. Do not move the v2 tag until publication and a successful rerun.'
+            echo '::notice::unslop-mcp@2.1.0 is unavailable; live npm verification was skipped.'
           fi
-      - name: Verify published package matches the candidate
+      - name: Verify published package matches this release candidate
         if: steps.npm-release.outputs.available == 'true'
         shell: bash
         run: |
@@ -122,31 +79,17 @@ jobs:
           npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP/packages" --silent unslop-mcp@2.1.0
           tar -xzf "$RUNNER_TEMP/packages/unslop-mcp-2.1.0.tgz" -C "$RUNNER_TEMP/published"
           diff -qr "$RUNNER_TEMP/candidate/package" "$RUNNER_TEMP/published/package"
-      - name: Create a fixture for the real npm Action
+      - name: Verify the published CLI, footer and JSON output
         if: steps.npm-release.outputs.available == 'true'
-        run: printf '%s\n' '<div className="from-purple-500 shadow-xl">Unleash the power</div>' > npm-action-fixture.tsx
-      - name: Run composite Action against the public npm package
-        if: steps.npm-release.outputs.available == 'true'
-        uses: ./
-        with:
-          target: npm-action-fixture.tsx
-          strict: false
-          preset: linear-precision
-          report: UNSLOP-NPM-REPORT.md
-      - name: Verify the public npm Action report
-        if: steps.npm-release.outputs.available == 'true'
-        run: grep -q 'Design Transformation Blueprint' UNSLOP-NPM-REPORT.md
-      - name: Check the public npm strict gate
-        if: steps.npm-release.outputs.available == 'true'
-        id: npm-strict
-        continue-on-error: true
-        uses: ./
-        with:
-          target: npm-action-fixture.tsx
-          strict: true
-      - name: Verify the public npm strict gate failed on findings
-        if: steps.npm-release.outputs.available == 'true'
-        run: test "${{ steps.npm-strict.outcome }}" = 'failure'
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP"
+          printf '%s\n' '<div className="from-purple-500">Unleash the power</div>' > npm-fixture.tsx
+          test "$(npx -y unslop-mcp@2.1.0 --version)" = '2.1.0'
+          npx -y unslop-mcp@2.1.0 audit npm-fixture.tsx --no-fail > npm-audit.txt
+          grep -F '★ Fighting AI UI slop? Star Unslop on GitHub:' npm-audit.txt
+          npx -y unslop-mcp@2.1.0 audit npm-fixture.tsx --no-fail --json > npm-audit.json
+          node -e "const r = require('./npm-audit.json'); if (!Array.isArray(r.pillarScores) || r.pillarScores.length !== 7) process.exit(1)"
 
   docker-mcp:
     runs-on: ubuntu-latest

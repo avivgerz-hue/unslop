@@ -2,6 +2,7 @@ import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { loadPreset, type DesignPreset } from "../presets/index.js";
 import { UNSLOP_VERSION } from "../version.js";
+import { TRANSFORMATION_RULES } from "./transformation-rules.js";
 
 export const MANAGED_START = "<!-- unslop:start -->";
 export const MANAGED_END = "<!-- unslop:end -->";
@@ -158,7 +159,7 @@ export function renderRuleDocument(preset: DesignPreset): string {
       .map(([name, weight]) => `${name} ${weight}`)
       .join(", ")}.`,
     "- Display headings require tight tracking, deliberate line-height, balanced wrapping, and a constrained measure.",
-    "- Body copy normally stays between 45 and 75 characters per line. Do not center long-form copy.",
+    "- Body copy stays between 60 and 70 characters per line; Tailwind max-w-prose is normally 65ch. Do not center long-form copy.",
     "- Use `font-variant-numeric: tabular-nums` for prices, metrics, counters, clocks, identifiers, and data columns.",
     "- Use at most three font weights in a component tree. Prefer size, spacing, and color over additional weights.",
     "",
@@ -210,6 +211,8 @@ export function renderRuleDocument(preset: DesignPreset): string {
     "```css",
     renderTokenCSS(preset),
     "```",
+    "",
+    TRANSFORMATION_RULES,
     "",
     "## 9. Principal design engineering loop",
     "",

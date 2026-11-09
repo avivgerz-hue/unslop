@@ -14,12 +14,6 @@
 
 Works natively with **Claude Code, OpenCode, OpenAI Codex, Cursor, Windsurf, GitHub Copilot, Cline/Roo Code, Zed**, and universal Agent Skills.
 
-## Design Studio & Slop Roaster
-
-Open [`docs/index.html`](docs/index.html) or serve `docs/` as a static site to try the interactive 7-pillar audit, demo, ten-archetype preview, token exports, score badge, and sharing. Paste audits run locally without uploading code. Public GitHub repository audits fetch up to 20 supported files of at most 100 KB each from the default branch via GitHub's unauthenticated API; the result is a labeled sample, not a full repository audit. API rate limits apply. The preview safely adapts simple heading and paragraph copy into an illustrative token-styled component; it never runs or rewrites source code. Clipboard access requires a secure context such as HTTPS or localhost.
-
-For GitHub Pages, configure the repository's Pages source to the `main` branch and `/docs` directory. Regenerate the self-contained page after changing the studio, analyzer, presets, or token exporter with `npm run build:studio`; CI checks that the committed page is current.
-
 Human-readable CLI audits and refactor plans include a copyable badge for the calculated grade and a GitHub star link. Commands that do not calculate a score show a clearly labeled example badge. JSON and MCP stdio are never decorated.
 
 ![Before and after unslop: a generic purple-gradient AI landing page transformed into a precise, token-driven Linear Dark dashboard](https://raw.githubusercontent.com/avivgerz-hue/unslop/main/docs/assets/before-after-unslop.png)
@@ -52,40 +46,6 @@ npx -y github:avivgerz-hue/unslop#v2.1.0 init --preset linear-precision
 Restart or reload the agent after installation so it discovers the new MCP server and Skill. Existing instructions outside Unslop's managed block, unrelated MCP servers, settings, inputs, and custom fields are preserved. Running `init` again is byte-for-byte idempotent.
 
 This repository itself includes root `AGENTS.md`, `CLAUDE.md`, `opencode.json`, `.claude-plugin/plugin.json`, and both Claude/Codex Skill paths for immediate auto-discovery.
-
-## GitHub Actions CI
-
-Use the major-version action tag for a non-blocking score report:
-
-```yaml
-steps:
-  - uses: actions/checkout@v4
-  - uses: avivgerz-hue/unslop@v2
-    with:
-      target: .
-```
-
-Enforce the complete design-quality gate and generate an executable blueprint:
-
-```yaml
-steps:
-  - uses: actions/checkout@v4
-  - uses: avivgerz-hue/unslop@v2
-    with:
-      target: src
-      strict: true
-      preset: linear-precision
-      report: UNSLOP-REPORT.md
-```
-
-| Input | Default | Behavior |
-| --- | --- | --- |
-| `target` | `.` | Component file or directory to analyze |
-| `strict` | `false` | `true` fails on findings or a Design Craft Score below 95; `false` reports without failing |
-| `preset` | empty | Archetype for exact before/after blueprint translations |
-| `report` | empty | Blueprint destination; setting `preset` or `report` generates `UNSLOP-REPORT.md` by default |
-
-The action uses the published `unslop-mcp@2.1.0` package. Its optional blueprint is generated before the strict audit gate, so the report remains available for artifact upload when the audit fails.
 
 The result is not a generic prompt. It is a versioned token contract, a **Design Craft Score from 0–100**, a seven-pillar scorecard, exact before/after translations, and file-level steps your agent can execute in one coherent pass.
 

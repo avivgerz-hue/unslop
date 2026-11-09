@@ -80,27 +80,27 @@ export function translateViolation(violation: SlopViolation, preset: DesignPrese
     before,
     rationale: violation.recommendation,
   };
-  if (id.startsWith("SLOP-COPY") || /(?:Unleash|Supercharge|Seamless|Revolution)/i.test(before)) {
+  if (id.startsWith("SLOP-COPY") || (!id.startsWith("SLOP-") && /(?:Unleash|Supercharge|Seamless|Revolution)/i.test(before))) {
     return { ...base, kind: "copy", after: copyReplacement(before) };
   }
   const spacing = nearestGridSpacing(before);
-  if (spacing) return { ...base, kind: "class", after: spacing };
-  if (/gradient|SLOP-COLOR-001/.test(`${before}${id}`)) {
-    return { ...base, kind: "color", after: "bg-[var(--surface-1)] text-[var(--text-primary)]" };
+  if (spacing && (id === "SLOP-LAYOUT-003" || !id.startsWith("SLOP-"))) return { ...base, kind: "class", after: spacing };
+  if (/SLOP-COLOR-001/.test(id) || (!id.startsWith("SLOP-") && /gradient/i.test(before))) {
+    return { ...base, kind: "color", after: "bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-subtle)]" };
   }
-  if (/neon|SLOP-COLOR-002/.test(`${before}${id}`)) {
+  if (/SLOP-COLOR-002/.test(id) || (!id.startsWith("SLOP-") && /neon/i.test(before))) {
     return { ...base, kind: "color", after: "focus-visible:ring-2 focus-visible:ring-[var(--accent)]" };
   }
   if (/SLOP-COLOR-(?:003|004|005|006|007|009)/.test(id) || /low-contrast/.test(id)) {
     return { ...base, kind: "color", after: "text-[var(--text-primary)] bg-[var(--surface-0)]" };
   }
-  if (/SLOP-COLOR-(?:008|010)|SLOP-TOKEN-001/.test(id) || /#[\da-f]{3,8}\b|rgba?\(/i.test(before)) {
+  if (/SLOP-COLOR-(?:008|010)|SLOP-TOKEN-001/.test(id) || (!id.startsWith("SLOP-") && /#[\da-f]{3,8}\b|rgba?\(/i.test(before))) {
     return { ...base, kind: "color", after: "var(--text-primary)" };
   }
   if (/SLOP-TYPE-001/.test(id)) {
     return { ...base, kind: "class", after: "text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.05] tracking-[var(--tracking-display)]" };
   }
-  if (/SLOP-TYPE-003/.test(id)) return { ...base, kind: "class", after: "max-w-prose leading-[var(--leading-body,1.65)]" };
+  if (/SLOP-TYPE-003/.test(id)) return { ...base, kind: "class", after: "max-w-[65ch] leading-[var(--leading-body,1.65)]" };
   if (/SLOP-TYPE-004|numeric-alignment/.test(id)) return { ...base, kind: "class", after: "tabular-nums text-right" };
   if (/SLOP-TYPE-005/.test(id)) return { ...base, kind: "class", after: "leading-[var(--leading-body,1.65)]" };
   if (/SLOP-TYPE-006/.test(id)) return { ...base, kind: "class", after: "leading-[1.05] tracking-[var(--tracking-display)]" };
@@ -108,21 +108,21 @@ export function translateViolation(violation: SlopViolation, preset: DesignPrese
   if (/SLOP-TYPE-009|display-tracking/.test(id)) return { ...base, kind: "class", after: "tracking-[var(--tracking-display)] leading-[1.05]" };
   if (/SLOP-TYPE-010/.test(id)) return { ...base, kind: "class", after: "uppercase tracking-[var(--tracking-label,0.08em)]" };
   if (/SLOP-LAYOUT-001|emoji-feature-grid/.test(id)) {
-    return { ...base, kind: "layout", after: "grid grid-cols-1 gap-[var(--spacing-16)] md:grid-cols-12 [&>article:first-child]:md:col-span-7 [&>article:last-child]:md:col-span-5" };
+    return { ...base, kind: "layout", after: "grid grid-cols-1 gap-[var(--spacing-16)] md:grid-cols-12 md:[&>article:nth-child(1)]:col-span-7 md:[&>article:nth-child(2)]:col-span-5 md:[&>article:nth-child(3)]:col-span-12" };
   }
   if (/SLOP-LAYOUT-002/.test(id)) return { ...base, kind: "layout", after: "grid gap-[var(--spacing-24)] border-t border-[var(--border-subtle)] pt-[var(--spacing-24)]" };
-  if (/SLOP-LAYOUT-004|radius-scale/.test(id) || /rounded-(?:2xl|3xl)/.test(before)) {
+  if (/SLOP-LAYOUT-004|radius-scale/.test(id) || (!id.startsWith("SLOP-") && /rounded-(?:2xl|3xl)/.test(before))) {
     return { ...base, kind: "class", after: "rounded-[var(--radius-lg)]" };
   }
   if (/SLOP-LAYOUT-005/.test(id)) return { ...base, kind: "layout", after: "text-left items-start justify-start" };
   if (/SLOP-LAYOUT-006/.test(id)) return { ...base, kind: "layout", after: `grid-cols-${preset.tokens.layout.columns}` };
   if (/SLOP-LAYOUT-007/.test(id)) return { ...base, kind: "layout", after: "mx-auto max-w-[var(--container-content)] px-[var(--content-inset,24px)]" };
   if (/SLOP-LAYOUT-008/.test(id)) return { ...base, kind: "layout", after: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3" };
-  if (/SLOP-SURFACE-001/.test(id) || /backdrop-blur/.test(before)) return { ...base, kind: "class", after: "bg-[var(--surface-1)]" };
-  if (/SLOP-SURFACE-002|raw-elevation|SLOP-SURFACE-005/.test(id) || /shadow-(?:xl|2xl)/.test(before)) {
+  if (/SLOP-SURFACE-001/.test(id) || (!id.startsWith("SLOP-") && /backdrop-blur/.test(before))) return { ...base, kind: "class", after: "bg-[var(--surface-1)]" };
+  if (/SLOP-SURFACE-002|raw-elevation|SLOP-SURFACE-005/.test(id) || (!id.startsWith("SLOP-") && /shadow-(?:xl|2xl)/.test(before))) {
     return { ...base, kind: "class", after: "border border-[var(--border-subtle)] shadow-[var(--shadow-md)]" };
   }
-  if (/SLOP-SURFACE-003/.test(id) || /blur-3xl/.test(before)) return { ...base, kind: "class", after: "hidden" };
+  if (/SLOP-SURFACE-003/.test(id) || (!id.startsWith("SLOP-") && /blur-3xl/.test(before))) return { ...base, kind: "layout", after: "Remove the decorative blob element; retain meaningful content and interactions." };
   if (/SLOP-SURFACE-004/.test(id)) return { ...base, kind: "class", after: "inline-flex size-5 shrink-0 items-center justify-center text-[var(--text-muted)]" };
   if (/SLOP-SURFACE-006/.test(id)) return { ...base, kind: "class", after: "border border-[var(--border-subtle)]" };
   if (/SLOP-SURFACE-007/.test(id)) return { ...base, kind: "class", after: "shadow-[var(--shadow-md)]" };
@@ -134,7 +134,7 @@ export function translateViolation(violation: SlopViolation, preset: DesignPrese
   if (/SLOP-UX-004/.test(id)) return { ...base, kind: "interaction", after: "hover:bg-[var(--interactive)]" };
   if (/SLOP-UX-005/.test(id)) return { ...base, kind: "interaction", after: "active:translate-y-px motion-reduce:transform-none" };
   if (/SLOP-UX-006/.test(id)) return { ...base, kind: "interaction", after: "disabled:cursor-not-allowed disabled:opacity-60" };
-  if (/SLOP-UX-007/.test(id) || /transition-all/.test(before)) return { ...base, kind: "interaction", after: "transition-colors motion-reduce:transition-none" };
+  if (/SLOP-UX-007/.test(id) || (!id.startsWith("SLOP-") && /transition-all/.test(before))) return { ...base, kind: "interaction", after: "transition-colors motion-reduce:transition-none" };
   if (/SLOP-UX-008/.test(id)) return { ...base, kind: "interaction", after: "motion-reduce:transition-none motion-reduce:transform-none" };
   if (/SLOP-UX-(?:009|010)/.test(id)) return { ...base, kind: "interaction", after: "aria-label=\"Describe the field purpose\"" };
   if (/SLOP-UX-011/.test(id)) return { ...base, kind: "interaction", after: "min-h-11 min-w-11" };
@@ -215,7 +215,7 @@ function renderMarkdown(
     "## Acceptance Criteria",
     "",
     "- Reach 95–100/100 (A+) without suppressing rules or deleting accessible states.",
-    "- Keep reading measures near 45–75ch, numeric UI tabular, and spacing on the four-pixel grid.",
+    "- Keep body copy at 60–70ch, apply tabular numbers to every metric, price, and counter, and keep spacing on the four-pixel grid.",
     "- Verify WCAG AA/AAA after compositing and test both theme companions.",
     "- Exercise keyboard focus, hover, active, disabled, loading, empty, error, and reduced-motion states.",
     "- Re-run `npx -y unslop-mcp audit .` and inspect the rendered interface at narrow and wide viewports.",

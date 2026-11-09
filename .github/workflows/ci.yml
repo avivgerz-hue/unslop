@@ -91,6 +91,63 @@ jobs:
       - name: Verify strict mode failed on the slop-filled fixture
         run: test "${{ steps.strict-audit.outcome }}" = "failure"
 
+  npm-release-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Check whether the release is published to npm
+        id: npm-release
+        shell: bash
+        run: |
+          if npm view unslop-mcp@2.1.0 version --silent | grep -Fx '2.1.0'; then
+            echo 'available=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'available=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::unslop-mcp@2.1.0 is not available from npm; the live registry smoke test is skipped. Do not move the v2 tag until publication and a successful rerun.'
+          fi
+      - name: Verify published package matches the candidate
+        if: steps.npm-release.outputs.available == 'true'
+        shell: bash
+        run: |
+          npm ci
+          npm run build
+          mkdir -p "$RUNNER_TEMP/candidate" "$RUNNER_TEMP/published" "$RUNNER_TEMP/packages"
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP/packages" --silent
+          tar -xzf "$RUNNER_TEMP/packages/unslop-mcp-2.1.0.tgz" -C "$RUNNER_TEMP/candidate"
+          rm "$RUNNER_TEMP/packages/unslop-mcp-2.1.0.tgz"
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP/packages" --silent unslop-mcp@2.1.0
+          tar -xzf "$RUNNER_TEMP/packages/unslop-mcp-2.1.0.tgz" -C "$RUNNER_TEMP/published"
+          diff -qr "$RUNNER_TEMP/candidate/package" "$RUNNER_TEMP/published/package"
+      - name: Create a fixture for the real npm Action
+        if: steps.npm-release.outputs.available == 'true'
+        run: printf '%s\n' '<div className="from-purple-500 shadow-xl">Unleash the power</div>' > npm-action-fixture.tsx
+      - name: Run composite Action against the public npm package
+        if: steps.npm-release.outputs.available == 'true'
+        uses: ./
+        with:
+          target: npm-action-fixture.tsx
+          strict: false
+          preset: linear-precision
+          report: UNSLOP-NPM-REPORT.md
+      - name: Verify the public npm Action report
+        if: steps.npm-release.outputs.available == 'true'
+        run: grep -q 'Design Transformation Blueprint' UNSLOP-NPM-REPORT.md
+      - name: Check the public npm strict gate
+        if: steps.npm-release.outputs.available == 'true'
+        id: npm-strict
+        continue-on-error: true
+        uses: ./
+        with:
+          target: npm-action-fixture.tsx
+          strict: true
+      - name: Verify the public npm strict gate failed on findings
+        if: steps.npm-release.outputs.available == 'true'
+        run: test "${{ steps.npm-strict.outcome }}" = 'failure'
+
   docker-mcp:
     runs-on: ubuntu-latest
     steps:

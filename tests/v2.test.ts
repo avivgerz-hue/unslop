@@ -72,10 +72,10 @@ async function invoke(args: string[], cwd?: string) {
 
 describe("v2 runtime and 7-pillar rule catalog", () => {
   it("reads CLI and MCP versions from package.json without drift", async () => {
-    expect(manifest.version).toBe("2.1.0");
+    expect(manifest.version).toBe("2.1.1");
     expect(UNSLOP_VERSION).toBe(manifest.version);
     expect(CLI_VERSION).toBe(manifest.version);
-    expect((await invoke(["--version"])).stdout.trim()).toBe("2.1.0");
+    expect((await invoke(["--version"])).stdout.trim()).toBe("2.1.1");
     expect(manifest.bin).toEqual({
       unslop: "dist/bin/unslop.js",
       "unslop-mcp": "dist/bin/unslop.js",

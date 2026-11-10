@@ -288,14 +288,14 @@ describe("native MCP server", () => {
     expect(serialized).not.toContain(`unslop ${UNSLOP_VERSION}`);
   });
 
-  it("serves MCP over stdio through the --mcp command alias", async () => {
+  it.each(["mcp", "--mcp"])("serves MCP over stdio through %s", async (command) => {
     const directory = await temporaryDirectory();
     const input = new PassThrough();
     const output = new PassThrough();
     let serialized = "";
     let stderr = "";
     output.on("data", (chunk: Buffer) => { serialized += chunk.toString("utf8"); });
-    const running = runCli(["--mcp"], {
+    const running = runCli([command], {
       cwd: directory,
       input,
       output,

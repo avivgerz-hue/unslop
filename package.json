@@ -1,6 +1,6 @@
 {
   "name": "unslop-mcp",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "mcpName": "io.github.avivgerz-hue/unslop",
   "description": "The definitive 7-pillar UI/UX Design Engineering CLI, MCP server, and Agent Skill: 72 rules, 10 studio archetypes, multi-format tokens, and exact transformation blueprints.",
   "type": "module",

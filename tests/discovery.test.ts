@@ -25,7 +25,7 @@ describe("release and discovery metadata", () => {
       readText("CITATION.cff"),
     ]);
 
-    expect(UNSLOP_VERSION).toBe("2.1.0");
+    expect(UNSLOP_VERSION).toBe("2.1.1");
     expect(manifest.name).toBe("unslop-mcp");
     expect(manifest.version).toBe(UNSLOP_VERSION);
     expect(lockfile.name).toBe(manifest.name);
@@ -99,6 +99,9 @@ describe("release and discovery metadata", () => {
 
     expect(registry.$schema).toBe("https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json");
     expect(registry.name).toBe("io.github.avivgerz-hue/unslop");
+    expect(registry.description.trim().length).toBeGreaterThan(0);
+    expect([...registry.description].length).toBeLessThanOrEqual(100);
+    expect(Object.keys(registry).sort()).toEqual(["$schema", "_meta", "description", "name", "packages", "repository", "title", "version", "websiteUrl"].sort());
     expect(manifest.mcpName).toBe(registry.name);
     expect(registry.repository).toEqual({
       url: "https://github.com/avivgerz-hue/unslop",
@@ -112,11 +115,11 @@ describe("release and discovery metadata", () => {
       transport: { type: "stdio" },
       runtimeHint: "npx",
       runtimeArguments: [{ type: "positional", value: "-y" }],
-      packageArguments: [{ type: "positional", value: "--mcp" }],
+      packageArguments: [{ type: "positional", value: "mcp" }],
     }]);
     expect(publisher["com.vibefoundry"].startup).toEqual({
       command: "npx",
-      args: ["-y", "unslop-mcp", "--mcp"],
+      args: ["-y", "unslop-mcp", "mcp"],
     });
     expect(publisher["com.vibefoundry"].tools.map((tool: { name: string }) => tool.name))
       .toEqual(MCP_TOOL_DEFINITIONS.map((tool) => tool.name));

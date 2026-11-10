@@ -1,4 +1,4 @@
-# unslop v2.1.0
+# unslop v2.1.1
 
 > ⭐ **If this tool helps your AI coding workflow, please give this repository a Star!** It helps more developers discover the project.
 
@@ -287,7 +287,7 @@ The image entrypoint is `node dist/bin/unslop.js mcp`. CI builds the image and v
 
 ## Registry and citation metadata
 
-- [`server.json`](server.json) follows the official MCP Registry schema and declares `unslop-mcp` 2.1.0 with the `npx -y … --mcp` startup contract and four tool summaries.
+- [`server.json`](server.json) follows the official MCP Registry schema and declares `unslop-mcp` 2.1.1 with the `npx -y unslop-mcp mcp` startup contract and four tool summaries.
 - [`glama.json`](glama.json) mirrors the exact MCP tool schemas and canonical archetype enum.
 - [`smithery.yaml`](smithery.yaml) starts the native stdio server without additional configuration.
 - [`CITATION.cff`](CITATION.cff) provides software citation metadata for VibeFoundry.
@@ -303,7 +303,7 @@ npm test
 npm run build
 ```
 
-CI verifies Node.js 20 and 22, a production install without TypeScript, reproducible committed `dist/`, real CLI/MCP stdio negotiation, and the Docker MCP handshake. The v2 suite covers all seven pillars, all ten archetypes, every token format, extracted DNA, refactor blueprints, and manifest-driven 2.1.0 version output.
+CI verifies Node.js 20 and 22, a production install without TypeScript, reproducible committed `dist/`, real CLI/MCP stdio negotiation, and the Docker MCP handshake. The v2 suite covers all seven pillars, all ten archetypes, every token format, extracted DNA, refactor blueprints, and manifest-driven 2.1.1 version output.
 
 ## License
 

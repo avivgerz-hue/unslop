@@ -45,14 +45,14 @@ describe('terminal star CTA', () => {
         expect(result.stdout, args.join(' ')).not.toContain(cta);
         expect(() => JSON.parse(result.stdout)).not.toThrow();
       }
-      expect((await invoke(['--version'], cwd)).stdout.trim()).toBe('2.1.0');
+      expect((await invoke(['--version'], cwd)).stdout.trim()).toBe('2.1.1');
       expect(await readFile(join(cwd, 'UNSLOP-REPORT.md'), 'utf8')).not.toContain(cta);
       let output = '';
       const input = Readable.from(['{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}\n']);
       const stream = new Writable({ write(chunk, _encoding, callback) { output += chunk.toString(); callback(); } });
       await runCli(['--mcp'], { cwd, input, output: stream });
       expect(output).not.toContain(cta);
-      expect(JSON.parse(output).result.serverInfo.version).toBe('2.1.0');
+      expect(JSON.parse(output).result.serverInfo.version).toBe('2.1.1');
     } finally { await rm(cwd, { recursive: true, force: true }); }
   });
 });

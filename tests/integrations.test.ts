@@ -157,7 +157,7 @@ describe("universal coding-agent integration", () => {
     expect(agents).toContain("<!-- unslop:start -->");
     expect(claude).toContain("<!-- unslop:start -->");
     expect(opencode.mcp["unslop-mcp"].enabled).toBe(true);
-    expect(plugin.version).toBe("2.1.0");
+    expect(plugin.version).toBe("2.1.1");
     expect(claudeSkill).toContain("name: unslop");
     expect(codexSkill).toContain("name: unslop");
     const rootSkill = await readFile(join(root, "SKILL.md"), "utf8");

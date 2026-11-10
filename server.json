@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.avivgerz-hue/unslop",
   "title": "unslop — 7-Pillar Design Craft Engine",
-  "description": "72-rule UI/UX audits, 10 studio archetypes, multi-format tokens, and Design Transformation Blueprints.",
-  "version": "2.1.0",
+  "description": "Audit UI design, extract Design DNA, generate tokens, and create transformation blueprints.",
+  "version": "2.1.1",
   "websiteUrl": "https://github.com/avivgerz-hue/unslop",
   "repository": {
     "url": "https://github.com/avivgerz-hue/unslop",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "unslop-mcp",
-      "version": "2.1.0",
+      "version": "2.1.1",
       "transport": {
         "type": "stdio"
       },
@@ -28,7 +28,7 @@
       "packageArguments": [
         {
           "type": "positional",
-          "value": "--mcp"
+          "value": "mcp"
         }
       ]
     }
@@ -42,7 +42,7 @@
           "args": [
             "-y",
             "unslop-mcp",
-            "--mcp"
+            "mcp"
           ]
         },
         "maintainers": [

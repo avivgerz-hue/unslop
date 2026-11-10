@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="592" viewBox="0 0 1024 592" role="img" aria-labelledby="title description">
+  <title id="title">Unslop terminal demo: audit before and after manual edits</title>
+  <desc id="description">A looping, abbreviated recording of a real sample audit. The first audit identifies a gradient, a copy cliché and missing keyboard focus and scores 91 out of 100. After a developer edits the component, the second audit scores 100 out of 100. The score is a static analysis result, not a guarantee of accessibility.</desc>
+  <style>
+    .mono { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .stage1 { animation: stage1 12s ease-in-out infinite; }
+    .stage2 { animation: stage2 12s ease-in-out infinite; }
+    .stage3 { animation: stage3 12s ease-in-out infinite; }
+    .stage4 { animation: stage4 12s ease-in-out infinite; }
+    .stage5 { animation: stage5 12s ease-in-out infinite; }
+    .cursor { animation: blink 1s steps(2, start) infinite; }
+    .progress { animation: progress 12s linear infinite; transform-origin: 0 0; }
+    @keyframes stage1 { 0%, 2% { opacity: 0 } 5%, 95% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes stage2 { 0%, 13% { opacity: 0 } 17%, 95% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes stage3 { 0%, 30% { opacity: 0 } 34%, 95% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes stage4 { 0%, 47% { opacity: 0 } 51%, 95% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes stage5 { 0%, 65% { opacity: 0 } 69%, 95% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes blink { to { opacity: 0 } }
+    @keyframes progress { 0% { transform: scaleX(0) } 95%, 100% { transform: scaleX(1) } }
+    @media (prefers-reduced-motion: reduce) { .stage1, .stage2, .stage3, .stage4, .stage5, .cursor, .progress { animation: none; } }
+  </style>
+  <rect width="1024" height="592" rx="18" fill="#171916"/>
+  <rect x="1" y="1" width="1022" height="590" rx="17" fill="none" stroke="#3e4139" stroke-width="2"/>
+  <path d="M1 62h1022" stroke="#353830"/>
+  <circle cx="30" cy="31" r="6" fill="#f07968"/><circle cx="50" cy="31" r="6" fill="#e7ba63"/><circle cx="70" cy="31" r="6" fill="#78b58d"/>
+  <text x="100" y="36" fill="#e9e9df" font-size="14" font-weight="600" class="sans">unslop</text>
+  <text x="164" y="36" fill="#8b9084" font-size="12" class="mono">/ DESIGN CRAFT AUDIT</text>
+  <rect x="792" y="19" width="202" height="25" rx="12" fill="#292b25" stroke="#41453b"/>
+  <circle cx="808" cy="31.5" r="3.5" fill="#f3955b"/>
+  <text x="820" y="36" fill="#c9cec0" font-size="10.5" class="mono">REAL FIXTURE · EXCERPT</text>
+  <g class="mono" font-size="15">
+    <g class="stage1">
+      <text x="32" y="103" fill="#f49560">$</text><text x="54" y="103" fill="#f0f1e9">npx -y unslop-mcp@latest audit Hero.tsx --no-fail</text><rect x="501" y="87" width="8" height="17" rx="1" fill="#f49560" class="cursor"/>
+      <text x="32" y="139" fill="#a8aea2">unslop audit · 1 file scanned</text>
+    </g>
+    <g class="stage2">
+      <text x="32" y="180" fill="#ffae75">Hero.tsx:1:21  WARNING  SLOP-COLOR-001</text>
+      <text x="54" y="204" fill="#c9cec3">Generic AI gradient: Cliché purple/indigo AI gradient stop detected.</text>
+      <text x="32" y="243" fill="#ffae75">Hero.tsx:1:52  WARNING  SLOP-COPY-001</text>
+      <text x="54" y="267" fill="#c9cec3">AI marketing cliché detected: “Unleash the power”.</text>
+      <text x="32" y="306" fill="#ff8880">Hero.tsx:1:74  ERROR    SLOP-UX-003</text>
+      <text x="54" y="330" fill="#c9cec3">Missing focus-visible treatment.</text>
+    </g>
+    <g class="stage3">
+      <text x="32" y="369" fill="#eff0e8" font-weight="700">Design Craft Score: <tspan fill="#f4b06f">91/100 (A)</tspan></text>
+    </g>
+    <g class="stage4">
+      <path d="M32 388h960" stroke="#3b3f36"/>
+      <text x="32" y="419" fill="#9ba497"># After manual edits, rerun the same audit</text>
+      <text x="32" y="451" fill="#f49560">$</text><text x="54" y="451" fill="#f0f1e9">npx -y unslop-mcp@latest audit Hero.tsx --no-fail</text>
+    </g>
+    <g class="stage5">
+      <text x="32" y="486" fill="#a8aea2">No AI slop anti-patterns detected.</text>
+      <text x="32" y="521" fill="#eff0e8" font-weight="700">Design Craft Score: <tspan fill="#8bd2a1">100/100 (A+)</tspan></text>
+    </g>
+  </g>
+  <path d="M32 551h960" stroke="#353830"/>
+  <path d="M32 551h960" stroke="#f3955b" stroke-width="2" class="progress"/>
+  <text x="32" y="575" fill="#a4aa9d" font-size="11" class="sans">Sample audit excerpt · manual edits between runs · verify the rendered UI and contrast</text>
+  <text x="992" y="575" text-anchor="end" fill="#d3d6ca" font-size="10" letter-spacing="1" class="mono">UNSLOP / DESIGN CRAFT</text>
+</svg>

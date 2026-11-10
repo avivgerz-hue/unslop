@@ -1,0 +1,1 @@
+<section className="bg-[var(--surface-1)] border border-[var(--border-subtle)]"><h1 className="tracking-tight">Plan your work</h1><button type="button" className="focus-visible:ring-2 hover:bg-[var(--interactive)] active:opacity-80 disabled:opacity-50 transition-colors motion-reduce:transition-none">Go</button></section>

@@ -1,0 +1,34 @@
+{
+  "name": "unslop",
+  "version": "2.1.1",
+  "description": "Seven-pillar UI/UX design craft audits, studio archetypes and exact transformation blueprints for AI-generated interfaces, with 72 rules and 4 MCP tools.",
+  "author": {
+    "name": "VibeFoundry",
+    "url": "https://github.com/avivgerz-hue"
+  },
+  "homepage": "https://github.com/avivgerz-hue/unslop#readme",
+  "repository": "https://github.com/avivgerz-hue/unslop",
+  "license": "MIT",
+  "keywords": [
+    "ui",
+    "ux",
+    "design",
+    "linter",
+    "mcp",
+    "accessibility",
+    "agent-skills"
+  ],
+  "interface": {
+    "displayName": "unslop",
+    "shortDescription": "72-rule UI/UX design linter for AI-generated apps",
+    "developerName": "VibeFoundry",
+    "category": "Coding",
+    "websiteURL": "https://github.com/avivgerz-hue/unslop",
+    "longDescription": "Seven-pillar UI/UX design craft audits, studio archetypes and exact transformation blueprints, exposed as an MCP server with 72 rules and 4 tools.",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ]
+  },
+  "skills": "./.claude/skills/"
+}

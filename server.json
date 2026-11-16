@@ -51,19 +51,23 @@
         "tools": [
           {
             "name": "unslop_audit",
-            "description": "Audit six frontend source formats across 72 rules and score all seven design craft pillars."
+            "description": "Read-only static UI audit across 72 rules and 7 design craft pillars (Color & WCAG 2.1 AA/AAA + APCA Contrast, Typography, Layout, Surface, Copy, Motion, and Tokens) for JSX, TSX, HTML, Vue, Svelte, CSS, and Tailwind files. Use this tool first to baseline a project's Design Craft Score (0-100), inspect pillar-by-pillar breakdowns, and get exact file:line diagnostics with remediation guidance without modifying any files."
+          },
+          {
+            "name": "unslop_list_presets",
+            "description": "Read-only catalog lookup for all 10 built-in studio design archetypes (such as 'linear-precision', 'anthropic-warm-editorial', 'swiss-grid-editorial', and 'vercel-mono'). Use this tool before calling unslop_apply_preset or unslop_refactor_plan to inspect available preset IDs, color polarities, typography pairings, surface tokens, and layout rules without modifying any files."
           },
           {
             "name": "unslop_extract_dna",
-            "description": "Extract Design DNA from a CSS file or HTTP(S) URL and compile it into a complete design preset and Agent Skill."
+            "description": "Read-only Design DNA extractor that parses a local CSS/stylesheet file or fetches a live HTTP(S) webpage URL to extract color palettes, font stacks, spacing scales, border radii, and shadow tokens. Compiles and returns a reusable DesignPreset object and Agent Skill markdown in memory without writing files to disk."
           },
           {
             "name": "unslop_apply_preset",
-            "description": "Apply a built-in studio preset to project agent rules and merge unslop into .mcp.json without replacing other MCP servers."
+            "description": "Install a built-in studio design preset across coding-agent ecosystems in the target project directory. Writes agent instruction rules, SKILL.md, design token files, and native MCP/plugin configuration files to disk, returning the list of created or updated file paths."
           },
           {
             "name": "unslop_refactor_plan",
-            "description": "Generate UNSLOP-REPORT.md with a 7-pillar scorecard, exact before/after token translations, and prioritized file:line refactor steps."
+            "description": "Analyze a component or directory and generate a step-by-step Design Transformation Blueprint tailored to a studio preset. Writes a Markdown refactor report (default 'UNSLOP-REPORT.md') to disk and returns the 7-pillar scorecard, exact before/after class and token replacements, and prioritized file:line refactoring tasks."
           }
         ]
       }

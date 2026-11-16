@@ -12,15 +12,33 @@ const DEFAULT_MAX_MESSAGE_BYTES = 2 * 1024 * 1024;
 export const MCP_TOOL_DEFINITIONS = [
     {
         name: "unslop_audit",
-        description: "Audit JSX, HTML, Vue, Svelte, CSS, and Tailwind across 72 rules. Returns the Design Craft Score, 7-pillar scorecard, exact diagnostics, and refactoring instructions.",
+        description: "Read-only static UI audit across 72 rules and 7 design craft pillars (Color & WCAG 2.1 AA/AAA + APCA Contrast, Typography, Layout, Surface, Copy, Motion, and Tokens) for JSX, TSX, HTML, Vue, Svelte, CSS, and Tailwind files. Use this tool first to baseline a project's Design Craft Score (0-100), inspect pillar-by-pillar breakdowns, and get exact file:line diagnostics with remediation guidance without modifying any files.",
         inputSchema: {
             type: "object",
             properties: {
-                path: { type: "string", description: "File or directory to scan, relative to the server project root." },
+                path: {
+                    type: "string",
+                    description: "File or directory path to audit, relative to the server project root (defaults to '.').",
+                },
                 ignore: {
                     type: "array",
                     items: { type: "string" },
-                    description: "Additional directory base names to skip.",
+                    description: "Optional list of additional directory base names (e.g. ['storybook-static', 'legacy']) to skip during scanning.",
+                },
+            },
+            additionalProperties: false,
+        },
+    },
+    {
+        name: "unslop_list_presets",
+        description: "Read-only catalog lookup for all 10 built-in studio design archetypes (such as 'linear-precision', 'anthropic-warm-editorial', 'swiss-grid-editorial', and 'vercel-mono'). Use this tool before calling unslop_apply_preset or unslop_refactor_plan to inspect available preset IDs, color polarities, typography pairings, surface tokens, and layout rules without modifying any files.",
+        inputSchema: {
+            type: "object",
+            properties: {
+                preset: {
+                    type: "string",
+                    enum: [...PRESET_NAMES],
+                    description: "Optional preset identifier to inspect in full detail. Omit to list summaries for all built-in studio presets.",
                 },
             },
             additionalProperties: false,
@@ -28,14 +46,28 @@ export const MCP_TOOL_DEFINITIONS = [
     },
     {
         name: "unslop_extract_dna",
-        description: "Extract Design DNA from a CSS file or HTTP(S) URL and compile it into a complete design preset and Agent Skill.",
+        description: "Read-only Design DNA extractor that parses a local CSS/stylesheet file or fetches a live HTTP(S) webpage URL to extract color palettes, font stacks, spacing scales, border radii, and shadow tokens. Compiles and returns a reusable DesignPreset object and Agent Skill markdown in memory without writing files to disk.",
         inputSchema: {
             type: "object",
             properties: {
-                source: { type: "string", description: "CSS path or HTTP(S) URL." },
-                name: { type: "string", description: "Human-readable name for the compiled preset." },
-                timeoutMs: { type: "number", minimum: 1, description: "Per-request timeout in milliseconds." },
-                maxStylesheets: { type: "number", minimum: 0, description: "Maximum external stylesheets to fetch." },
+                source: {
+                    type: "string",
+                    description: "Local CSS file path (relative to project root) or full HTTP(S) URL to extract design tokens from.",
+                },
+                name: {
+                    type: "string",
+                    description: "Optional human-readable identifier for the compiled design preset (defaults to 'extracted-dna').",
+                },
+                timeoutMs: {
+                    type: "number",
+                    minimum: 1,
+                    description: "Optional network timeout in milliseconds per HTTP(S) stylesheet request (defaults to 8000).",
+                },
+                maxStylesheets: {
+                    type: "number",
+                    minimum: 0,
+                    description: "Optional maximum number of linked external stylesheets to fetch when source is an HTML URL (defaults to 5).",
+                },
             },
             required: ["source"],
             additionalProperties: false,
@@ -43,12 +75,19 @@ export const MCP_TOOL_DEFINITIONS = [
     },
     {
         name: "unslop_apply_preset",
-        description: "Apply a built-in studio preset across eight coding-agent ecosystems with Skills, rules, native MCP configurations, and Claude plugin metadata.",
+        description: "Install a built-in studio design preset across coding-agent ecosystems in the target project directory. Writes agent instruction rules, SKILL.md, design token files, and native MCP/plugin configuration files to disk, returning the list of created or updated file paths.",
         inputSchema: {
             type: "object",
             properties: {
-                preset: { type: "string", enum: [...PRESET_NAMES] },
-                projectDir: { type: "string", description: "Project directory, relative to the server project root." },
+                preset: {
+                    type: "string",
+                    enum: [...PRESET_NAMES],
+                    description: "Studio design archetype identifier to install (for example 'linear-precision', 'anthropic-warm-editorial', or 'swiss-grid-editorial').",
+                },
+                projectDir: {
+                    type: "string",
+                    description: "Target project directory where preset rules and token files will be written, relative to the server project root (defaults to '.').",
+                },
             },
             required: ["preset"],
             additionalProperties: false,
@@ -56,17 +95,27 @@ export const MCP_TOOL_DEFINITIONS = [
     },
     {
         name: "unslop_refactor_plan",
-        description: "Generate a Design Transformation Blueprint with a 7-pillar scorecard, exact preset-aware before/after translations, and prioritized file:line refactor steps.",
+        description: "Analyze a component or directory and generate a step-by-step Design Transformation Blueprint tailored to a studio preset. Writes a Markdown refactor report (default 'UNSLOP-REPORT.md') to disk and returns the 7-pillar scorecard, exact before/after class and token replacements, and prioritized file:line refactoring tasks.",
         inputSchema: {
             type: "object",
             properties: {
-                path: { type: "string", description: "Component or directory to analyze, relative to the server project root." },
-                preset: { type: "string", enum: [...PRESET_NAMES], description: "Archetype used for exact replacement classes and tokens." },
-                report: { type: "string", description: "Markdown report path (default: UNSLOP-REPORT.md)." },
+                path: {
+                    type: "string",
+                    description: "Component file or directory path to analyze, relative to the server project root (defaults to '.').",
+                },
+                preset: {
+                    type: "string",
+                    enum: [...PRESET_NAMES],
+                    description: "Target studio design archetype used to compute exact replacement classes and CSS tokens (defaults to 'linear-precision').",
+                },
+                report: {
+                    type: "string",
+                    description: "Output file path for the generated Markdown transformation blueprint, relative to project root (defaults to 'UNSLOP-REPORT.md').",
+                },
                 ignore: {
                     type: "array",
                     items: { type: "string" },
-                    description: "Additional directory base names to skip.",
+                    description: "Optional list of additional directory base names to exclude from analysis.",
                 },
             },
             additionalProperties: false,
@@ -159,7 +208,7 @@ export class UnslopMCPServer {
                 protocolVersion,
                 capabilities: { tools: { listChanged: false } },
                 serverInfo: { name: "unslop", version: this.version },
-                instructions: "Use unslop_audit to baseline all seven pillars, unslop_extract_dna or unslop_apply_preset for tokens, then unslop_refactor_plan to generate an exact transformation blueprint.",
+                instructions: "Use unslop_audit to baseline all seven pillars, unslop_list_presets to inspect built-in archetypes, unslop_extract_dna or unslop_apply_preset for tokens, then unslop_refactor_plan to generate an exact transformation blueprint.",
             };
         }
         if (method === "notifications/initialized" || method === "notifications/cancelled")
@@ -202,6 +251,22 @@ export class UnslopMCPServer {
             return {
                 content: textContent(formatAuditReport(report)),
                 structuredContent: report,
+            };
+        }
+        if (name === "unslop_list_presets") {
+            const requested = stringArgument(args, "preset");
+            if (requested) {
+                const preset = loadPreset(requested);
+                return {
+                    content: textContent(`${preset.title} (${preset.name})\n\n${JSON.stringify(preset, null, 2)}`),
+                    structuredContent: { presets: [preset] },
+                };
+            }
+            const presets = PRESET_NAMES.map((id) => loadPreset(id));
+            const lines = presets.map((p) => `- ${p.name}: ${p.title}`);
+            return {
+                content: textContent(`Available studio design presets (${presets.length}):\n${lines.join("\n")}`),
+                structuredContent: { presets },
             };
         }
         if (name === "unslop_extract_dna") {

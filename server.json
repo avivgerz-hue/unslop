@@ -3,7 +3,7 @@
   "name": "io.github.avivgerz-hue/unslop",
   "title": "unslop — 7-Pillar Design Craft Engine",
   "description": "Audit UI design, extract Design DNA, generate tokens, and create transformation blueprints.",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "websiteUrl": "https://github.com/avivgerz-hue/unslop",
   "repository": {
     "url": "https://github.com/avivgerz-hue/unslop",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "unslop-mcp",
-      "version": "2.1.1",
+      "version": "2.1.2",
       "transport": {
         "type": "stdio"
       },

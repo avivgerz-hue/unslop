@@ -1,6 +1,6 @@
 {
   "name": "unslop-mcp",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "mcpName": "io.github.avivgerz-hue/unslop",
   "description": "The definitive 7-pillar UI/UX Design Engineering CLI, MCP server, and Agent Skill: 72 rules, 10 studio archetypes, multi-format tokens, and exact transformation blueprints.",
   "type": "module",
@@ -92,7 +92,18 @@
     "developer-tools",
     "vibe-coding",
     "css",
-    "cli"
+    "cli",
+    "anti-ai-slop",
+    "fix-ai-slop",
+    "vibe-coded-app",
+    "ui-linter",
+    "design-linter",
+    "shadcn-ui",
+    "tailwind-css",
+    "wcag-contrast",
+    "apca-contrast",
+    "cursor-mcp",
+    "windsurf-mcp"
   ],
   "author": "VibeFoundry",
   "license": "MIT",

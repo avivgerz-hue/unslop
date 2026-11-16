@@ -25,7 +25,7 @@ describe("release and discovery metadata", () => {
       readText("CITATION.cff"),
     ]);
 
-    expect(UNSLOP_VERSION).toBe("2.1.1");
+    expect(UNSLOP_VERSION).toBe("2.1.2");
     expect(manifest.name).toBe("unslop-mcp");
     expect(manifest.version).toBe(UNSLOP_VERSION);
     expect(lockfile.name).toBe(manifest.name);
